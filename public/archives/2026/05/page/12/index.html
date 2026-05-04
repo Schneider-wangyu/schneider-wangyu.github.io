@@ -1,0 +1,225 @@
+
+
+  <article class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <div class="article-meta">
+      <a href="/2026/05/02/edge-tech-20260502-1610/" class="article-date">
+        <time class="dt-published" datetime="2026-05-02T00:10:00.000Z">2026-05-02</time>
+      </a>
+      
+      <div class="article-category">
+        <ul class="article-category-link-list"><li class="article-category-link-list-item"><a class="article-category-link-list-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a><span class="article-category-link-list-count">47</span></li></ul>
+      </div>
+      
+    </div>
+    <div class="article-inner">
+      <header class="article-header">
+        <h1 class="p-name article-title" itemprop="name">
+          <a class="u-url" href="/2026/05/02/edge-tech-20260502-1610/">边缘控制器实战：施耐德Modicon M580在智能工厂中的关键应用</a>
+        </h1>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <h2 id="边缘控制：从概念到落地"><a href="#边缘控制：从概念到落地" class="headerlink" title="边缘控制：从概念到落地"></a>边缘控制：从概念到落地</h2><p>在工业4.0的浪潮中，边缘控制（Edge Control）正成为连接OT与IT的关键桥梁。与传统的集中式控制架构不同，边缘控制器将计算能力下沉到现场层，在数据产生的源头完成实时处理与决策，极大降低了云端通信延迟和带宽压力。</p>
+<p>施耐德电气的<strong>Modicon M580</strong>系列ePAC（以太网可编程自动化控制器）正是这一趋势的典型代表——它不仅是一台PLC，更是一个融合了边缘计算能力的开放自动化平台。</p>
+<h2 id="Modicon-M580：边缘控制的核心引擎"><a href="#Modicon-M580：边缘控制的核心引擎" class="headerlink" title="Modicon M580：边缘控制的核心引擎"></a>Modicon M580：边缘控制的核心引擎</h2><h3 id="架构亮点"><a href="#架构亮点" class="headerlink" title="架构亮点"></a>架构亮点</h3><p>M580基于<strong>EtherNet&#x2F;IP</strong>开放网络标准，内置网络安全功能，支持从现场到云端的端到端透明通信。其核心架构特点包括：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>双核处理器</strong></td>
+<td>控制核+通信核分离，控制逻辑不被通信任务干扰</td>
+</tr>
+<tr>
+<td><strong>内置网络安全</strong></td>
+<td>集成防火墙、TLS加密、用户认证，满足IEC 62443要求</td>
+</tr>
+<tr>
+<td><strong>开放协议支持</strong></td>
+<td>EtherNet&#x2F;IP、Modbus TCP、OPC UA原生支持</td>
+</tr>
+<tr>
+<td><strong>边缘计算能力</strong></td>
+<td>可运行Docker容器，部署AI推理、数据预处理等边缘应用</td>
+</tr>
+</tbody></table>
+<h3 id="实战场景：汽车焊装线实时质检"><a href="#实战场景：汽车焊装线实时质检" class="headerlink" title="实战场景：汽车焊装线实时质检"></a>实战场景：汽车焊装线实时质检</h3><p>某合资汽车厂焊装车间部署了12台Modicon M580作为主线控制器，同时在每台M580上运行边缘容器，部署了基于OpenCV的焊缝视觉检测模型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[焊枪传感器] → [M580控制逻辑] → [边缘容器AI推理] → [质检结果]</span><br><span class="line">                    ↓                        ↓</span><br><span class="line">              实时控制响应            良品/不良品判定</span><br><span class="line">              (周期 &lt; 5ms)           (推理延迟 &lt; 50ms)</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键指标</strong>：</p>
+<ul>
+<li>焊缝缺陷检出率从人工目检的78%提升至<strong>99.2%</strong></li>
+<li>不良品流出率降低至<strong>0.03%</strong></li>
+<li>控制周期不受AI推理影响，始终保持在5ms以内</li>
+<li>边缘预处理后，上传云端的图像数据量减少<strong>85%</strong></li>
+</ul>
+<h2 id="边缘-云协同：EcoStruxure的三层架构"><a href="#边缘-云协同：EcoStruxure的三层架构" class="headerlink" title="边缘+云协同：EcoStruxure的三层架构"></a>边缘+云协同：EcoStruxure的三层架构</h2><p>施耐德电气的EcoStruxure架构为边缘控制提供了完整的三层支撑：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────┐</span><br><span class="line">│  EcoStruxure App 层（云端）       │  AVEVA Insight / 数字孪生 / 远程运维</span><br><span class="line">├─────────────────────────────────┤</span><br><span class="line">│  EcoStruxure Edge 层（边缘）      │  M580 + 边缘容器 + 本地数据聚合</span><br><span class="line">├─────────────────────────────────┤</span><br><span class="line">│  EcoStruxure Control 层（现场）   │  M340 I/O + 传感器 + 执行机构</span><br><span class="line">└─────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>这种架构的核心优势在于<strong>分层自治</strong>：即使云端通信中断，边缘层的M580仍可独立完成控制与本地决策，保证生产连续性。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><ol>
+<li><strong>网络规划</strong>：边缘控制器建议部署独立的管理VLAN，与控制网络物理&#x2F;逻辑隔离</li>
+<li><strong>容器策略</strong>：边缘容器优先部署轻量级推理模型（&lt; 500MB），避免资源争抢</li>
+<li><strong>数据过滤</strong>：在边缘层完成数据清洗和降采样，只上传有价值的数据到云端</li>
+<li><strong>安全加固</strong>：启用M580内置防火墙，限制Modbus TCP访问白名单，定期更新固件</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Modicon M580将传统PLC的可靠性与边缘计算的灵活性深度融合，为智能工厂提供了一套从现场控制到边缘智能的完整解决方案。对于正在推进数字化转型的制造企业，边缘控制器不是可选项——而是必选项。</p>
+<hr>
+<p>参考资料：施耐德电气官方技术文档、EcoStruxure架构白皮书、工业边缘计算应用案例集 | 2026年5月</p>
+
+        
+      </div>
+      
+      <footer class="article-footer">
+        <ul class="article-tag-list" itemprop="keywords">
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6" rel="tag">边缘控制</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/Modicon" rel="tag">Modicon</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/M580" rel="tag">M580</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/EcoStruxure" rel="tag">EcoStruxure</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E5%B7%A5%E5%8E%82" rel="tag">智能工厂</a>
+            </li>
+          
+        </ul>
+      </footer>
+      
+    </div>
+  </article>
+
+  <article class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <div class="article-meta">
+      <a href="/2026/05/01/automation-news-202605/" class="article-date">
+        <time class="dt-published" datetime="2026-05-01T14:30:00.000Z">2026-05-01</time>
+      </a>
+      
+      <div class="article-category">
+        <ul class="article-category-link-list"><li class="article-category-link-list-item"><a class="article-category-link-list-link" href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a><span class="article-category-link-list-count">3</span></li></ul>
+      </div>
+      
+    </div>
+    <div class="article-inner">
+      <header class="article-header">
+        <h1 class="p-name article-title" itemprop="name">
+          <a class="u-url" href="/2026/05/01/automation-news-202605/">工业自动化简讯 | 2026年5月 · 柔性智造与跨国合作成行业主旋律</a>
+        </h1>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <blockquote>
+<p><strong>摘要</strong>：本期简讯汇总了近期工业自动化领域的重要动态，包括康茂胜自动化跨界医疗、菲尼克斯”二次创业”、宝维塔柔性智造方案、ABB 2026年Q1财报等行业热点，以及对工业自动化行业趋势的简要分析。</p>
+</blockquote>
+          <p class="article-more-link">
+            <a href="/2026/05/01/automation-news-202605/#more">read_more</a>
+          </p>
+        
+      </div>
+      
+      <footer class="article-footer">
+        <ul class="article-tag-list" itemprop="keywords">
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96" rel="tag">工业自动化</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0" rel="tag">智能制造</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E5%B7%A5%E6%8E%A7%E6%96%B0%E9%97%BB" rel="tag">工控新闻</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E8%8F%B2%E5%B0%BC%E5%85%8B%E6%96%AF" rel="tag">菲尼克斯</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E6%B1%BD%E8%BD%A6%E7%94%B5%E5%AD%90" rel="tag">汽车电子</a>
+            </li>
+          
+        </ul>
+      </footer>
+      
+    </div>
+  </article>
+
+  <article class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <div class="article-meta">
+      <a href="/2026/05/01/first-post/" class="article-date">
+        <time class="dt-published" datetime="2026-05-01T14:20:00.000Z">2026-05-01</time>
+      </a>
+      
+      <div class="article-category">
+        <ul class="article-category-link-list"><li class="article-category-link-list-item"><a class="article-category-link-list-link" href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a><span class="article-category-link-list-count">3</span></li></ul>
+      </div>
+      
+    </div>
+    <div class="article-inner">
+      <header class="article-header">
+        <h1 class="p-name article-title" itemprop="name">
+          <a class="u-url" href="/2026/05/01/first-post/">第一篇博客 — 工业自动化技术分享上线</a>
+        </h1>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <p>欢迎访问 Schneider 技术分享！</p>
+<p>这是一个记录工业自动化、PLC 编程和安全系统技术知识的博客。</p>
+<h2 id="开篇说明"><a href="#开篇说明" class="headerlink" title="开篇说明"></a>开篇说明</h2><p>博客使用 Hexo + GitHub Pages 搭建，采用 landscape 主题。</p>
+<p>后续将陆续分享以下内容：</p>
+<ul>
+<li><strong>PLC 编程技术</strong>：梯形图、结构文本、功能块等编程方法</li>
+<li><strong>安全系统设计</strong>：IEC 61508 &#x2F; IEC 61511 安全完整性等级（SIL）</li>
+<li><strong>工业通讯协议</strong>：Modbus、Profinet、Ethernet&#x2F;IP 等</li>
+<li><strong>施耐德 PLC 应用</strong>：Unity Pro、SoMachine 等平台实战经验</li>
+<li><strong>工程项目案例</strong>：天然气站控系统、SCADA 人机界面等</li>
+</ul>
+<h2 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h2><p>长期从事工业自动化系统工程，专注于 PLC 控制、安全仪表系统（ SIS ）和 SCADA 人机界面开发。</p>
+<hr>
+<p><em>博客建于 2026-05-01</em></p>
+
+        
+      </div>
+      
+      <footer class="article-footer">
+        <ul class="article-tag-list" itemprop="keywords">
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96" rel="tag">工业自动化</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/PLC" rel="tag">PLC</a>
+            </li>
+          
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="/tags/Hexo" rel="tag">Hexo</a>
+            </li>
+          
+        </ul>
+      </footer>
+      
+    </div>
+  </article>
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/archives/2026/05/page/11/">&laquo; prev</a><a class="page-number" href="/archives/2026/05/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2026/05/page/10/">10</a><a class="page-number" href="/archives/2026/05/page/11/">11</a><span class="page-number current">12</span>
+  </nav>
+

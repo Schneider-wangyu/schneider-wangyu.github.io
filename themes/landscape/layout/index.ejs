@@ -1,0 +1,50 @@
+<% if (page.posts && page.posts.length){ %>
+<% page.posts.each(function(post){ %>
+  <article class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <div class="article-meta">
+      <a href="<%- url_for(post.path) %>" class="article-date">
+        <time class="dt-published" datetime="<%= post.date.toISOString() %>"><%= date(post.date, 'YYYY-MM-DD') %></time>
+      </a>
+      <% if (post.categories && post.categories.length){ %>
+      <div class="article-category">
+        <%- list_categories(post.categories, { class: 'article-category-link' }) %>
+      </div>
+      <% } %>
+    </div>
+    <div class="article-inner">
+      <header class="article-header">
+        <h1 class="p-name article-title" itemprop="name">
+          <a class="u-url" href="<%- url_for(post.path) %>"><%= post.title %></a>
+        </h1>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        <% if (post.excerpt){ %>
+          <%- post.excerpt %>
+          <p class="article-more-link">
+            <a href="<%- url_for(post.path) %>#more"><%= __('read_more') %></a>
+          </p>
+        <% } else { %>
+          <%- post.content %>
+        <% } %>
+      </div>
+      <% if (post.tags && post.tags.length){ %>
+      <footer class="article-footer">
+        <ul class="article-tag-list" itemprop="keywords">
+          <% post.tags.each(function(tag){ %>
+            <li class="article-tag-list-item">
+              <a class="article-tag-list-link" href="<%- url_for('tags/' + tag.name) %>" rel="tag"><%= tag.name %></a>
+            </li>
+          <% }) %>
+        </ul>
+      </footer>
+      <% } %>
+    </div>
+  </article>
+<% }) %>
+<% if (page.total > 1){ %>
+  <nav id="page-nav">
+    <% var prev_text = "&laquo; " + __('prev'); var next_text = __('next') + " &raquo;" %>
+    <%- paginator({ prev_text: prev_text, next_text: next_text }) %>
+  </nav>
+<% } %>
+<% } %>
