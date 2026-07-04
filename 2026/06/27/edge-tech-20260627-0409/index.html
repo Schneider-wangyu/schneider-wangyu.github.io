@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OPC UA over TSN：工业边缘计算的通信革命与技术实践 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="OPC UA over TSN：工业边缘计算的通信革命与技术实践 引言：工业通信的范式转变在工业4.0的浪潮下，IT与OT的深度融合已成为智能制造的核心命题。传统工业现场普遍存在的”数据孤岛”现象，导致约70%的工业企业面临生产效率损失。OPC UA over TSN技术的出现，通过重构工业通信架构，实现了从设备层到云端的全栈数据贯通，将工厂网络的响应延迟从毫秒级压缩至微秒级。 本文将深入探讨OP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OPC UA over TSN：工业边缘计算的通信革命与技术实践">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/06/27/edge-tech-20260627-0409/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="OPC UA over TSN：工业边缘计算的通信革命与技术实践 引言：工业通信的范式转变在工业4.0的浪潮下，IT与OT的深度融合已成为智能制造的核心命题。传统工业现场普遍存在的”数据孤岛”现象，导致约70%的工业企业面临生产效率损失。OPC UA over TSN技术的出现，通过重构工业通信架构，实现了从设备层到云端的全栈数据贯通，将工厂网络的响应延迟从毫秒级压缩至微秒级。 本文将深入探讨OP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606270409.jpg">
+<meta property="article:published_time" content="2026-06-26T20:09:00.000Z">
+<meta property="article:modified_time" content="2026-06-26T20:10:27.582Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘计算">
+<meta property="article:tag" content="OPC UA">
+<meta property="article:tag" content="工业通信">
+<meta property="article:tag" content="TSN">
+<meta property="article:tag" content="IT&#x2F;OT融合">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606270409.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260627-0409" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/06/27/edge-tech-20260627-0409/" class="article-date">
+  <time class="dt-published" datetime="2026-06-26T20:09:00.000Z" itemprop="datePublished">2026-06-27 04:09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OPC UA over TSN：工业边缘计算的通信革命与技术实践
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="OPC-UA-over-TSN：工业边缘计算的通信革命与技术实践"><a href="#OPC-UA-over-TSN：工业边缘计算的通信革命与技术实践" class="headerlink" title="OPC UA over TSN：工业边缘计算的通信革命与技术实践"></a>OPC UA over TSN：工业边缘计算的通信革命与技术实践</h1><p><img src="/images/edge-tech-202606270409.jpg" alt="OPC UA over TSN工业通信架构"></p>
+<h2 id="引言：工业通信的范式转变"><a href="#引言：工业通信的范式转变" class="headerlink" title="引言：工业通信的范式转变"></a>引言：工业通信的范式转变</h2><p>在工业4.0的浪潮下，IT与OT的深度融合已成为智能制造的核心命题。传统工业现场普遍存在的”数据孤岛”现象，导致约70%的工业企业面临生产效率损失。OPC UA over TSN技术的出现，通过重构工业通信架构，实现了从设备层到云端的全栈数据贯通，将工厂网络的响应延迟从毫秒级压缩至微秒级。</p>
+<p>本文将深入探讨OPC UA over TSN的技术架构、实施路径以及在边缘计算中的实际应用。</p>
+<h2 id="一、OPC-UA：语义化数据交互的突破"><a href="#一、OPC-UA：语义化数据交互的突破" class="headerlink" title="一、OPC UA：语义化数据交互的突破"></a>一、OPC UA：语义化数据交互的突破</h2><h3 id="1-1-传统工业通信的痛点"><a href="#1-1-传统工业通信的痛点" class="headerlink" title="1.1 传统工业通信的痛点"></a>1.1 传统工业通信的痛点</h3><p>传统工业总线协议（如Modbus、Profibus、CANopen等）存在三大核心问题：</p>
+<ul>
+<li><strong>跨平台能力弱</strong>：不同厂商设备间协议不兼容</li>
+<li><strong>安全性不足</strong>：缺乏内置的加密和认证机制</li>
+<li><strong>配置复杂</strong>：每个协议都需要专用的配置工具</li>
+</ul>
+<h3 id="1-2-OPC-UA的三层创新"><a href="#1-2-OPC-UA的三层创新" class="headerlink" title="1.2 OPC UA的三层创新"></a>1.2 OPC UA的三层创新</h3><p>OPC UA（Open Platform Communications Unified Architecture）通过以下三层创新实现智能通信：</p>
+<h4 id="（1）语义建模"><a href="#（1）语义建模" class="headerlink" title="（1）语义建模"></a>（1）语义建模</h4><p>OPC UA为每个数据点附加设备类型、量纲等元数据，使得数据具有自描述能力。例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Variable</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">DisplayName</span>&gt;</span>Motor1_Speed<span class="tag">&lt;/<span class="name">DisplayName</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Description</span>&gt;</span>主传动电机转速<span class="tag">&lt;/<span class="name">Description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">DataType</span>&gt;</span>Double<span class="tag">&lt;/<span class="name">DataType</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">EngineeringUnits</span>&gt;</span>rpm<span class="tag">&lt;/<span class="name">EngineeringUnits</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">AccessLevel</span>&gt;</span>Read<span class="tag">&lt;/<span class="name">AccessLevel</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Variable</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="（2）服务框架"><a href="#（2）服务框架" class="headerlink" title="（2）服务框架"></a>（2）服务框架</h4><p>支持方法调用、事件订阅等高级交互模式。通过OPC UA的方法（Method）节点，可以直接在设备上执行远程函数调用。</p>
+<h4 id="（3）安全体系"><a href="#（3）安全体系" class="headerlink" title="（3）安全体系"></a>（3）安全体系</h4><p>内置X.509证书与AES-256加密机制，提供：</p>
+<ul>
+<li>身份认证（Authentication）</li>
+<li>授权控制（Authorization）</li>
+<li>数据加密（Encryption）</li>
+<li>数据签名（Signing）</li>
+</ul>
+<h2 id="二、TSN：确定性网络的基石"><a href="#二、TSN：确定性网络的基石" class="headerlink" title="二、TSN：确定性网络的基石"></a>二、TSN：确定性网络的基石</h2><p>时间敏感网络（Time-Sensitive Networking, TSN）通过三大核心机制重构工业以太网：</p>
+<h3 id="2-1-IEEE-802-1AS时间同步"><a href="#2-1-IEEE-802-1AS时间同步" class="headerlink" title="2.1 IEEE 802.1AS时间同步"></a>2.1 IEEE 802.1AS时间同步</h3><p>实现纳秒级的时间同步精度，确保全网设备的时钟偏差控制在±200ns以内。</p>
+<h3 id="2-2-IEEE-802-1Qbv流量调度"><a href="#2-2-IEEE-802-1Qbv流量调度" class="headerlink" title="2.2 IEEE 802.1Qbv流量调度"></a>2.2 IEEE 802.1Qbv流量调度</h3><p>通过时间感知整形器（Time-Aware Shaper, TAS）实现流量的确定性传输。关键控制流量被分配专用的时隙，确保实时性。</p>
+<h3 id="2-3-IEEE-802-1Qbu帧抢占"><a href="#2-3-IEEE-802-1Qbu帧抢占" class="headerlink" title="2.3 IEEE 802.1Qbu帧抢占"></a>2.3 IEEE 802.1Qbu帧抢占</h3><p>允许高优先级帧打断低优先级帧的传输，将关键控制命令的延迟降至最低。</p>
+<p><strong>实测数据</strong>：在汽车焊装线上，TSN技术可将500台机器人的协同误差从±5ms降至±0.8ms。</p>
+<h2 id="三、OPC-UA-over-TSN的技术优势"><a href="#三、OPC-UA-over-TSN的技术优势" class="headerlink" title="三、OPC UA over TSN的技术优势"></a>三、OPC UA over TSN的技术优势</h2><h3 id="3-1-统一通信架构"><a href="#3-1-统一通信架构" class="headerlink" title="3.1 统一通信架构"></a>3.1 统一通信架构</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>传统方案</th>
+<th>OPC UA over TSN</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实时性</td>
+<td>毫秒级</td>
+<td>微秒级</td>
+</tr>
+<tr>
+<td>互操作性</td>
+<td>差</td>
+<td>优秀</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>弱</td>
+<td>强</td>
+</tr>
+<tr>
+<td>带宽利用率</td>
+<td>低</td>
+<td>高</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-边缘计算协同"><a href="#3-2-边缘计算协同" class="headerlink" title="3.2 边缘计算协同"></a>3.2 边缘计算协同</h3><p>在边缘计算场景中，OPC UA over TSN实现了：</p>
+<ol>
+<li><strong>协议统一</strong>：将Modbus、Profinet、EtherNet&#x2F;IP等协议统一为OPC UA</li>
+<li><strong>实时数据传输</strong>：通过TSN保证控制数据的确定性延迟</li>
+<li><strong>IT&#x2F;OT融合</strong>：统一的信息模型使得IT系统可以直接理解OT数据</li>
+</ol>
+<h2 id="四、实施落地的四步法则"><a href="#四、实施落地的四步法则" class="headerlink" title="四、实施落地的四步法则"></a>四、实施落地的四步法则</h2><h3 id="4-1-网络重构"><a href="#4-1-网络重构" class="headerlink" title="4.1 网络重构"></a>4.1 网络重构</h3><p>部署支持TSN的交换机组网，配置802.1Qbv流量整形规则：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置TSN交换机示例（基于Linux）</span></span><br><span class="line">tc qdisc add dev eth0 parent root handle 1: mqprio</span><br><span class="line">tc qdisc add dev eth0 parent 1:1 handle 10: taprio \</span><br><span class="line">  num_tc 4 \</span><br><span class="line">  map 0 1 2 3 \</span><br><span class="line">  queues 1@0 1@1 1@2 1@3 \</span><br><span class="line">  base-time 0 \</span><br><span class="line">  sched-entry S 01 300000 \</span><br><span class="line">  sched-entry S 02 100000 \</span><br><span class="line">  sched-entry S 04 100000 \</span><br><span class="line">  sched-entry S 08 500000 \</span><br><span class="line">  flags 0x2</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-接口升级"><a href="#4-2-接口升级" class="headerlink" title="4.2 接口升级"></a>4.2 接口升级</h3><p>选用支持TSN的工业主板，推荐配置：</p>
+<ul>
+<li><strong>网络控制器</strong>：Intel I210-T1或I225-T1</li>
+<li><strong>处理器</strong>：Intel Core i5或Xeon系列</li>
+<li><strong>内存</strong>：至少4GB DDR4</li>
+</ul>
+<h3 id="4-3-数据建模"><a href="#4-3-数据建模" class="headerlink" title="4.3 数据建模"></a>4.3 数据建模</h3><p>使用UA Modeler工具构建设备信息模型：</p>
+<ol>
+<li>定义设备对象（Object）</li>
+<li>创建变量节点（Variable）</li>
+<li>配置方法节点（Method）</li>
+<li>建立引用关系（Reference）</li>
+</ol>
+<h3 id="4-4-安全加固"><a href="#4-4-安全加固" class="headerlink" title="4.4 安全加固"></a>4.4 安全加固</h3><p>配置OPC UA的安全策略：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;SecurityPolicy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;SecurityMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;SignAndEncrypt&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;UserTokenType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Certificate&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;TransportProtocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;opc.tcp&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="五、实际应用案例"><a href="#五、实际应用案例" class="headerlink" title="五、实际应用案例"></a>五、实际应用案例</h2><h3 id="5-1-光伏组件厂改造项目"><a href="#5-1-光伏组件厂改造项目" class="headerlink" title="5.1 光伏组件厂改造项目"></a>5.1 光伏组件厂改造项目</h3><p><strong>改造前</strong>：</p>
+<ul>
+<li>设备数据采集周期：2秒</li>
+<li>异常响应时间：&gt;5秒</li>
+<li>协议转换网关延迟：50-100ms</li>
+</ul>
+<p><strong>改造后</strong>（采用OPC UA over TSN）：</p>
+<ul>
+<li>设备数据采集周期：50ms</li>
+<li>异常响应时间：&lt;100ms</li>
+<li>协议转换延迟：&lt;1ms</li>
+</ul>
+<p><strong>效果</strong>：异常响应速度提升40倍，年节省成本约120万元。</p>
+<h3 id="5-2-CODESYS边缘网关应用"><a href="#5-2-CODESYS边缘网关应用" class="headerlink" title="5.2 CODESYS边缘网关应用"></a>5.2 CODESYS边缘网关应用</h3><p>在某汽车生产线项目中，采用CODESYS运行时搭建边缘网关：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[现场设备] --Modbus RTU--&gt; [CODESYS网关] --OPC UA--&gt; [SCADA系统]</span><br><span class="line">                                  |</span><br><span class="line">                          [本地控制逻辑]</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键配置</strong>：</p>
+<ul>
+<li>在CODESYS中启用OPC UA Server功能</li>
+<li>配置100个数据点或变量</li>
+<li>设置Pub&#x2F;Sub模式实现实时发布</li>
+</ul>
+<h2 id="六、挑战与应对方案"><a href="#六、挑战与应对方案" class="headerlink" title="六、挑战与应对方案"></a>六、挑战与应对方案</h2><h3 id="6-1-现存瓶颈"><a href="#6-1-现存瓶颈" class="headerlink" title="6.1 现存瓶颈"></a>6.1 现存瓶颈</h3><ol>
+<li><strong>时钟同步精度</strong>：跨厂商设备间时间偏差需控制在±200ns内</li>
+<li><strong>旧设备改造</strong>：RS485设备接入需增加PHY转换模块</li>
+<li><strong>运维复杂度</strong>：TSN网络需要专用配置工具</li>
+</ol>
+<h3 id="6-2-应对方案"><a href="#6-2-应对方案" class="headerlink" title="6.2 应对方案"></a>6.2 应对方案</h3><ul>
+<li><strong>混合组网</strong>：关键工段采用TSN，非实时区域保留传统以太网</li>
+<li><strong>边缘预处理</strong>：在工业电脑端部署协议转换中间件</li>
+<li><strong>可视化监控</strong>：通过TSN Analyzer工具实时诊断网络状态</li>
+</ul>
+<h2 id="七、未来展望"><a href="#七、未来展望" class="headerlink" title="七、未来展望"></a>七、未来展望</h2><p>随着IEC 60802（TSN工业Profile）的标准化，OPC UA over TSN将在以下领域获得更广泛应用：</p>
+<ol>
+<li><strong>数字孪生</strong>：实时同步物理设备与数字模型</li>
+<li><strong>边缘AI</strong>：低延迟传输支持实时推理</li>
+<li><strong>开放自动化</strong>：基于IEC 61499的分布式控制</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>OPC UA over TSN技术为工业边缘计算提供了统一、安全、确定的通信基础。虽然在实施过程中面临一些挑战，但通过合理的架构设计和分步实施，制造企业可以逐步实现IT&#x2F;OT的深度融合，为智能制造打下坚实基础。</p>
+<hr>
+<p><strong>参考资料</strong>：</p>
+<ol>
+<li>OPC Foundation. (2023). OPC UA Specification</li>
+<li>IEEE 802.1 TSN Task Group. (2024). TSN Standards</li>
+<li>施耐德电气. (2025). EcoStruxure开放自动化平台技术白皮书</li>
+</ol>
+<p><strong>作者简介</strong>：工业自动化技术博主，专注于边缘控制、开放自动化和工业通信技术研究与实践。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/06/27/edge-tech-20260627-0409/" data-id="cmr67md9o0221kcun61vpc9hx" data-title="OPC UA over TSN：工业边缘计算的通信革命与技术实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IT-OT%E8%9E%8D%E5%90%88/" rel="tag">IT&#x2F;OT融合</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OPC-UA/" rel="tag">OPC UA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TSN/" rel="tag">TSN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E9%80%9A%E4%BF%A1/" rel="tag">工业通信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/06/27/schneider-news-20260627-0415/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气2026工业自动化新突破：AI智能体引领开放自动化新时代
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/06/27/schneider-news-20260627-0314/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气工博会重磅发布：工业蜂窝网赋能开放自动化，引领智能制造新纪元</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-edge-control-northwest-industrial-automation/">边缘控制技术赋能西北工业自动化升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1744/">施耐德电气2026：AI驱动的工业自动化，从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1708/">边缘计算+云协同：Modicon M580 ePAC 如何重塑智能制造控制架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-deep-dive/">西北工业自动化项目密集落地：边缘控制技术在能源与化工场景中的实战价值</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-automation/">西北地区工业自动化新趋势：边缘控制技术的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1608/">IEC 61499：边缘控制时代的分布式自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1609/">施耐德电气2026年中盘点：工业AI从概念到规模落地，双引擎驱动智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-shanxi-datacenter-green-computing/">西北山西数据中心市场动态：绿电算电协同成核心驱动力</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-20260701-0221/">边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0210/">施耐德电气亮相2026汉诺威工业展：工业AI从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/%E8%A5%BF%E5%8C%97%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%BA%A6%E5%BA%94%E7%94%A82026/">西北工业互联网新趋势：边缘控制技术在自动化项目中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010121/">OPC UA over TSN：施耐德Modicon Edge I/O NTS如何重塑工业通信生态</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0113/">施耐德电气2026汉诺威工业展重磅亮相：双引擎驱动工业智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010016/">IEC 61499+OPC UA+TSN：新一代边缘控制系统的技术融合与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0017/">施耐德电气2026年中盘点：工业AI规模化落地与本土化创新双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/2026-07-01-northwest-automation-bid-analysis/">2026年上半年西北地区工业自动化中标项目全景：从PLC控制柜到边缘控制的产业跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-control-northwest-automation-2026/">边缘控制技术在西北工业自动化中的深度应用——从近期中标项目看行业发展趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/edge-tech-20260630-2312/">从功能块网络到数字孪生：IEC 61499 重塑边缘控制的下一代架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/schneider-news-20260630-2312/">施耐德电气工博会重磅发布：开放自动化与工业蜂窝网融合创新引领未来工业</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/2026-06-30-edge-control-northwest-q2-2026/">2026年二季度西北地区边缘控制中标项目深度分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

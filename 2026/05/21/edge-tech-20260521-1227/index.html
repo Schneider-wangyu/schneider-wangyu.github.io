@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Structured Text实战进阶：从函数封装到状态机的5大编程范式 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="为什么工控工程师需要精通ST语言？在IEC 61131-3定义的五种编程语言中，Structured Text（结构化文本）因其类似Pascal&#x2F;C的语法风格，成为实现复杂算法的首选。相比梯形图的直观但有限的逻辑表达，ST语言能够轻松处理：  复杂数学运算（PID参数整定、滤波算法） 数据结构操作（配方管理、批次追踪） 状态机实现（设备控制序列） 字符串处理（报警信息生成、通信协议解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Structured Text实战进阶：从函数封装到状态机的5大编程范式">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/21/edge-tech-20260521-1227/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="为什么工控工程师需要精通ST语言？在IEC 61131-3定义的五种编程语言中，Structured Text（结构化文本）因其类似Pascal&#x2F;C的语法风格，成为实现复杂算法的首选。相比梯形图的直观但有限的逻辑表达，ST语言能够轻松处理：  复杂数学运算（PID参数整定、滤波算法） 数据结构操作（配方管理、批次追踪） 状态机实现（设备控制序列） 字符串处理（报警信息生成、通信协议解析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605211227.jpg">
+<meta property="article:published_time" content="2026-05-21T04:27:00.000Z">
+<meta property="article:modified_time" content="2026-05-21T04:28:37.486Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="施耐德">
+<meta property="article:tag" content="IEC 61131-3">
+<meta property="article:tag" content="Structured Text">
+<meta property="article:tag" content="PLC编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605211227.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260521-1227" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/21/edge-tech-20260521-1227/" class="article-date">
+  <time class="dt-published" datetime="2026-05-21T04:27:00.000Z" itemprop="datePublished">2026-05-21 12:27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Structured Text实战进阶：从函数封装到状态机的5大编程范式
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202605211227.jpg" alt="结构化文本编程"></p>
+<h2 id="为什么工控工程师需要精通ST语言？"><a href="#为什么工控工程师需要精通ST语言？" class="headerlink" title="为什么工控工程师需要精通ST语言？"></a>为什么工控工程师需要精通ST语言？</h2><p>在IEC 61131-3定义的五种编程语言中，Structured Text（结构化文本）因其类似Pascal&#x2F;C的语法风格，成为实现复杂算法的首选。相比梯形图的直观但有限的逻辑表达，ST语言能够轻松处理：</p>
+<ul>
+<li>复杂数学运算（PID参数整定、滤波算法）</li>
+<li>数据结构操作（配方管理、批次追踪）</li>
+<li>状态机实现（设备控制序列）</li>
+<li>字符串处理（报警信息生成、通信协议解析）</li>
+</ul>
+<p>施耐德电气的Modicon系列PLC全面支持ST语言，结合EcoStruxure Control Expert和Machine Expert软件，可以实现高效的程序开发。</p>
+<h2 id="范式一：函数封装与复用"><a href="#范式一：函数封装与复用" class="headerlink" title="范式一：函数封装与复用"></a>范式一：函数封装与复用</h2><h3 id="标准函数定义"><a href="#标准函数定义" class="headerlink" title="标准函数定义"></a>标准函数定义</h3><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* 计算移动平均值 *)</span></span><br><span class="line"><span class="function"><span class="keyword">FUNCTION</span> <span class="title">MovingAverage</span> :</span> REAL</span><br><span class="line">VAR_INPUT</span><br><span class="line">    NewValue : REAL;</span><br><span class="line">    WindowSize : INT := <span class="number">5</span>;</span><br><span class="line">END_VAR</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    DataBuffer : <span class="keyword">ARRAY</span>[<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">OF</span> REAL;</span><br><span class="line">    <span class="keyword">Index</span> : INT := <span class="number">1</span>;</span><br><span class="line">    Count : INT := <span class="number">0</span>;</span><br><span class="line">    Sum : REAL := <span class="number">0.0</span>;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 滑动窗口算法 *)</span></span><br><span class="line">Sum := Sum - DataBuffer[<span class="keyword">Index</span>];</span><br><span class="line">DataBuffer[<span class="keyword">Index</span>] := NewValue;</span><br><span class="line">Sum := Sum + NewValue;</span><br><span class="line"><span class="keyword">Index</span> := <span class="keyword">Index</span> + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">Index</span> &gt; WindowSize <span class="keyword">THEN</span></span><br><span class="line">    <span class="keyword">Index</span> := <span class="number">1</span>;</span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line"><span class="keyword">IF</span> Count &lt; WindowSize <span class="keyword">THEN</span></span><br><span class="line">    Count := Count + <span class="number">1</span>;</span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line">MovingAverage := Sum / Count;</span><br><span class="line">END_FUNCTION</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数块（FB）的优势"><a href="#函数块（FB）的优势" class="headerlink" title="函数块（FB）的优势"></a>函数块（FB）的优势</h3><p>函数块具有记忆功能，适合封装带状态的功能：</p>
+<figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK FB_PID_Controller</span><br><span class="line">VAR_INPUT</span><br><span class="line">    Setpoint : REAL;</span><br><span class="line">    ProcessValue : REAL;</span><br><span class="line">    Kp, Ki, Kd : REAL;</span><br><span class="line">    SampleTime : TIME := T<span class="string">#100</span>MS;</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    Output : REAL;</span><br><span class="line">    Error : REAL;</span><br><span class="line">END_VAR</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    Integral : REAL := <span class="number">0.0</span>;</span><br><span class="line">    LastError : REAL := <span class="number">0.0</span>;</span><br><span class="line">    LastTime : TIME;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* PID算法实现 *)</span></span><br><span class="line">Error := Setpoint - ProcessValue;</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 积分项 *)</span></span><br><span class="line">Integral := Integral + Error * TIME_TO_REAL(SampleTime);</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 微分项 *)</span></span><br><span class="line">Derivative := (Error - LastError) / TIME_TO_REAL(SampleTime);</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 输出计算 *)</span></span><br><span class="line">Output := Kp * Error + Ki * Integral + Kd * Derivative;</span><br><span class="line"></span><br><span class="line">LastError := Error;</span><br><span class="line">END_FUNCTION_BLOCK</span><br></pre></td></tr></table></figure>
+
+<h2 id="范式二：状态机设计模式"><a href="#范式二：状态机设计模式" class="headerlink" title="范式二：状态机设计模式"></a>范式二：状态机设计模式</h2><h3 id="CASE语句实现状态机"><a href="#CASE语句实现状态机" class="headerlink" title="CASE语句实现状态机"></a>CASE语句实现状态机</h3><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TYPE</span> e_SystemState :</span><br><span class="line">(</span><br><span class="line">    STATE_INIT := <span class="number">0</span>,</span><br><span class="line">    STATE_IDLE := <span class="number">10</span>,</span><br><span class="line">    STATE_STARTING := <span class="number">20</span>,</span><br><span class="line">    STATE_RUNNING := <span class="number">30</span>,</span><br><span class="line">    STATE_STOPPING := <span class="number">40</span>,</span><br><span class="line">    STATE_ERROR := <span class="number">99</span></span><br><span class="line">);</span><br><span class="line">END_TYPE</span><br><span class="line"></span><br><span class="line">FUNCTION_BLOCK FB_SequenceControl</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    CurrentState : e_SystemState := STATE_INIT;</span><br><span class="line">    NextState : e_SystemState;</span><br><span class="line">    StepTimer : TON;</span><br><span class="line">    RetryCount : INT := <span class="number">0</span>;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 状态机主逻辑 *)</span></span><br><span class="line"><span class="keyword">CASE</span> CurrentState <span class="keyword">OF</span></span><br><span class="line">    STATE_INIT:</span><br><span class="line">        <span class="comment">(* 初始化设备 *)</span></span><br><span class="line">        <span class="keyword">IF</span> InitComplete <span class="keyword">THEN</span></span><br><span class="line">            NextState := STATE_IDLE;</span><br><span class="line">        END_IF;</span><br><span class="line">        </span><br><span class="line">    STATE_IDLE:</span><br><span class="line">        <span class="comment">(* 等待启动命令 *)</span></span><br><span class="line">        <span class="keyword">IF</span> StartCommand <span class="keyword">AND</span> SafetyOK <span class="keyword">THEN</span></span><br><span class="line">            NextState := STATE_STARTING;</span><br><span class="line">            RetryCount := <span class="number">0</span>;</span><br><span class="line">        END_IF;</span><br><span class="line">        </span><br><span class="line">    STATE_STARTING:</span><br><span class="line">        <span class="comment">(* 启动序列 *)</span></span><br><span class="line">        StepTimer(<span class="keyword">IN</span> := TRUE, PT := T<span class="string">#5</span>S);</span><br><span class="line">        <span class="keyword">IF</span> StepTimer.Q <span class="keyword">THEN</span></span><br><span class="line">            <span class="keyword">IF</span> MotorRunning <span class="keyword">THEN</span></span><br><span class="line">                NextState := STATE_RUNNING;</span><br><span class="line">            <span class="keyword">ELSE</span></span><br><span class="line">                RetryCount := RetryCount + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">IF</span> RetryCount &gt; <span class="number">3</span> <span class="keyword">THEN</span></span><br><span class="line">                    NextState := STATE_ERROR;</span><br><span class="line">                END_IF;</span><br><span class="line">            END_IF;</span><br><span class="line">            StepTimer(<span class="keyword">IN</span> := FALSE);</span><br><span class="line">        END_IF;</span><br><span class="line">        </span><br><span class="line">    STATE_RUNNING:</span><br><span class="line">        <span class="comment">(* 正常运行监控 *)</span></span><br><span class="line">        <span class="keyword">IF</span> StopCommand <span class="keyword">OR</span> EmergencyStop <span class="keyword">THEN</span></span><br><span class="line">            NextState := STATE_STOPPING;</span><br><span class="line">        END_IF;</span><br><span class="line">        </span><br><span class="line">    STATE_STOPPING:</span><br><span class="line">        <span class="comment">(* 停止序列 *)</span></span><br><span class="line">        StepTimer(<span class="keyword">IN</span> := TRUE, PT := T<span class="string">#3</span>S);</span><br><span class="line">        <span class="keyword">IF</span> StepTimer.Q <span class="keyword">THEN</span></span><br><span class="line">            NextState := STATE_IDLE;</span><br><span class="line">            StepTimer(<span class="keyword">IN</span> := FALSE);</span><br><span class="line">        END_IF;</span><br><span class="line">        </span><br><span class="line">    STATE_ERROR:</span><br><span class="line">        <span class="comment">(* 错误处理 *)</span></span><br><span class="line">        <span class="keyword">IF</span> AcknowledgeError <span class="keyword">THEN</span></span><br><span class="line">            NextState := STATE_INIT;</span><br><span class="line">        END_IF;</span><br><span class="line">END_CASE;</span><br><span class="line"></span><br><span class="line">CurrentState := NextState;</span><br><span class="line">END_FUNCTION_BLOCK</span><br></pre></td></tr></table></figure>
+
+<h2 id="范式三：数组与数据处理"><a href="#范式三：数组与数据处理" class="headerlink" title="范式三：数组与数据处理"></a>范式三：数组与数据处理</h2><h3 id="高效的配方管理"><a href="#高效的配方管理" class="headerlink" title="高效的配方管理"></a>高效的配方管理</h3><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TYPE</span> ST_Recipe :</span><br><span class="line">STRUCT</span><br><span class="line">    RecipeID : INT;</span><br><span class="line">    RecipeName : <span class="keyword">STRING</span>[<span class="number">32</span>];</span><br><span class="line">    Temperature : REAL;</span><br><span class="line">    Pressure : REAL;</span><br><span class="line">    Duration : TIME;</span><br><span class="line">    StepCount : INT;</span><br><span class="line">    Steps : <span class="keyword">ARRAY</span>[<span class="number">1</span>..<span class="number">20</span>] <span class="keyword">OF</span> ST_ProcessStep;</span><br><span class="line">END_STRUCT</span><br><span class="line">END_TYPE</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 配方数组声明 *)</span></span><br><span class="line">VAR_GLOBAL</span><br><span class="line">    g_Recipes : <span class="keyword">ARRAY</span>[<span class="number">1</span>..<span class="number">50</span>] <span class="keyword">OF</span> ST_Recipe;</span><br><span class="line">    g_ActiveRecipeIndex : INT := <span class="number">1</span>;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 配方加载函数 *)</span></span><br><span class="line"><span class="function"><span class="keyword">FUNCTION</span> <span class="title">LoadRecipe</span> :</span> BOOL</span><br><span class="line">VAR_INPUT</span><br><span class="line">    RecipeID : INT;</span><br><span class="line">END_VAR</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    i : INT;</span><br><span class="line">    Found : BOOL := FALSE;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="keyword">FOR</span> i := <span class="number">1</span> <span class="keyword">TO</span> <span class="number">50</span> <span class="keyword">DO</span></span><br><span class="line">    <span class="keyword">IF</span> g_Recipes[i].RecipeID = RecipeID <span class="keyword">THEN</span></span><br><span class="line">        g_ActiveRecipeIndex := i;</span><br><span class="line">        Found := TRUE;</span><br><span class="line">        <span class="keyword">EXIT</span>; <span class="comment">(* 找到后立即退出循环 *)</span></span><br><span class="line">    END_IF;</span><br><span class="line">END_FOR;</span><br><span class="line"></span><br><span class="line">LoadRecipe := Found;</span><br><span class="line">END_FUNCTION</span><br></pre></td></tr></table></figure>
+
+<h2 id="范式四：异常处理与防御编程"><a href="#范式四：异常处理与防御编程" class="headerlink" title="范式四：异常处理与防御编程"></a>范式四：异常处理与防御编程</h2><h3 id="完善的错误处理框架"><a href="#完善的错误处理框架" class="headerlink" title="完善的错误处理框架"></a>完善的错误处理框架</h3><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK FB_SafeOperation</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    LastErrorCode : INT := <span class="number">0</span>;</span><br><span class="line">    ErrorHistory : <span class="keyword">ARRAY</span>[<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">OF</span> INT;</span><br><span class="line">    ErrorIndex : INT := <span class="number">1</span>;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 安全检查函数 *)</span></span><br><span class="line">METHOD CheckLimits : BOOL</span><br><span class="line">VAR_INPUT</span><br><span class="line">    Value : REAL;</span><br><span class="line">    MinLimit : REAL;</span><br><span class="line">    MaxLimit : REAL;</span><br><span class="line">    ErrorNo : INT;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="keyword">IF</span> Value &lt; MinLimit <span class="keyword">OR</span> Value &gt; MaxLimit <span class="keyword">THEN</span></span><br><span class="line">    <span class="comment">(* 记录错误 *)</span></span><br><span class="line">    LastErrorCode := ErrorNo;</span><br><span class="line">    ErrorHistory[ErrorIndex] := ErrorNo;</span><br><span class="line">    ErrorIndex := ErrorIndex + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">IF</span> ErrorIndex &gt; <span class="number">100</span> <span class="keyword">THEN</span></span><br><span class="line">        ErrorIndex := <span class="number">1</span>;</span><br><span class="line">    END_IF;</span><br><span class="line">    CheckLimits := FALSE;</span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">    CheckLimits := TRUE;</span><br><span class="line">END_IF;</span><br><span class="line">END_METHOD</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 使用示例 *)</span></span><br><span class="line"><span class="keyword">IF</span> CheckLimits(Temperature, -<span class="number">20.0</span>, <span class="number">150.0</span>, <span class="number">1001</span>) <span class="keyword">THEN</span></span><br><span class="line">    <span class="comment">(* 温度正常，执行控制逻辑 *)</span></span><br><span class="line">    ProcessControl();</span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">    <span class="comment">(* 温度超限，触发安全响应 *)</span></span><br><span class="line">    EmergencyShutdown();</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="范式五：通信协议解析"><a href="#范式五：通信协议解析" class="headerlink" title="范式五：通信协议解析"></a>范式五：通信协议解析</h2><h3 id="Modbus-RTU响应解析"><a href="#Modbus-RTU响应解析" class="headerlink" title="Modbus RTU响应解析"></a>Modbus RTU响应解析</h3><figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">FUNCTION</span> <span class="title">ParseModbusResponse</span> :</span> BOOL</span><br><span class="line">VAR_INPUT</span><br><span class="line">    ResponseBuffer : POINTER <span class="keyword">TO</span> BYTE;</span><br><span class="line">    ResponseLength : INT;</span><br><span class="line">END_VAR</span><br><span class="line"><span class="keyword">VAR</span></span><br><span class="line">    i : INT;</span><br><span class="line">    CRC : WORD;</span><br><span class="line">    CalculatedCRC : WORD;</span><br><span class="line">    FunctionCode : BYTE;</span><br><span class="line">    ByteCount : BYTE;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 基本长度检查 *)</span></span><br><span class="line"><span class="keyword">IF</span> ResponseLength &lt; <span class="number">5</span> <span class="keyword">THEN</span></span><br><span class="line">    ParseModbusResponse := FALSE;</span><br><span class="line">    RETURN;</span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 读取功能码 *)</span></span><br><span class="line">FunctionCode := ResponseBuffer[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">(* CRC校验 *)</span></span><br><span class="line">CalculatedCRC := CalculateCRC16(ResponseBuffer, ResponseLength - <span class="number">2</span>);</span><br><span class="line">CRC := WORD_TO_BYTE(ResponseBuffer[ResponseLength-<span class="number">1</span>]) * <span class="number">256</span> </span><br><span class="line">     + WORD_TO_BYTE(ResponseBuffer[ResponseLength]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">IF</span> CalculatedCRC &lt;&gt; CRC <span class="keyword">THEN</span></span><br><span class="line">    ParseModbusResponse := FALSE;</span><br><span class="line">    RETURN;</span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 根据功能码解析数据 *)</span></span><br><span class="line"><span class="keyword">CASE</span> FunctionCode <span class="keyword">OF</span></span><br><span class="line">    <span class="number">16</span><span class="string">#03</span>: <span class="comment">(* 读保持寄存器 *)</span></span><br><span class="line">        ByteCount := ResponseBuffer[<span class="number">2</span>];</span><br><span class="line">        <span class="comment">(* 解析寄存器数据 *)</span></span><br><span class="line">        <span class="keyword">FOR</span> i := <span class="number">0</span> <span class="keyword">TO</span> ByteCount/<span class="number">2</span> - <span class="number">1</span> <span class="keyword">DO</span></span><br><span class="line">            RegisterData[i] := BYTE_TO_WORD(ResponseBuffer[<span class="number">3</span> + i*<span class="number">2</span>]) * <span class="number">256</span> </span><br><span class="line">                             + BYTE_TO_WORD(ResponseBuffer[<span class="number">4</span> + i*<span class="number">2</span>]);</span><br><span class="line">        END_FOR;</span><br><span class="line">        </span><br><span class="line">    <span class="number">16</span><span class="string">#06</span>: <span class="comment">(* 写单个寄存器 *)</span></span><br><span class="line">        <span class="comment">(* 确认写入成功 *)</span></span><br><span class="line">        WriteAddress := BYTE_TO_WORD(ResponseBuffer[<span class="number">2</span>]) * <span class="number">256</span> </span><br><span class="line">                      + BYTE_TO_WORD(ResponseBuffer[<span class="number">3</span>]);</span><br><span class="line">        WriteValue := BYTE_TO_WORD(ResponseBuffer[<span class="number">4</span>]) * <span class="number">256</span> </span><br><span class="line">                    + BYTE_TO_WORD(ResponseBuffer[<span class="number">5</span>]);</span><br><span class="line">END_CASE;</span><br><span class="line"></span><br><span class="line">ParseModbusResponse := TRUE;</span><br><span class="line">END_FUNCTION</span><br></pre></td></tr></table></figure>
+
+<h2 id="最佳实践总结"><a href="#最佳实践总结" class="headerlink" title="最佳实践总结"></a>最佳实践总结</h2><table>
+<thead>
+<tr>
+<th>实践</th>
+<th>说明</th>
+<th>收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>函数封装</td>
+<td>将重复逻辑封装为函数&#x2F;函数块</td>
+<td>代码复用率提升60%</td>
+</tr>
+<tr>
+<td>状态机模式</td>
+<td>使用CASE实现状态转换</td>
+<td>逻辑清晰，易维护</td>
+</tr>
+<tr>
+<td>防御编程</td>
+<td>边界检查+错误记录</td>
+<td>系统稳定性提升</td>
+</tr>
+<tr>
+<td>命名规范</td>
+<td>统一前缀（fb_、f_、e_）</td>
+<td>可读性大幅提高</td>
+</tr>
+<tr>
+<td>注释标准</td>
+<td>功能说明+参数描述</td>
+<td>团队协作效率提升</td>
+</tr>
+</tbody></table>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>Structured Text语言在工业自动化领域具有不可替代的优势。掌握这五大编程范式，能够显著提升PLC程序的质量和开发效率。施耐德电气的EcoStruxure平台为ST编程提供了完善的调试工具和在线监控能力，值得工控工程师深入学习。</p>
+<hr>
+<p><strong>相关阅读</strong>：</p>
+<ul>
+<li>IEC 61131-3五种编程语言对比与选型</li>
+<li>FBD功能块图设计技巧</li>
+<li>EAE开放自动化平台编程实战</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/21/edge-tech-20260521-1227/" data-id="cmr67mcxa011skcundcw9240q" data-title="Structured Text实战进阶：从函数封装到状态机的5大编程范式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61131-3/" rel="tag">IEC 61131-3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC%E7%BC%96%E7%A8%8B/" rel="tag">PLC编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Structured-Text/" rel="tag">Structured Text</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/21/2026-05-21-edge-control-tech-northwest-projects/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          西北新能源项目落地推动边缘控制技术升级
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/21/edge-tech-20260521-1208/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">工业现场总线向以太网演进：技术路径与实施</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-edge-control-northwest-industrial-automation/">边缘控制技术赋能西北工业自动化升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1744/">施耐德电气2026：AI驱动的工业自动化，从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1708/">边缘计算+云协同：Modicon M580 ePAC 如何重塑智能制造控制架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-deep-dive/">西北工业自动化项目密集落地：边缘控制技术在能源与化工场景中的实战价值</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-automation/">西北地区工业自动化新趋势：边缘控制技术的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1608/">IEC 61499：边缘控制时代的分布式自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1609/">施耐德电气2026年中盘点：工业AI从概念到规模落地，双引擎驱动智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-shanxi-datacenter-green-computing/">西北山西数据中心市场动态：绿电算电协同成核心驱动力</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-20260701-0221/">边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0210/">施耐德电气亮相2026汉诺威工业展：工业AI从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/%E8%A5%BF%E5%8C%97%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%BA%A6%E5%BA%94%E7%94%A82026/">西北工业互联网新趋势：边缘控制技术在自动化项目中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010121/">OPC UA over TSN：施耐德Modicon Edge I/O NTS如何重塑工业通信生态</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0113/">施耐德电气2026汉诺威工业展重磅亮相：双引擎驱动工业智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010016/">IEC 61499+OPC UA+TSN：新一代边缘控制系统的技术融合与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0017/">施耐德电气2026年中盘点：工业AI规模化落地与本土化创新双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/2026-07-01-northwest-automation-bid-analysis/">2026年上半年西北地区工业自动化中标项目全景：从PLC控制柜到边缘控制的产业跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-control-northwest-automation-2026/">边缘控制技术在西北工业自动化中的深度应用——从近期中标项目看行业发展趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/edge-tech-20260630-2312/">从功能块网络到数字孪生：IEC 61499 重塑边缘控制的下一代架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/schneider-news-20260630-2312/">施耐德电气工博会重磅发布：开放自动化与工业蜂窝网融合创新引领未来工业</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/2026-06-30-edge-control-northwest-q2-2026/">2026年二季度西北地区边缘控制中标项目深度分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

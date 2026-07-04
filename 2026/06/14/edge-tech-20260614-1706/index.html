@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南在工业现场，边缘控制器的调试往往是最考验工程师功力的环节——网络不通、通信超时、变量映射错误，一个小问题可能让整条产线停滞数小时。本文以施耐德Modicon系列边缘控制器为核心，结合EcoStruxure架构，从实操角度梳理从开机配置到生产运行的完整调试流程，覆盖Web界面、OPC UA配置、CLI诊断三大维度，适合现场调试工程师阅读参">
+<meta property="og:type" content="article">
+<meta property="og:title" content="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/06/14/edge-tech-20260614-1706/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南在工业现场，边缘控制器的调试往往是最考验工程师功力的环节——网络不通、通信超时、变量映射错误，一个小问题可能让整条产线停滞数小时。本文以施耐德Modicon系列边缘控制器为核心，结合EcoStruxure架构，从实操角度梳理从开机配置到生产运行的完整调试流程，覆盖Web界面、OPC UA配置、CLI诊断三大维度，适合现场调试工程师阅读参">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606141706.jpg">
+<meta property="article:published_time" content="2026-06-14T09:06:00.000Z">
+<meta property="article:modified_time" content="2026-06-14T09:09:22.887Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业自动化">
+<meta property="article:tag" content="EcoStruxure">
+<meta property="article:tag" content="Modicon">
+<meta property="article:tag" content="IEC 61131-3">
+<meta property="article:tag" content="边缘控制器">
+<meta property="article:tag" content="配置调试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606141706.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260614-1706" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/06/14/edge-tech-20260614-1706/" class="article-date">
+  <time class="dt-published" datetime="2026-06-14T09:06:00.000Z" itemprop="datePublished">2026-06-14 17:06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202606141706.jpg" alt="边缘控制器调试现场"></p>
+<h1 id="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南"><a href="#边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南" class="headerlink" title="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南"></a>边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南</h1><p>在工业现场，边缘控制器的调试往往是最考验工程师功力的环节——网络不通、通信超时、变量映射错误，一个小问题可能让整条产线停滞数小时。本文以<strong>施耐德Modicon系列边缘控制器</strong>为核心，结合<strong>EcoStruxure架构</strong>，从实操角度梳理从开机配置到生产运行的完整调试流程，覆盖Web界面、OPC UA配置、CLI诊断三大维度，适合现场调试工程师阅读参考。</p>
+<h2 id="一、开箱第一步：Web界面的初始化配置"><a href="#一、开箱第一步：Web界面的初始化配置" class="headerlink" title="一、开箱第一步：Web界面的初始化配置"></a>一、开箱第一步：Web界面的初始化配置</h2><p>大多数工业边缘控制器出厂默认IP为<code>192.168.1.0/24</code>，第一次调试须通过Web界面完成网络初始化。建议使用Chrome&#x2F;Edge浏览器直接访问控制器默认IP（施耐德M580默认<code>192.168.1.10</code>），使用出厂默认账号（通常为<code>admin</code>&#x2F;<code>private</code>）登录。</p>
+<p><strong>初始化配置的关键步骤：</strong></p>
+<ol>
+<li><p><strong>修改管理IP</strong>：进入<code>Network → Ethernet Port</code>，将控制器接入工厂实际网段。注意确认子网掩码和网关，特别是多网段工厂环境，建议启用<code>Dual IP</code>（双栈支持）以兼容IPv4&#x2F;IPv6混合网络。</p>
+</li>
+<li><p><strong>时间同步（NTP）</strong>：在<code>Date/Time</code>设置中配置NTP服务器地址，工业现场推荐使用内部NTP服务器（通常为DCS主控节点），时区选择<code>Asia/Shanghai</code>，启用<code>Daylight Saving Time</code>自动切换。</p>
+</li>
+<li><p><strong>安全策略</strong>：首次登录后立即修改默认密码，并在<code>Security → Users</code>中按最小权限原则分配账户角色（运维、工程师、管理员三级别）。</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>调试经验</strong>：若Web界面无法登录，先用<code>ping</code>命令确认物理链路，再用<code>arp -a</code>确认MAC与IP映射是否正确。部分老旧控制器固件要求启用<code>TLS 1.2</code>方可访问Web界面，可尝试更换浏览器或升级固件。</p>
+</blockquote>
+<h2 id="二、IEC-61131-3工程下载与变量映射"><a href="#二、IEC-61131-3工程下载与变量映射" class="headerlink" title="二、IEC 61131-3工程下载与变量映射"></a>二、IEC 61131-3工程下载与变量映射</h2><p>工程下载是控制器投入生产前的核心步骤。以EcoStruxure Control Expert（原Unity Pro）为例，标准流程如下：</p>
+<p><strong>Step 1：工程编译与验证</strong></p>
+<p>在Control Expert中打开项目，执行<code>Build → Rebuild All</code>，确认无编译错误后，将工程下载到目标控制器。首次下载建议使用<code>Full Download</code>而非增量下载，确保内存空间完全重置。</p>
+<p><strong>Step 2：变量映射校验</strong></p>
+<p>下载完成后，进入<code>Online → Monitor</code>模式，逐项核对关键变量的实际值与预期值。特别关注以下类型：</p>
+<ul>
+<li><strong>AI&#x2F;AO通道</strong>：用万用表或信号发生器施加标准信号（4-20mA或0-10V），验证AD转换精度是否在±0.1%以内</li>
+<li><strong>DI&#x2F;DO通道</strong>：对数字量输入施加24VDC，数字量输出用LED指示灯或万用表确认输出状态</li>
+<li><strong>通信变量</strong>：通过<code>Watch Table</code>监视OPC UA或Modbus TCP通信变量，确认数据刷新周期符合要求（边缘控制环通常要求≤10ms）</li>
+</ul>
+<p><strong>Step 3：在线调试技巧</strong></p>
+<ul>
+<li>使用<code>Force</code>功能强制变量值时，务必在注释中注明原因和计划撤销时间，防止遗留强制点导致生产事故</li>
+<li>启用<code>Data Change</code>触发而非轮询，降低CPU负载</li>
+</ul>
+<h2 id="三、OPC-UA边缘通信配置与诊断"><a href="#三、OPC-UA边缘通信配置与诊断" class="headerlink" title="三、OPC UA边缘通信配置与诊断"></a>三、OPC UA边缘通信配置与诊断</h2><p>OPC UA是边缘控制器向上连接云平台的事实标准。Modicon M580的OPC UA服务端配置路径为：<code>Services → OPC UA → Server Configuration</code>。</p>
+<p><strong>核心配置参数：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;ServerEndpoint&quot;</span><span class="punctuation">:</span> <span class="string">&quot;opc.tcp://192.168.1.10:4840&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;SecurityPolicy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic256Sha256&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;AuthenticationMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;UsernamePassword&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;MaxConnections&quot;</span><span class="punctuation">:</span> <span class="number">50</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;PublishInterval_ms&quot;</span><span class="punctuation">:</span> <span class="number">100</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;Nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;Namespace&quot;</span><span class="punctuation">:</span> <span class="string">&quot;EdgeControl&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;Path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Devices/Modicon/Variables&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>通信诊断命令（CLI）：</strong></p>
+<p>在控制器CLI中（通过SSH连接，端口22），可使用以下诊断命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看OPC UA连接状态</span></span><br><span class="line">opcua show connections</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看实时数据点订阅</span></span><br><span class="line">opcua show subscriptions</span><br><span class="line"></span><br><span class="line"><span class="comment"># 诊断Modbus TCP通信</span></span><br><span class="line">mbusdiag -r 192.168.2.10 -p 502 -t 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看以太网端口状态</span></span><br><span class="line">netstat -i</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看系统日志（定位异常重启）</span></span><br><span class="line"><span class="built_in">cat</span> /var/log/syslog | grep -i error | <span class="built_in">tail</span> -50</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>常见问题</strong>：若OPC UA客户端连接失败，优先检查<code>SecurityPolicy</code>是否匹配——部分老旧SCADA系统仅支持<code>None</code>（无加密）策略，需在服务端显式降级配置。</p>
+</blockquote>
+<h2 id="四、边缘网关的Web管理与远程运维"><a href="#四、边缘网关的Web管理与远程运维" class="headerlink" title="四、边缘网关的Web管理与远程运维"></a>四、边缘网关的Web管理与远程运维</h2><p>对于部署在现场的EcoStruxure边缘网关（如EGW系列），Web管理界面是日常运维的主要入口。关键配置项包括：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>推荐值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通信协议</td>
+<td>MQTT + OPC UA 双轨</td>
+<td>MQTT用于云端遥测，OPC UA用于本地SCADA</td>
+</tr>
+<tr>
+<td>数据采集周期</td>
+<td>1s（控制数据）&#x2F; 60s（状态数据）</td>
+<td>分级采集减少带宽占用</td>
+</tr>
+<tr>
+<td>本地存储</td>
+<td>启用环形缓冲区</td>
+<td>断网时缓存至少72小时数据</td>
+</tr>
+<tr>
+<td>防火墙</td>
+<td>仅开放必要端口</td>
+<td>禁用Telnet，保留SSH(22)、HTTPS(443)</td>
+</tr>
+</tbody></table>
+<p><strong>边缘网关远程调试</strong>可通过安全隧道实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建立SSH反向隧道（需在公网服务器有SSH可达地址）</span></span><br><span class="line">ssh -R 443:localhost:443 -N -f user@gateway-schneider.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 之后即可通过公网服务器代理访问边缘网关Web界面</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="五、常见故障排查清单"><a href="#五、常见故障排查清单" class="headerlink" title="五、常见故障排查清单"></a>五、常见故障排查清单</h2><p>以下是现场调试中最常遇到的五类问题及其标准排查路径：</p>
+<table>
+<thead>
+<tr>
+<th>故障现象</th>
+<th>可能原因</th>
+<th>排查步骤</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web界面无法打开</td>
+<td>IP配置错误&#x2F;防火墙阻断</td>
+<td><code>ping</code>确认链路→<code>arp -a</code>确认MAC→检查浏览器TLS版本</td>
+</tr>
+<tr>
+<td>控制器频繁脱机</td>
+<td>通信线缆质量问题&#x2F;IP地址冲突</td>
+<td>更换网线→检查交换机端口灯→<code>arp -a</code>查IP冲突</td>
+</tr>
+<tr>
+<td>OPC UA连接超时</td>
+<td>防火墙阻断4840端口&#x2F;证书过期</td>
+<td>确认端口开放→检查证书有效期→降级SecurityPolicy</td>
+</tr>
+<tr>
+<td>变量值刷新慢</td>
+<td>扫描周期设置过长&#x2F;总线负载高</td>
+<td>调整<code>PublishInterval</code>→优化通信变量数量→检查总线利用率</td>
+</tr>
+<tr>
+<td>工程下载失败</td>
+<td>内存不足&#x2F;固件版本不匹配</td>
+<td>清理旧工程→升级固件→检查Control Expert版本兼容性</td>
+</tr>
+</tbody></table>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>边缘控制器的调试是一场”由外到内、由浅入深”的系统工程：从Web界面的网络配置，到IEC 61131-3工程的下载验证，再到OPC UA通信的诊断排错，每一步都有其内在逻辑。掌握好这三层调试工具，辅以标准化的排查清单，大多数现场问题都能在30分钟内定位解决。</p>
+<p>在实际项目中，建议调试阶段即建立<strong>调试日志</strong>，记录每一步操作和观察结果，不仅有助于问题追溯，也是一份宝贵的经验资产。工业自动化从来不是”一劳永逸”，持续优化才是边缘控制系统的生命力所在。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/06/14/edge-tech-20260614-1706/" data-id="cmr67md4m01pjkcunfm6tdtxu" data-title="边缘控制器配置与调试实战：从Web界面到CLI的完整调试指南" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61131-3/" rel="tag">IEC 61131-3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon/" rel="tag">Modicon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">边缘控制器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95/" rel="tag">配置调试</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/06/14/schneider-news-20260614-1800/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气引领AI数据中心热管理革命：120kW机柜时代的液冷解决方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/06/14/schneider-news-20260614-1700/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气重磅发布Impact 2030计划，厦门基地竣工打造全球最大中压生产基地</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-edge-control-northwest-industrial-automation/">边缘控制技术赋能西北工业自动化升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1744/">施耐德电气2026：AI驱动的工业自动化，从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1708/">边缘计算+云协同：Modicon M580 ePAC 如何重塑智能制造控制架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-deep-dive/">西北工业自动化项目密集落地：边缘控制技术在能源与化工场景中的实战价值</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-automation/">西北地区工业自动化新趋势：边缘控制技术的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1608/">IEC 61499：边缘控制时代的分布式自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1609/">施耐德电气2026年中盘点：工业AI从概念到规模落地，双引擎驱动智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-shanxi-datacenter-green-computing/">西北山西数据中心市场动态：绿电算电协同成核心驱动力</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-20260701-0221/">边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0210/">施耐德电气亮相2026汉诺威工业展：工业AI从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/%E8%A5%BF%E5%8C%97%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%BA%A6%E5%BA%94%E7%94%A82026/">西北工业互联网新趋势：边缘控制技术在自动化项目中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010121/">OPC UA over TSN：施耐德Modicon Edge I/O NTS如何重塑工业通信生态</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0113/">施耐德电气2026汉诺威工业展重磅亮相：双引擎驱动工业智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010016/">IEC 61499+OPC UA+TSN：新一代边缘控制系统的技术融合与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0017/">施耐德电气2026年中盘点：工业AI规模化落地与本土化创新双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/2026-07-01-northwest-automation-bid-analysis/">2026年上半年西北地区工业自动化中标项目全景：从PLC控制柜到边缘控制的产业跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-control-northwest-automation-2026/">边缘控制技术在西北工业自动化中的深度应用——从近期中标项目看行业发展趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/edge-tech-20260630-2312/">从功能块网络到数字孪生：IEC 61499 重塑边缘控制的下一代架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/schneider-news-20260630-2312/">施耐德电气工博会重磅发布：开放自动化与工业蜂窝网融合创新引领未来工业</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/2026-06-30-edge-control-northwest-q2-2026/">2026年二季度西北地区边缘控制中标项目深度分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

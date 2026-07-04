@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>IEC 61499+边缘计算：分布式控制重塑工业自动化新架构 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="引言：从集中到分布，工业控制架构的范式转变传统工业自动化系统采用集中式PLC控制架构，所有逻辑运算依赖单一控制器周期扫描执行。随着工业4.0和智能制造的推进，产线柔性化、设备互联互通、边缘智能等需求日益突出，IEC 61499分布式控制标准与边缘计算架构的融合，正在重新定义工业控制系统的设计范式。 本文将深入探讨IEC 61499标准的事件驱动架构、功能块分布式部署机制，以及其在施耐德EcoStr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IEC 61499+边缘计算：分布式控制重塑工业自动化新架构">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/06/27/edge-tech-20260627-0509/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="引言：从集中到分布，工业控制架构的范式转变传统工业自动化系统采用集中式PLC控制架构，所有逻辑运算依赖单一控制器周期扫描执行。随着工业4.0和智能制造的推进，产线柔性化、设备互联互通、边缘智能等需求日益突出，IEC 61499分布式控制标准与边缘计算架构的融合，正在重新定义工业控制系统的设计范式。 本文将深入探讨IEC 61499标准的事件驱动架构、功能块分布式部署机制，以及其在施耐德EcoStr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606270509.jpg">
+<meta property="article:published_time" content="2026-06-26T21:09:00.000Z">
+<meta property="article:modified_time" content="2026-06-26T21:09:54.965Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘计算">
+<meta property="article:tag" content="分布式控制">
+<meta property="article:tag" content="EcoStruxure">
+<meta property="article:tag" content="IEC 61499">
+<meta property="article:tag" content="OPC UA">
+<meta property="article:tag" content="开放自动化">
+<meta property="article:tag" content="TSN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202606270509.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260627-0509" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/06/27/edge-tech-20260627-0509/" class="article-date">
+  <time class="dt-published" datetime="2026-06-26T21:09:00.000Z" itemprop="datePublished">2026-06-27 05:09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      IEC 61499+边缘计算：分布式控制重塑工业自动化新架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="引言：从集中到分布，工业控制架构的范式转变"><a href="#引言：从集中到分布，工业控制架构的范式转变" class="headerlink" title="引言：从集中到分布，工业控制架构的范式转变"></a>引言：从集中到分布，工业控制架构的范式转变</h2><p>传统工业自动化系统采用集中式PLC控制架构，所有逻辑运算依赖单一控制器周期扫描执行。随着工业4.0和智能制造的推进，产线柔性化、设备互联互通、边缘智能等需求日益突出，<strong>IEC 61499分布式控制标准</strong>与<strong>边缘计算架构</strong>的融合，正在重新定义工业控制系统的设计范式。</p>
+<p>本文将深入探讨IEC 61499标准的事件驱动架构、功能块分布式部署机制，以及其在施耐德EcoStruxure开放自动化平台中的实践应用，为工控工程师提供从理论到落地的完整技术路径。</p>
+<p><img src="/images/edge-tech-202606270509.jpg" alt="IEC 61499分布式控制架构"></p>
+<h2 id="一、IEC-61499核心技术解析"><a href="#一、IEC-61499核心技术解析" class="headerlink" title="一、IEC 61499核心技术解析"></a>一、IEC 61499核心技术解析</h2><h3 id="1-1-事件驱动-vs-周期扫描：执行模型的本质差异"><a href="#1-1-事件驱动-vs-周期扫描：执行模型的本质差异" class="headerlink" title="1.1 事件驱动 vs 周期扫描：执行模型的本质差异"></a>1.1 事件驱动 vs 周期扫描：执行模型的本质差异</h3><p>传统IEC 61131-3 PLC采用<strong>周期扫描机制</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(* 传统PLC周期扫描示例 *)</span><br><span class="line">PROGRAM Main</span><br><span class="line">VAR</span><br><span class="line">    SensorValue: INT;</span><br><span class="line">    MotorSpeed: INT;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">SensorValue := AI_Input;  (* 每周期读取 *)</span><br><span class="line">IF SensorValue &gt; 100 THEN</span><br><span class="line">    MotorSpeed := 500;</span><br><span class="line">END_IF</span><br></pre></td></tr></table></figure>
+
+<p>而IEC 61499采用<strong>事件驱动执行模型</strong>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 61499功能块网络示例（4diac IDE） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">FunctionBlockNetwork</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">EventInputs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Event</span> <span class="attr">Name</span>=<span class="string">&quot;START&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;Event&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">EventInputs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">DataInputs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Input</span> <span class="attr">Name</span>=<span class="string">&quot;SensorValue&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;INT&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">DataInputs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">FunctionBlocks</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FB</span> <span class="attr">Name</span>=<span class="string">&quot;Compare&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;E_CTU&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">EventInputs</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">Event</span> <span class="attr">Name</span>=<span class="string">&quot;REQ&quot;</span> <span class="attr">From</span>=<span class="string">&quot;START&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">EventInputs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">FB</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">FunctionBlocks</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">FunctionBlockNetwork</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>技术优势对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>IEC 61131-3</th>
+<th>IEC 61499</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>执行模型</td>
+<td>周期扫描</td>
+<td>事件驱动</td>
+</tr>
+<tr>
+<td>分布式支持</td>
+<td>需手动编程通信</td>
+<td>原生支持跨设备部署</td>
+</tr>
+<tr>
+<td>功能块复用</td>
+<td>有限</td>
+<td>高（微服务化）</td>
+</tr>
+<tr>
+<td>实时性</td>
+<td>依赖扫描周期</td>
+<td>事件触发，低延迟</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-功能块分布式部署机制"><a href="#1-2-功能块分布式部署机制" class="headerlink" title="1.2 功能块分布式部署机制"></a>1.2 功能块分布式部署机制</h3><p>IEC 61499的核心创新在于<strong>应用层抽象与物理部署解耦</strong>。工程师在图形化开发环境中设计功能块网络（FBN），然后通过部署模型将不同功能块映射到实际设备。</p>
+<p><strong>实际案例：施耐德Modicon M580边缘控制器部署</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">应用功能块网络：</span><br><span class="line">[温度采集FB] --事件+数据--&gt; [PID控制FB] --事件+数据--&gt; [执行器FB]</span><br><span class="line"></span><br><span class="line">物理部署映射：</span><br><span class="line">- 温度采集FB → 边缘网关（本地预处理）</span><br><span class="line">- PID控制FB → Modicon M580控制器（实时控制）</span><br><span class="line">- 执行器FB → 远程IO模块（设备层）</span><br></pre></td></tr></table></figure>
+
+<p>通信机制采用<strong>发布-订阅模式</strong>，通过OPC UA over TSN实现确定性通信，端到端抖动控制在±8μs以内。</p>
+<h2 id="二、边缘计算协同：OT与IT融合的关键桥梁"><a href="#二、边缘计算协同：OT与IT融合的关键桥梁" class="headerlink" title="二、边缘计算协同：OT与IT融合的关键桥梁"></a>二、边缘计算协同：OT与IT融合的关键桥梁</h2><h3 id="2-1-EcoStruxure边缘架构实践"><a href="#2-1-EcoStruxure边缘架构实践" class="headerlink" title="2.1 EcoStruxure边缘架构实践"></a>2.1 EcoStruxure边缘架构实践</h3><p>施耐德EcoStruxure平台采用<strong>三层边缘计算架构</strong>：</p>
+<ol>
+<li><strong>设备层</strong>：智能传感器、变频器、控制器（Modicon系列）</li>
+<li><strong>边缘层</strong>：EcoStruxure边缘网关，运行90%数据本地处理</li>
+<li><strong>云层</strong>：AI模型训练、大数据分析、全局优化</li>
+</ol>
+<p><strong>关键技术指标：</strong></p>
+<ul>
+<li>边缘响应时间：≤50ms</li>
+<li>数据本地处理率：90%</li>
+<li>支持协议：Modbus TCP&#x2F;IP、OPC UA（TLS 1.2）、IEC 61850-9-2LE</li>
+</ul>
+<h3 id="2-2-OPC-UA-over-TSN：确定性通信实现"><a href="#2-2-OPC-UA-over-TSN：确定性通信实现" class="headerlink" title="2.2 OPC UA over TSN：确定性通信实现"></a>2.2 OPC UA over TSN：确定性通信实现</h3><p>时间敏感网络（TSN）与OPC UA的融合，解决了工业现场”实时+非实时”数据统一传输难题。</p>
+<p><strong>配置示例（基于贝加莱B&amp;R控制器）：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">TSN网络配置步骤：</span><br><span class="line">1. 启用IEEE 802.1AS时间同步</span><br><span class="line">   - 配置PTP主时钟（Grandmaster）</span><br><span class="line">   - 节点间时间偏差目标：&lt;1μs</span><br><span class="line"></span><br><span class="line">2. 配置流量调度（CBS - Credit-Based Shaper）</span><br><span class="line">   - 实时流量预留带宽：30%</span><br><span class="line">   - 非实时流量（Best Effort）：70%</span><br><span class="line"></span><br><span class="line">3. OPC UA PubSub over TSN</span><br><span class="line">   - 发布周期：1ms</span><br><span class="line">   - QoS等级：UDP with TSN prioritization</span><br></pre></td></tr></table></figure>
+
+<p>实际测试数据显示，在50个节点的大规模部署中，TSN交换机可实现<strong>端到端延迟&lt;100μs</strong>，满足高端装备同步控制需求。</p>
+<h2 id="三、数字孪生-边缘计算：预测性维护新范式"><a href="#三、数字孪生-边缘计算：预测性维护新范式" class="headerlink" title="三、数字孪生+边缘计算：预测性维护新范式"></a>三、数字孪生+边缘计算：预测性维护新范式</h2><h3 id="3-1-边缘侧数字孪生建模"><a href="#3-1-边缘侧数字孪生建模" class="headerlink" title="3.1 边缘侧数字孪生建模"></a>3.1 边缘侧数字孪生建模</h3><p>传统数字孪生依赖云端算力，响应延迟高。边缘计算赋能的<strong>本地数字孪生</strong>可实现：</p>
+<ul>
+<li>实时数据采集（1ms级）</li>
+<li>本地模型推理（&lt;10ms）</li>
+<li>预测性维护预警（提前7-30天）</li>
+</ul>
+<p><strong>施耐德MVnex智能开关柜案例：</strong></p>
+<p>部署12-16个传感器（UHF局放、光纤测温、MEMS振动），边缘网关运行数字孪生模型，实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 边缘侧Python推理脚本示例</span></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载训练好的局放预测模型</span></span><br><span class="line">model = tf.lite.Interpreter(model_path=<span class="string">&quot;pd_prediction.tflite&quot;</span>)</span><br><span class="line">model.allocate_tensors()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实时推理</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">predict_fault</span>(<span class="params">sensor_data</span>):</span><br><span class="line">    input_data = preprocess(sensor_data)</span><br><span class="line">    model.set_input(input_data)</span><br><span class="line">    model.invoke()</span><br><span class="line">    prediction = model.get_output()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> prediction &gt; <span class="number">0.85</span>:</span><br><span class="line">        trigger_alarm(<span class="string">&quot;局放异常，建议停机检查&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-云边协同模型迭代"><a href="#3-2-云边协同模型迭代" class="headerlink" title="3.2 云边协同模型迭代"></a>3.2 云边协同模型迭代</h3><p>边缘侧收集数据 → 云端训练优化模型 → 模型下发边缘侧执行，形成闭环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[边缘采集数据] --&gt; B[云端模型训练]</span><br><span class="line">    B --&gt; C[模型优化]</span><br><span class="line">    C --&gt; D[OTA下发边缘]</span><br><span class="line">    D --&gt; E[边缘推理]</span><br><span class="line">    E --&gt; A</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、软件定义自动化：EAE平台实战"><a href="#四、软件定义自动化：EAE平台实战" class="headerlink" title="四、软件定义自动化：EAE平台实战"></a>四、软件定义自动化：EAE平台实战</h2><p>施耐德EcoStruxure Automation Expert（EAE）是基于IEC 61499的开放自动化平台，支持**”拖拉拽”式应用开发**。</p>
+<h3 id="4-1-项目创建与设备配置"><a href="#4-1-项目创建与设备配置" class="headerlink" title="4.1 项目创建与设备配置"></a>4.1 项目创建与设备配置</h3><ol>
+<li>打开EAE Buildtime开发环境</li>
+<li>新建项目，选择目标设备（Modicon M580&#x2F;M590）</li>
+<li>从类型库拖拽功能块（如E_CTU、E_SR）</li>
+<li>连接事件流与数据流</li>
+<li>配置设备IP与通信参数</li>
+<li>一键下载到多台设备</li>
+</ol>
+<p><strong>与传统PLC编程对比：</strong></p>
+<ul>
+<li>传统方式：每台PLC单独编程、手动配置通信</li>
+<li>EAE方式：统一功能块网络，自动分布式部署</li>
+</ul>
+<h3 id="4-2-实际性能数据"><a href="#4-2-实际性能数据" class="headerlink" title="4.2 实际性能数据"></a>4.2 实际性能数据</h3><p>北京施耐德物流中心应用EAE平台后：</p>
+<ul>
+<li>编程效率提升：<strong>40%</strong></li>
+<li>设备互联成本降低：<strong>30%</strong></li>
+<li>产线重构时间：<strong>从2周缩短至3天</strong></li>
+</ul>
+<h2 id="五、实施建议与未来展望"><a href="#五、实施建议与未来展望" class="headerlink" title="五、实施建议与未来展望"></a>五、实施建议与未来展望</h2><h3 id="5-1-技术选型建议"><a href="#5-1-技术选型建议" class="headerlink" title="5.1 技术选型建议"></a>5.1 技术选型建议</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐方案</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>新建产线</td>
+<td>IEC 61499 + EAE</td>
+<td>面向未来，易于扩展</td>
+</tr>
+<tr>
+<td>旧线改造</td>
+<td>保留PLC + 边缘网关</td>
+<td>渐进式升级，风险可控</td>
+</tr>
+<tr>
+<td>高性能同步</td>
+<td>TSN + OPC UA</td>
+<td>微秒级确定性</td>
+</tr>
+<tr>
+<td>预测性维护</td>
+<td>边缘AI + 数字孪生</td>
+<td>低延迟，高可靠</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-工程师技能升级路径"><a href="#5-2-工程师技能升级路径" class="headerlink" title="5.2 工程师技能升级路径"></a>5.2 工程师技能升级路径</h3><ol>
+<li><strong>基础阶段</strong>：掌握IEC 61131-3五种语言</li>
+<li><strong>进阶阶段</strong>：学习IEC 61499事件驱动模型</li>
+<li><strong>实战阶段</strong>：使用4diac开源工具搭建分布式系统</li>
+<li><strong>高级阶段</strong>：结合TSN、OPC UA、边缘计算综合应用</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>IEC 61499与边缘计算的融合，标志着工业自动化从”以设备为中心”向”以应用为中心”的转变。作为工控工程师，掌握这一技术栈不仅是职业发展的需要，更是推动智能制造落地的关键能力。</p>
+<p>施耐德EcoStruxure平台、4diac开源工具等生态的成熟，为技术落地提供了良好基础。建议从业工程师积极尝试，在实际项目中积累经验，迎接开放自动化时代的到来。</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<ol>
+<li>IEC 61499-1:2012 分布式控制系统功能块标准</li>
+<li>施耐德电气. EcoStruxure开放自动化平台技术白皮书. 2023</li>
+<li>华为x边缘计算产业联盟. OPC UA over TSN测试床技术报告. 2019</li>
+<li>4diac开源项目文档. <a target="_blank" rel="noopener" href="https://www.eclipse.org/4diac/">https://www.eclipse.org/4diac/</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/06/27/edge-tech-20260627-0509/" data-id="cmr67md9q0224kcun99n04cn0" data-title="IEC 61499+边缘计算：分布式控制重塑工业自动化新架构" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OPC-UA/" rel="tag">OPC UA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TSN/" rel="tag">TSN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%8E%A7%E5%88%B6/" rel="tag">分布式控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%80%E6%94%BE%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">开放自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/06/27/schneider-news-20260627-0515/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气重磅发布Harmony SSP1*E固态继电器，开启工业自动化新纪元
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/06/27/northwest-edge-control-bidding-2026/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">西北工业自动化中标潮：边缘控制重构PLC与变频器应用新格局</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-edge-control-northwest-industrial-automation/">边缘控制技术赋能西北工业自动化升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1744/">施耐德电气2026：AI驱动的工业自动化，从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1708/">边缘计算+云协同：Modicon M580 ePAC 如何重塑智能制造控制架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-deep-dive/">西北工业自动化项目密集落地：边缘控制技术在能源与化工场景中的实战价值</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-edge-control-automation/">西北地区工业自动化新趋势：边缘控制技术的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/edge-tech-20260704-1608/">IEC 61499：边缘控制时代的分布式自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/schneider-news-20260704-1609/">施耐德电气2026年中盘点：工业AI从概念到规模落地，双引擎驱动智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/04/2026-07-04-northwest-shanxi-datacenter-green-computing/">西北山西数据中心市场动态：绿电算电协同成核心驱动力</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-20260701-0221/">边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0210/">施耐德电气亮相2026汉诺威工业展：工业AI从概念走向规模化落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/%E8%A5%BF%E5%8C%97%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E6%B7%B1%E5%BA%A6%E5%BA%94%E7%94%A82026/">西北工业互联网新趋势：边缘控制技术在自动化项目中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010121/">OPC UA over TSN：施耐德Modicon Edge I/O NTS如何重塑工业通信生态</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0113/">施耐德电气2026汉诺威工业展重磅亮相：双引擎驱动工业智造跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-tech-202607010016/">IEC 61499+OPC UA+TSN：新一代边缘控制系统的技术融合与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/schneider-news-20260701-0017/">施耐德电气2026年中盘点：工业AI规模化落地与本土化创新双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/2026-07-01-northwest-automation-bid-analysis/">2026年上半年西北地区工业自动化中标项目全景：从PLC控制柜到边缘控制的产业跃迁</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/01/edge-control-northwest-automation-2026/">边缘控制技术在西北工业自动化中的深度应用——从近期中标项目看行业发展趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/edge-tech-20260630-2312/">从功能块网络到数字孪生：IEC 61499 重塑边缘控制的下一代架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/schneider-news-20260630-2312/">施耐德电气工博会重磅发布：开放自动化与工业蜂窝网融合创新引领未来工业</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/30/2026-06-30-edge-control-northwest-q2-2026/">2026年二季度西北地区边缘控制中标项目深度分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>
