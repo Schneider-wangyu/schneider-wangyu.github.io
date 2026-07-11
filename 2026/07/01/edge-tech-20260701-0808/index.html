@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化引言在工业4.0和开放自动化的浪潮下，边缘控制（Edge Control）正成为智能制造的核心支柱。作为工业自动化工程师，掌握Structured Text（结构化文本）编程不仅是IEC 61131-3标准的基本要求，更是驾驭施耐德Modicon边缘控制器、EcoStruxure开放自动化平台（EAE）的关键技能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/07/01/edge-tech-20260701-0808/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化引言在工业4.0和开放自动化的浪潮下，边缘控制（Edge Control）正成为智能制造的核心支柱。作为工业自动化工程师，掌握Structured Text（结构化文本）编程不仅是IEC 61131-3标准的基本要求，更是驾驭施耐德Modicon边缘控制器、EcoStruxure开放自动化平台（EAE）的关键技能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202607010221.jpg">
+<meta property="article:published_time" content="2026-06-30T18:21:00.000Z">
+<meta property="article:modified_time" content="2026-06-30T18:21:51.731Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="施耐德">
+<meta property="article:tag" content="IEC 61131-3">
+<meta property="article:tag" content="Structured Text">
+<meta property="article:tag" content="编程技巧">
+<meta property="article:tag" content="EAE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202607010221.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260701-0808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/07/01/edge-tech-20260701-0808/" class="article-date">
+  <time class="dt-published" datetime="2026-06-30T18:21:00.000Z" itemprop="datePublished">2026-07-01 02:21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="边缘控制器Structured-Text编程实战：从IEC-61131-3到开放自动化"><a href="#边缘控制器Structured-Text编程实战：从IEC-61131-3到开放自动化" class="headerlink" title="边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化"></a>边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在工业4.0和开放自动化的浪潮下，边缘控制（Edge Control）正成为智能制造的核心支柱。作为工业自动化工程师，掌握Structured Text（结构化文本）编程不仅是IEC 61131-3标准的基本要求，更是驾驭施耐德Modicon边缘控制器、EcoStruxure开放自动化平台（EAE）的关键技能。</p>
+<p>本文将结合实际工程案例，深入探讨边缘控制器上的ST编程技巧，并对比IEC 61131-3五种编程语言的选型策略。</p>
+<p><img src="/images/edge-tech-202607010221.jpg" alt="边缘计算与工业自动化"></p>
+<h2 id="一、Structured-Text编程核心技巧"><a href="#一、Structured-Text编程核心技巧" class="headerlink" title="一、Structured Text编程核心技巧"></a>一、Structured Text编程核心技巧</h2><h3 id="1-1-变量声明与数据类型优化"><a href="#1-1-变量声明与数据类型优化" class="headerlink" title="1.1 变量声明与数据类型优化"></a>1.1 变量声明与数据类型优化</h3><p>在边缘控制器编程中，合理的数据类型选择直接影响执行效率。以下是针对施耐德Modicon M580&#x2F;M251系列的边缘控制变量声明最佳实践：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PROGRAM EdgeController_Main</span><br><span class="line">VAR</span><br><span class="line">    (* 输入变量 - 使用优化的数据类型 *)</span><br><span class="line">    bSensorStatus AT %IW100: BOOL;           (* 传感器状态 *)</span><br><span class="line">    rTemperature AT %IW200: REAL;            (* 温度值，32位浮点 *)</span><br><span class="line">    iPressureValue AT %IW204: INT;           (* 压力值，16位整数 *)</span><br><span class="line">    </span><br><span class="line">    (* 输出变量 *)</span><br><span class="line">    bValveControl AT %QW100: BOOL;           (* 阀门控制 *)</span><br><span class="line">    rMotorSpeed AT %QW200: REAL;             (* 电机速度 *)</span><br><span class="line">    </span><br><span class="line">    (* 内部变量 - 边缘计算缓存 *)</span><br><span class="line">    arrEdgeBuffer: ARRAY[0..999] OF REAL;    (* 边缘数据缓存区 *)</span><br><span class="line">    udiSampleCount: UDINT;                   (* 采样计数器 *)</span><br><span class="line">    tonFilter: TON;                          (* 滤波定时器 *)</span><br><span class="line">    fbPID: PID;                              (* PID功能块实例 *)</span><br><span class="line">END_VAR</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键技巧：</strong></p>
+<ul>
+<li>使用<code>AT</code>关键字直接映射物理I&#x2F;O地址，提升访问效率</li>
+<li>边缘计算场景优先使用<code>REAL</code>类型存储模拟量，保留精度</li>
+<li>数组缓冲区大小应根据控制器内存合理设置（M580可达数MB）</li>
+</ul>
+<h3 id="1-2-边缘计算算法实现"><a href="#1-2-边缘计算算法实现" class="headerlink" title="1.2 边缘计算算法实现"></a>1.2 边缘计算算法实现</h3><p>边缘控制器的核心价值在于本地数据处理。以下是一个温度异常检测的ST实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">(* 边缘侧温度异常检测与预处理 *)</span><br><span class="line">FUNCTION Edge_TempAnomalyDetection : BOOL</span><br><span class="line">VAR_INPUT</span><br><span class="line">    fCurrentTemp: REAL;</span><br><span class="line">    fThresholdHigh: REAL := 85.0;</span><br><span class="line">    fThresholdLow: REAL := 5.0;</span><br><span class="line">END_VAR</span><br><span class="line">VAR_STATIC</span><br><span class="line">    fTempHistory: ARRAY[0..9] OF REAL;  (* 滑动窗口 *)</span><br><span class="line">    uiIndex: UINT := 0;</span><br><span class="line">    fMovingAvg: REAL;</span><br><span class="line">    i: UINT;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">(* 更新滑动窗口 *)</span><br><span class="line">fTempHistory[uiIndex] := fCurrentTemp;</span><br><span class="line">uiIndex := (uiIndex + 1) MOD 10;</span><br><span class="line"></span><br><span class="line">(* 计算移动平均值 *)</span><br><span class="line">fMovingAvg := 0.0;</span><br><span class="line">FOR i := 0 TO 9 DO</span><br><span class="line">    fMovingAvg := fMovingAvg + fTempHistory[i];</span><br><span class="line">END_FOR</span><br><span class="line">fMovingAvg := fMovingAvg / 10.0;</span><br><span class="line"></span><br><span class="line">(* 异常判断：超出阈值或突变检测 *)</span><br><span class="line">IF (fCurrentTemp &gt; fThresholdHigh) OR </span><br><span class="line">   (fCurrentTemp &lt; fThresholdLow) OR</span><br><span class="line">   (ABS(fCurrentTemp - fMovingAvg) &gt; 15.0) THEN</span><br><span class="line">    Edge_TempAnomalyDetection := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    Edge_TempAnomalyDetection := FALSE;</span><br><span class="line">END_IF</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、IEC-61131-3五种语言对比与选型"><a href="#二、IEC-61131-3五种语言对比与选型" class="headerlink" title="二、IEC 61131-3五种语言对比与选型"></a>二、IEC 61131-3五种语言对比与选型</h2><table>
+<thead>
+<tr>
+<th>语言</th>
+<th>适用场景</th>
+<th>边缘控制优势</th>
+<th>局限性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LD（梯形图）</strong></td>
+<td>简单逻辑、电气工程师易上手</td>
+<td>直观展示电气逻辑</td>
+<td>复杂算法难以实现</td>
+</tr>
+<tr>
+<td><strong>FBD（功能块图）</strong></td>
+<td>过程控制、模块化设计</td>
+<td>复用性强，适合EAE平台</td>
+<td>大规模数据处</td>
+</tr>
+<tr>
+<td><strong>ST（结构化文本）</strong></td>
+<td>复杂算法、数据处理</td>
+<td><strong>边缘计算首选</strong>，类Pascal语法</td>
+<td>需要编程基础</td>
+</tr>
+<tr>
+<td><strong>SFC（顺序功能图）</strong></td>
+<td>批次控制、顺序逻辑</td>
+<td>流程清晰，易于调试</td>
+<td>不适合连续控制</td>
+</tr>
+<tr>
+<td><strong>IL（指令表）</strong></td>
+<td>老旧设备维护</td>
+<td>代码紧凑（已废弃）</td>
+<td>IEC 61131-3:2013已移除</td>
+</tr>
+</tbody></table>
+<p><strong>边缘控制选型建议：</strong></p>
+<ul>
+<li><strong>数据采集与预处理</strong>：优先使用ST（算法灵活）</li>
+<li><strong>设备控制逻辑</strong>：FBD（模块化，便于EAE部署）</li>
+<li><strong>顺序控制流程</strong>：SFC（清晰的可视化）</li>
+<li><strong>紧急停机逻辑</strong>：LD（直观且可靠）</li>
+</ul>
+<h2 id="三、EAE开放自动化平台编程实战"><a href="#三、EAE开放自动化平台编程实战" class="headerlink" title="三、EAE开放自动化平台编程实战"></a>三、EAE开放自动化平台编程实战</h2><p>施耐德EcoStruxure Automation Expert（EAE）基于IEC 61499标准，实现了软硬件解耦。以下是EAE中ST与功能块混合编程的示例：</p>
+<h3 id="3-1-创建IEC-61499功能块"><a href="#3-1-创建IEC-61499功能块" class="headerlink" title="3.1 创建IEC 61499功能块"></a>3.1 创建IEC 61499功能块</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">(* EAE平台中的ST功能块：边缘数据聚合 *)</span><br><span class="line">FUNCTION_BLOCK EdgeDataAggregator</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable: BOOL;</span><br><span class="line">    rIncomingData: REAL;</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    rAggregatedResult: REAL;</span><br><span class="line">    bDataReady: BOOL;</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    udiPacketCount: UDINT;</span><br><span class="line">    rSumValue: REAL;</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    udiPacketCount := udiPacketCount + 1;</span><br><span class="line">    rSumValue := rSumValue + rIncomingData;</span><br><span class="line">    </span><br><span class="line">    (* 每100个采样点输出一次聚合结果 *)</span><br><span class="line">    IF udiPacketCount &gt;= 100 THEN</span><br><span class="line">        rAggregatedResult := rSumValue / 100.0;</span><br><span class="line">        bDataReady := TRUE;</span><br><span class="line">        udiPacketCount := 0;</span><br><span class="line">        rSumValue := 0.0;</span><br><span class="line">    ELSE</span><br><span class="line">        bDataReady := FALSE;</span><br><span class="line">    END_IF</span><br><span class="line">ELSE</span><br><span class="line">    udiPacketCount := 0;</span><br><span class="line">    rSumValue := 0.0;</span><br><span class="line">    bDataReady := FALSE;</span><br><span class="line">END_IF</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-EAE部署要点"><a href="#3-2-EAE部署要点" class="headerlink" title="3.2 EAE部署要点"></a>3.2 EAE部署要点</h3><ol>
+<li><strong>Soft dPAC配置</strong>：在PC或边缘服务器上部署Soft dPAC运行时，支持Windows&#x2F;Linux（Docker容器化）</li>
+<li><strong>功能块网络</strong>：使用EAE Buildtime绘制功能块网络，实现分布式控制</li>
+<li><strong>OPC UA over TSN</strong>：利用ModiconEdge I&#x2F;O NTS实现确定性的边缘通信</li>
+</ol>
+<h2 id="四、边缘控制器配置与调试技巧"><a href="#四、边缘控制器配置与调试技巧" class="headerlink" title="四、边缘控制器配置与调试技巧"></a>四、边缘控制器配置与调试技巧</h2><h3 id="4-1-通信配置优化"><a href="#4-1-通信配置优化" class="headerlink" title="4.1 通信配置优化"></a>4.1 通信配置优化</h3><p>施耐德Modicon边缘控制器支持多种协议，配置建议：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">以太网端口1（上行）：OPC UA Server + MQTT</span><br><span class="line">  - 用于与云平台/SCADA通信</span><br><span class="line">  - 发布周期：100ms~1s（根据带宽调整）</span><br><span class="line"></span><br><span class="line">以太网端口2（下行）：Modbus TCP + EtherNet/IP</span><br><span class="line">  - 连接现场设备</span><br><span class="line">  - 轮询周期：10~50ms</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-性能调优"><a href="#4-2-性能调优" class="headerlink" title="4.2 性能调优"></a>4.2 性能调优</h3><ul>
+<li><strong>任务优先级</strong>：将边缘计算任务设为中优先级（避免抢占控制回路）</li>
+<li><strong>内存管理</strong>：使用<code>VAR_TEMP</code>声明临时变量，减少内存占用</li>
+<li><strong>看门狗配置</strong>：边缘算法执行时间应小于看门狗周期的70%</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(* 看门狗安全编程模式 *)</span><br><span class="line">IF NOT bWatchdogTriggered THEN</span><br><span class="line">    (* 执行边缘计算 *)</span><br><span class="line">    EdgeComputeFunction();</span><br><span class="line">ELSE</span><br><span class="line">    (* 安全状态 *)</span><br><span class="line">    bValveControl := FALSE;</span><br><span class="line">    bSystemFault := TRUE;</span><br><span class="line">END_IF</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、实战案例：施耐德Modicon-M580边缘控制在智慧水务中的应用"><a href="#五、实战案例：施耐德Modicon-M580边缘控制在智慧水务中的应用" class="headerlink" title="五、实战案例：施耐德Modicon M580边缘控制在智慧水务中的应用"></a>五、实战案例：施耐德Modicon M580边缘控制在智慧水务中的应用</h2><p><strong>项目背景</strong>：某水厂需要对12个泵站进行实时监控，传统方案依赖云端处理，延迟高达2~5秒。</p>
+<p><strong>边缘控制方案</strong>：</p>
+<ol>
+<li>每个泵站部署M580 ePAC，运行ST编写的边缘算法</li>
+<li>本地完成数据清洗、异常检测和预测性维护计算</li>
+<li>仅将关键告警和聚合数据上传至云平台</li>
+</ol>
+<p><strong>效果</strong>：</p>
+<ul>
+<li>响应延迟降至50ms以内</li>
+<li>减少90%的上云数据量</li>
+<li>实现泵站自主决策（无需等待云端指令）</li>
+</ul>
+<h2 id="六、总结与展望"><a href="#六、总结与展望" class="headerlink" title="六、总结与展望"></a>六、总结与展望</h2><p>Structured Text编程在边缘控制中的应用，不仅是语法层面的掌握，更需要理解：</p>
+<ul>
+<li><strong>工业现场的需求</strong>：实时性、可靠性、安全性</li>
+<li><strong>开放自动化的趋势</strong>：IEC 61499、软件定义自动化</li>
+<li><strong>边缘计算的价值</strong>：降本增效、数据自治</li>
+</ul>
+<p>随着OPC UA over TSN技术的成熟和EAE平台的普及，掌握ST编程将成为自动化工程师的核心竞争力。建议读者在实际项目中尝试EAE平台，体验开放自动化带来的灵活性和效率提升。</p>
+<hr>
+<p><strong>参考资料</strong>：</p>
+<ol>
+<li>IEC 61131-3:2013 - Programmable controllers - Part 3: Programming languages</li>
+<li>施耐德电气. EcoStruxure Automation Expert编程手册</li>
+<li>开放自动化探究系列 - 施耐德EAE平台试用</li>
+</ol>
+<p><strong>相关产品</strong>：</p>
+<ul>
+<li>施耐德Modicon M580 ePAC</li>
+<li>ModiconEdge I&#x2F;O NTS分布式I&#x2F;O</li>
+<li>EcoStruxure开放自动化平台（EAE）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/07/01/edge-tech-20260701-0808/" data-id="cmr70slcd000tt8un2j2bdkwl" data-title="边缘控制器Structured Text编程实战：从IEC 61131-3到开放自动化" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EAE/" rel="tag">EAE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61131-3/" rel="tag">IEC 61131-3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Structured-Text/" rel="tag">Structured Text</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/" rel="tag">编程技巧</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/07/02/schneider-news-20260702-0808/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气2026汉诺威工博会圆满收官：工业AI从概念到落地
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/07/01/schneider-news-20260701-0210/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气亮相2026汉诺威工业展：工业AI从概念走向规模化落地</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>
