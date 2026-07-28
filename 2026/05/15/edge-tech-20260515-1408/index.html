@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>工业时序数据库TSDB选型与部署实践 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="工业物联网应用产生海量的时序数据，如何高效存储和查询这些数据是边缘计算架构设计的核心问题之一。本文将深入分析主流时序数据库(TSDB)的特点，并分享在边缘环境中的选型与部署经验。 工业时序数据特点数据特征分析   特征 描述 影响    高频率 毫秒级采样 写入压力大   海量 TB级数据 存储成本高   结构化 固定Schema 查询优化容易   时间戳关联 主要按时间查询 索引策略简单">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工业时序数据库TSDB选型与部署实践">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/15/edge-tech-20260515-1408/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="工业物联网应用产生海量的时序数据，如何高效存储和查询这些数据是边缘计算架构设计的核心问题之一。本文将深入分析主流时序数据库(TSDB)的特点，并分享在边缘环境中的选型与部署经验。 工业时序数据特点数据特征分析   特征 描述 影响    高频率 毫秒级采样 写入压力大   海量 TB级数据 存储成本高   结构化 固定Schema 查询优化容易   时间戳关联 主要按时间查询 索引策略简单">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605151408.jpg">
+<meta property="article:published_time" content="2026-05-15T06:08:00.000Z">
+<meta property="article:modified_time" content="2026-05-21T00:31:12.690Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘计算">
+<meta property="article:tag" content="施耐德">
+<meta property="article:tag" content="TSDB">
+<meta property="article:tag" content="时序数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605151408.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260515-1408" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/15/edge-tech-20260515-1408/" class="article-date">
+  <time class="dt-published" datetime="2026-05-15T06:08:00.000Z" itemprop="datePublished">2026-05-15 14:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      工业时序数据库TSDB选型与部署实践
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202605151408.jpg" alt="边缘控制技术"></p>
+<p>工业物联网应用产生海量的时序数据，如何高效存储和查询这些数据是边缘计算架构设计的核心问题之一。本文将深入分析主流时序数据库(TSDB)的特点，并分享在边缘环境中的选型与部署经验。</p>
+<h2 id="工业时序数据特点"><a href="#工业时序数据特点" class="headerlink" title="工业时序数据特点"></a>工业时序数据特点</h2><h3 id="数据特征分析"><a href="#数据特征分析" class="headerlink" title="数据特征分析"></a>数据特征分析</h3><table>
+<thead>
+<tr>
+<th>特征</th>
+<th>描述</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>高频率</td>
+<td>毫秒级采样</td>
+<td>写入压力大</td>
+</tr>
+<tr>
+<td>海量</td>
+<td>TB级数据</td>
+<td>存储成本高</td>
+</tr>
+<tr>
+<td>结构化</td>
+<td>固定Schema</td>
+<td>查询优化容易</td>
+</tr>
+<tr>
+<td>时间戳关联</td>
+<td>主要按时间查询</td>
+<td>索引策略简单</td>
+</tr>
+<tr>
+<td>很少更新</td>
+<td>写入后基本不修改</td>
+<td>存储引擎优化</td>
+</tr>
+</tbody></table>
+<h3 id="典型数据规模"><a href="#典型数据规模" class="headerlink" title="典型数据规模"></a>典型数据规模</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────┐</span><br><span class="line">│        工厂数据采集规模估算              │</span><br><span class="line">│                                         │</span><br><span class="line">│  设备数量: 100台PLC                     │</span><br><span class="line">│  测点数量: 10,000个                     │</span><br><span class="line">│  采样周期: 1秒                          │</span><br><span class="line">│  数据类型: Float (4 bytes)              │</span><br><span class="line">│                                         │</span><br><span class="line">│  每秒写入: 10,000 × 4 = 40 KB/s        │</span><br><span class="line">│  每天写入: 40 KB × 86400 = 3.3 GB      │</span><br><span class="line">│  每月写入: 3.3 GB × 30 = 100 GB        │</span><br><span class="line">│  每年写入: 100 GB × 12 = 1.2 TB        │</span><br><span class="line">│                                         │</span><br><span class="line">│  含压缩后实际存储约 300-400 GB/年       │</span><br><span class="line">└─────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="主流TSDB对比分析"><a href="#主流TSDB对比分析" class="headerlink" title="主流TSDB对比分析"></a>主流TSDB对比分析</h2><h3 id="InfluxDB"><a href="#InfluxDB" class="headerlink" title="InfluxDB"></a>InfluxDB</h3><p><strong>优势：</strong></p>
+<ul>
+<li>单二进制文件部署简单</li>
+<li>Flux查询语言灵活</li>
+<li>社区活跃，文档丰富</li>
+<li>内置数据降采样</li>
+</ul>
+<p><strong>劣势：</strong></p>
+<ul>
+<li>集群版收费</li>
+<li>高基数问题</li>
+<li>内存消耗较大</li>
+</ul>
+<p><strong>适用场景：</strong> 中小规模边缘应用，快速原型开发</p>
+<h3 id="TimescaleDB"><a href="#TimescaleDB" class="headerlink" title="TimescaleDB"></a>TimescaleDB</h3><p><strong>优势：</strong></p>
+<ul>
+<li>基于PostgreSQL，生态完善</li>
+<li>支持SQL，学习成本低</li>
+<li>开源版本支持集群</li>
+<li>支持JOIN和复杂查询</li>
+</ul>
+<p><strong>劣势：</strong></p>
+<ul>
+<li>写入性能相对较低</li>
+<li>存储空间占用较大</li>
+</ul>
+<p><strong>适用场景：</strong> 需要复杂查询的场景，已有PostgreSQL经验</p>
+<h3 id="TDengine"><a href="#TDengine" class="headerlink" title="TDengine"></a>TDengine</h3><p><strong>优势：</strong></p>
+<ul>
+<li>国产开源，中文社区活跃</li>
+<li>写入性能极高</li>
+<li>存储压缩率高</li>
+<li>支持集群</li>
+</ul>
+<p><strong>劣势：</strong></p>
+<ul>
+<li>生态相对不成熟</li>
+<li>文档质量参差</li>
+<li>SQL兼容性有限</li>
+</ul>
+<p><strong>适用场景：</strong> 高性能写入场景，国产化要求</p>
+<h3 id="VictoriaMetrics"><a href="#VictoriaMetrics" class="headerlink" title="VictoriaMetrics"></a>VictoriaMetrics</h3><p><strong>优势：</strong></p>
+<ul>
+<li>单节点性能极高</li>
+<li>存储成本低</li>
+<li>Prometheus兼容</li>
+<li>资源占用少</li>
+</ul>
+<p><strong>劣势：</strong></p>
+<ul>
+<li>Metrics-focused，非通用TSDB</li>
+<li>查询功能相对简单</li>
+</ul>
+<p><strong>适用场景：</strong> 监控指标存储，Prometheus替代</p>
+<h2 id="性能基准测试"><a href="#性能基准测试" class="headerlink" title="性能基准测试"></a>性能基准测试</h2><h3 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h3><ul>
+<li>硬件：Intel i7-10700, 32GB RAM, 512GB NVMe SSD</li>
+<li>数据：1000万条时序数据</li>
+<li>测试：写入吞吐量、查询延迟、存储空间</li>
+</ul>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>写入速度(行&#x2F;秒)</th>
+<th>查询延迟(ms)</th>
+<th>存储空间(GB)</th>
+<th>内存占用(GB)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>InfluxDB 2.x</td>
+<td>350,000</td>
+<td>45</td>
+<td>2.8</td>
+<td>2.1</td>
+</tr>
+<tr>
+<td>TimescaleDB</td>
+<td>180,000</td>
+<td>85</td>
+<td>4.2</td>
+<td>1.8</td>
+</tr>
+<tr>
+<td>TDengine</td>
+<td>800,000</td>
+<td>12</td>
+<td>0.9</td>
+<td>0.6</td>
+</tr>
+<tr>
+<td>VictoriaMetrics</td>
+<td>600,000</td>
+<td>35</td>
+<td>1.5</td>
+<td>0.8</td>
+</tr>
+</tbody></table>
+<h2 id="InfluxDB边缘部署实践"><a href="#InfluxDB边缘部署实践" class="headerlink" title="InfluxDB边缘部署实践"></a>InfluxDB边缘部署实践</h2><h3 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">influxdb:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">influxdb:2.7</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">influxdb</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_MODE=setup</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_USERNAME=admin</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_PASSWORD=$&#123;INFLUX_PASSWORD&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_ORG=edge-org</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_BUCKET=telemetry</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_RETENTION=30d</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">influxdb-data:/var/lib/influxdb2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">influxdb-config:/etc/influxdb2</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8086:8086&quot;</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">4G</span></span><br><span class="line">        <span class="attr">reservations:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">2G</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">telegraf:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">telegraf:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">telegraf</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./telegraf.conf:/etc/telegraf/telegraf.conf:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock:ro</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">influxdb</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">influxdb-data:</span></span><br><span class="line">  <span class="attr">influxdb-config:</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="数据写入优化"><a href="#数据写入优化" class="headerlink" title="数据写入优化"></a>数据写入优化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> influxdb_client <span class="keyword">import</span> InfluxDBClient, Point, WritePrecision</span><br><span class="line"><span class="keyword">from</span> influxdb_client.client.write_api <span class="keyword">import</span> SYNCHRONOUS</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">InfluxDBWriter</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, url, token, org, bucket</span>):</span><br><span class="line">        <span class="variable language_">self</span>.client = InfluxDBClient(url=url, token=token, org=org)</span><br><span class="line">        <span class="variable language_">self</span>.write_api = <span class="variable language_">self</span>.client.write_api(write_options=SYNCHRONOUS)</span><br><span class="line">        <span class="variable language_">self</span>.bucket = bucket</span><br><span class="line">        <span class="variable language_">self</span>.org = org</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">write_batch</span>(<span class="params">self, measurements</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        批量写入数据</span></span><br><span class="line"><span class="string">        measurements: [</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;measurement&quot;: &quot;temperature&quot;,</span></span><br><span class="line"><span class="string">                &quot;tags&quot;: &#123;&quot;device&quot;: &quot;PLC001&quot;, &quot;location&quot;: &quot;Line1&quot;&#125;,</span></span><br><span class="line"><span class="string">                &quot;fields&quot;: &#123;&quot;value&quot;: 25.5&#125;,</span></span><br><span class="line"><span class="string">                &quot;time&quot;: datetime.utcnow()</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        ]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        points = []</span><br><span class="line">        <span class="keyword">for</span> m <span class="keyword">in</span> measurements:</span><br><span class="line">            point = Point(m[<span class="string">&quot;measurement&quot;</span>]) \</span><br><span class="line">                .tags(m[<span class="string">&quot;tags&quot;</span>]) \</span><br><span class="line">                .fields(m[<span class="string">&quot;fields&quot;</span>]) \</span><br><span class="line">                .time(m[<span class="string">&quot;time&quot;</span>], WritePrecision.NS)</span><br><span class="line">            points.append(point)</span><br><span class="line">        </span><br><span class="line">        <span class="variable language_">self</span>.write_api.write(bucket=<span class="variable language_">self</span>.bucket, org=<span class="variable language_">self</span>.org, record=points)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">write_with_retry</span>(<span class="params">self, points, max_retries=<span class="number">3</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;带重试机制的写入&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> attempt <span class="keyword">in</span> <span class="built_in">range</span>(max_retries):</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                <span class="variable language_">self</span>.write_batch(points)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                <span class="keyword">if</span> attempt == max_retries - <span class="number">1</span>:</span><br><span class="line">                    <span class="keyword">raise</span> e</span><br><span class="line">                time.sleep(<span class="number">2</span> ** attempt)  <span class="comment"># 指数退避</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用示例</span></span><br><span class="line">writer = InfluxDBWriter(</span><br><span class="line">    url=<span class="string">&quot;http://localhost:8086&quot;</span>,</span><br><span class="line">    token=<span class="string">&quot;your-token&quot;</span>,</span><br><span class="line">    org=<span class="string">&quot;edge-org&quot;</span>,</span><br><span class="line">    bucket=<span class="string">&quot;telemetry&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量写入</span></span><br><span class="line">data_points = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;measurement&quot;</span>: <span class="string">&quot;plc_data&quot;</span>,</span><br><span class="line">        <span class="string">&quot;tags&quot;</span>: &#123;<span class="string">&quot;device&quot;</span>: <span class="string">&quot;PLC001&quot;</span>, <span class="string">&quot;line&quot;</span>: <span class="string">&quot;A&quot;</span>&#125;,</span><br><span class="line">        <span class="string">&quot;fields&quot;</span>: &#123;<span class="string">&quot;temperature&quot;</span>: <span class="number">25.5</span>, <span class="string">&quot;pressure&quot;</span>: <span class="number">101.3</span>, <span class="string">&quot;speed&quot;</span>: <span class="number">1200</span>&#125;,</span><br><span class="line">        <span class="string">&quot;time&quot;</span>: datetime.utcnow()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>)</span><br><span class="line">]</span><br><span class="line">writer.write_batch(data_points)</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询优化技巧"><a href="#查询优化技巧" class="headerlink" title="查询优化技巧"></a>查询优化技巧</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用Flux查询语言</span></span><br><span class="line"><span class="keyword">from</span> influxdb_client <span class="keyword">import</span> InfluxDBClient</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">query_aggregated_data</span>(<span class="params">client, bucket, measurement, start, stop, aggregate_window=<span class="string">&quot;1m&quot;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询聚合数据&quot;&quot;&quot;</span></span><br><span class="line">    query = <span class="string">f&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    from(bucket: &quot;<span class="subst">&#123;bucket&#125;</span>&quot;)</span></span><br><span class="line"><span class="string">        |&gt; range(start: <span class="subst">&#123;start&#125;</span>, stop: <span class="subst">&#123;stop&#125;</span>)</span></span><br><span class="line"><span class="string">        |&gt; filter(fn: (r) =&gt; r._measurement == &quot;<span class="subst">&#123;measurement&#125;</span>&quot;)</span></span><br><span class="line"><span class="string">        |&gt; aggregateWindow(every: <span class="subst">&#123;aggregate_window&#125;</span>, fn: mean)</span></span><br><span class="line"><span class="string">        |&gt; yield(name: &quot;mean&quot;)</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    query_api = client.query_api()</span><br><span class="line">    result = query_api.query(query)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">query_downsampled_data</span>(<span class="params">client, bucket, measurement, start</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询降采样数据&quot;&quot;&quot;</span></span><br><span class="line">    query = <span class="string">f&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    from(bucket: &quot;<span class="subst">&#123;bucket&#125;</span>&quot;)</span></span><br><span class="line"><span class="string">        |&gt; range(start: <span class="subst">&#123;start&#125;</span>)</span></span><br><span class="line"><span class="string">        |&gt; filter(fn: (r) =&gt; r._measurement == &quot;<span class="subst">&#123;measurement&#125;</span>&quot;)</span></span><br><span class="line"><span class="string">        |&gt; limit(n: 1000)</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    query_api = client.query_api()</span><br><span class="line">    tables = query_api.query(query)</span><br><span class="line">    </span><br><span class="line">    data = []</span><br><span class="line">    <span class="keyword">for</span> table <span class="keyword">in</span> tables:</span><br><span class="line">        <span class="keyword">for</span> record <span class="keyword">in</span> table.records:</span><br><span class="line">            data.append(&#123;</span><br><span class="line">                <span class="string">&quot;time&quot;</span>: record.get_time(),</span><br><span class="line">                <span class="string">&quot;value&quot;</span>: record.get_value(),</span><br><span class="line">                <span class="string">&quot;field&quot;</span>: record.get_field()</span><br><span class="line">            &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据生命周期管理"><a href="#数据生命周期管理" class="headerlink" title="数据生命周期管理"></a>数据生命周期管理</h2><h3 id="自动降采样与归档"><a href="#自动降采样与归档" class="headerlink" title="自动降采样与归档"></a>自动降采样与归档</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># InfluxDB Task: 自动降采样</span></span><br><span class="line">task_code = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">option task = &#123;name: &quot;downsample-1h&quot;, every: 1h&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">from(bucket: &quot;telemetry&quot;)</span></span><br><span class="line"><span class="string">    |&gt; range(start: -2h)</span></span><br><span class="line"><span class="string">    |&gt; filter(fn: (r) =&gt; r._measurement == &quot;plc_data&quot;)</span></span><br><span class="line"><span class="string">    |&gt; aggregateWindow(every: 1h, fn: mean)</span></span><br><span class="line"><span class="string">    |&gt; to(bucket: &quot;telemetry-downsampled&quot;, org: &quot;edge-org&quot;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建降采样任务</span></span><br><span class="line"><span class="keyword">from</span> influxdb_client <span class="keyword">import</span> InfluxDBClient, Task</span><br><span class="line"></span><br><span class="line">client = InfluxDBClient(url=<span class="string">&quot;http://localhost:8086&quot;</span>, token=token)</span><br><span class="line">tasks_api = client.tasks_api()</span><br><span class="line"></span><br><span class="line">task = Task(</span><br><span class="line">    name=<span class="string">&quot;downsample-1h&quot;</span>,</span><br><span class="line">    org=<span class="string">&quot;edge-org&quot;</span>,</span><br><span class="line">    flux=task_code,</span><br><span class="line">    status=<span class="string">&quot;active&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">tasks_api.create_task(task)</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据保留策略"><a href="#数据保留策略" class="headerlink" title="数据保留策略"></a>数据保留策略</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据保留配置</span></span><br><span class="line"><span class="attr">retention_policies:</span></span><br><span class="line">  <span class="attr">raw_data:</span></span><br><span class="line">    <span class="attr">duration:</span> <span class="string">7d</span>          <span class="comment"># 原始数据保留7天</span></span><br><span class="line">    <span class="attr">replication:</span> <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">downsampled_1h:</span></span><br><span class="line">    <span class="attr">duration:</span> <span class="string">30d</span>         <span class="comment"># 1小时聚合数据保留30天</span></span><br><span class="line">    <span class="attr">replication:</span> <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">downsampled_1d:</span></span><br><span class="line">    <span class="attr">duration:</span> <span class="string">365d</span>        <span class="comment"># 日聚合数据保留1年</span></span><br><span class="line">    <span class="attr">replication:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="与施耐德设备集成"><a href="#与施耐德设备集成" class="headerlink" title="与施耐德设备集成"></a>与施耐德设备集成</h2><h3 id="Modicon-M262数据采集"><a href="#Modicon-M262数据采集" class="headerlink" title="Modicon M262数据采集"></a>Modicon M262数据采集</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从Modicon M262采集数据并写入InfluxDB</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">from</span> influxdb_client <span class="keyword">import</span> InfluxDBClient, Point</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">M262DataCollector</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, plc_ip, influx_config</span>):</span><br><span class="line">        <span class="variable language_">self</span>.plc_ip = plc_ip</span><br><span class="line">        <span class="variable language_">self</span>.influx_client = InfluxDBClient(**influx_config)</span><br><span class="line">        <span class="variable language_">self</span>.write_api = <span class="variable language_">self</span>.influx_client.write_api()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">read_plc_data</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;通过REST API读取M262数据&quot;&quot;&quot;</span></span><br><span class="line">        url = <span class="string">f&quot;http://<span class="subst">&#123;self.plc_ip&#125;</span>/api/variables&quot;</span></span><br><span class="line">        response = requests.get(url, auth=(<span class="string">&quot;admin&quot;</span>, <span class="string">&quot;password&quot;</span>))</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">            <span class="keyword">return</span> response.json()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">collect_and_store</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;采集并存储数据&quot;&quot;&quot;</span></span><br><span class="line">        data = <span class="variable language_">self</span>.read_plc_data()</span><br><span class="line">        <span class="keyword">if</span> data:</span><br><span class="line">            points = []</span><br><span class="line">            <span class="keyword">for</span> var <span class="keyword">in</span> data[<span class="string">&quot;variables&quot;</span>]:</span><br><span class="line">                point = Point(<span class="string">&quot;plc_data&quot;</span>) \</span><br><span class="line">                    .tag(<span class="string">&quot;device&quot;</span>, <span class="variable language_">self</span>.plc_ip) \</span><br><span class="line">                    .tag(<span class="string">&quot;variable&quot;</span>, var[<span class="string">&quot;name&quot;</span>]) \</span><br><span class="line">                    .field(<span class="string">&quot;value&quot;</span>, var[<span class="string">&quot;value&quot;</span>]) \</span><br><span class="line">                    .time(datetime.utcnow())</span><br><span class="line">                points.append(point)</span><br><span class="line">            </span><br><span class="line">            <span class="variable language_">self</span>.write_api.write(bucket=<span class="string">&quot;telemetry&quot;</span>, record=points)</span><br></pre></td></tr></table></figure>
+
+<h2 id="高可用与备份"><a href="#高可用与备份" class="headerlink" title="高可用与备份"></a>高可用与备份</h2><h3 id="定期备份脚本"><a href="#定期备份脚本" class="headerlink" title="定期备份脚本"></a>定期备份脚本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># influxdb-backup.sh</span></span><br><span class="line"></span><br><span class="line">INFLUX_URL=<span class="string">&quot;http://localhost:8086&quot;</span></span><br><span class="line">BACKUP_DIR=<span class="string">&quot;/backup/influxdb&quot;</span></span><br><span class="line">DATE=$(<span class="built_in">date</span> +%Y%m%d_%H%M%S)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建备份目录</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$BACKUP_DIR</span>/<span class="variable">$DATE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行备份</span></span><br><span class="line">influx backup \</span><br><span class="line">    --host <span class="variable">$INFLUX_URL</span> \</span><br><span class="line">    --token <span class="variable">$INFLUX_TOKEN</span> \</span><br><span class="line">    --org edge-org \</span><br><span class="line">    <span class="variable">$BACKUP_DIR</span>/<span class="variable">$DATE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 压缩备份</span></span><br><span class="line">tar -czf <span class="variable">$BACKUP_DIR</span>/influxdb_<span class="variable">$DATE</span>.tar.gz -C <span class="variable">$BACKUP_DIR</span> <span class="variable">$DATE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理旧备份（保留30天）</span></span><br><span class="line">find <span class="variable">$BACKUP_DIR</span> -name <span class="string">&quot;*.tar.gz&quot;</span> -mtime +30 -delete</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Backup completed: influxdb_<span class="variable">$DATE</span>.tar.gz&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="监控与告警"><a href="#监控与告警" class="headerlink" title="监控与告警"></a>监控与告警</h2><h3 id="关键监控指标"><a href="#关键监控指标" class="headerlink" title="关键监控指标"></a>关键监控指标</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>阈值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>写入吞吐量</td>
+<td>&lt; 100K&#x2F;s</td>
+<td>写入性能下降</td>
+</tr>
+<tr>
+<td>查询延迟</td>
+<td>&gt; 1s</td>
+<td>查询性能下降</td>
+</tr>
+<tr>
+<td>磁盘使用</td>
+<td>&gt; 80%</td>
+<td>存储空间不足</td>
+</tr>
+<tr>
+<td>内存使用</td>
+<td>&gt; 90%</td>
+<td>内存压力大</td>
+</tr>
+<tr>
+<td>Series基数</td>
+<td>&gt; 10M</td>
+<td>高基数问题</td>
+</tr>
+</tbody></table>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>时序数据库是工业物联网数据基础设施的核心组件。在边缘计算场景中，需要综合考虑写入性能、查询需求、资源限制和运维复杂度。InfluxDB以其易用性和成熟生态，是边缘场景的理想选择；对于高性能要求，TDengine值得考虑。结合施耐德电气的工业设备，可以构建完整的数据采集、存储、分析平台。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/15/edge-tech-20260515-1408/" data-id="cmq43egzd00ll2oun1qvgdvqg" data-title="工业时序数据库TSDB选型与部署实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TSDB/" rel="tag">TSDB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">时序数据库</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/15/schneider-news-20260515-1608/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气：EcoStruxure Automation Expert引领工业自动化新范式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/15/schneider-news-20260515-1408/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气：智能配电系统助力制药企业GMP合规</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0808/">施耐德电气六月动态：牵手Kraken加速电网柔性调度，AI与能源管理双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E8%A5%BF%E5%8C%97%E5%AE%9E%E8%B7%B5-2026-06-13/">边缘控制技术在西北能源与工控项目中的深度实践：2026年中趋势洞察</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0702/">工业边缘网关实战：从协议转换到端-边-云协同的完整部署指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0637/">施耐德电气SNEC 2026重磅亮相：技术-场景-生态三维升级，重塑新能源产业格局</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0602/">FBD功能块图设计模式：边缘控制器中的模块化编程艺术</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-2026-06-13/">边缘控制技术在西北工业自动化中的落地实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0537/">施耐德电气引领新能源与数据中心双重变革：从SNEC 2026到液冷技术突破</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/northwest-edge-control-automation-2026/">边缘控制技术在西北工业自动化领域的应用与前景</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0502/">IEC 61499在边缘控制中的实践：分布式自动化架构的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0402/">IEC 61499分布式控制架构：边缘计算时代的工业自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-china-2026/">边缘控制技术在西北工业自动化中的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0302/">IEC 61499分布式控制：边缘控制的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0302/">施耐德电气重磅新品密集发布：从EvoPacT HVX到热管理实验室，引领工业自动化新趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0238/">施耐德电气厦门基地竣工：打造全球最大中压生产基地与灯塔工厂</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-edge-control-northwest-automation/">边缘控制技术在西北工业自动化中的创新应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-202606130202/">OPC UA在边缘计算中的深度应用：从协议架构到实战部署</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-202606130137/">施耐德电气布局全球最大中压生产基地，数字化与可持续发展双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-northwest-edge-control-automation/">西北工业自动化新趋势：边缘控制技术在PLC与配电系统中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0102/">IEC 61499分布式控制架构：边缘控制的技术革新与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0051/">施耐德电气ATV610QC变频器重磅发布：以创新技术驱动工业自动化新升级</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

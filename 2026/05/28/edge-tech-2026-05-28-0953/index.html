@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>边缘控制器调试实战：Modicon M241/M262网络配置与通信诊断完全指南 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="边缘控制器作为工业物联网的核心节点，其网络配置与调试效率直接影响项目交付周期。本文以施耐德Modicon M241&#x2F;M262边缘控制器为例，分享一线工程师的实战调试技巧。 一、网络配置：从”不通”到”通”的排查路径1. IP地址配置三板斧在Machine Expert中配置边缘控制器网络，需要关注三个关键点： 第一板斧：静态IP vs DHCP选择  生产环境推荐静态IP，避免DHCP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="边缘控制器调试实战：Modicon M241&#x2F;M262网络配置与通信诊断完全指南">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/28/edge-tech-2026-05-28-0953/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="边缘控制器作为工业物联网的核心节点，其网络配置与调试效率直接影响项目交付周期。本文以施耐德Modicon M241&#x2F;M262边缘控制器为例，分享一线工程师的实战调试技巧。 一、网络配置：从”不通”到”通”的排查路径1. IP地址配置三板斧在Machine Expert中配置边缘控制器网络，需要关注三个关键点： 第一板斧：静态IP vs DHCP选择  生产环境推荐静态IP，避免DHCP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605280953.jpg">
+<meta property="article:published_time" content="2026-05-28T01:53:00.000Z">
+<meta property="article:modified_time" content="2026-05-28T01:56:33.551Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="Modicon">
+<meta property="article:tag" content="调试技巧">
+<meta property="article:tag" content="网络配置">
+<meta property="article:tag" content="Machine Expert">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605280953.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-2026-05-28-0953" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/28/edge-tech-2026-05-28-0953/" class="article-date">
+  <time class="dt-published" datetime="2026-05-28T01:53:00.000Z" itemprop="datePublished">2026-05-28 09:53</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      边缘控制器调试实战：Modicon M241/M262网络配置与通信诊断完全指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202605280953.jpg" alt="边缘控制器调试"></p>
+<p>边缘控制器作为工业物联网的核心节点，其网络配置与调试效率直接影响项目交付周期。本文以施耐德Modicon M241&#x2F;M262边缘控制器为例，分享一线工程师的实战调试技巧。</p>
+<h2 id="一、网络配置：从”不通”到”通”的排查路径"><a href="#一、网络配置：从”不通”到”通”的排查路径" class="headerlink" title="一、网络配置：从”不通”到”通”的排查路径"></a>一、网络配置：从”不通”到”通”的排查路径</h2><h3 id="1-IP地址配置三板斧"><a href="#1-IP地址配置三板斧" class="headerlink" title="1. IP地址配置三板斧"></a>1. IP地址配置三板斧</h3><p>在Machine Expert中配置边缘控制器网络，需要关注三个关键点：</p>
+<p><strong>第一板斧：静态IP vs DHCP选择</strong></p>
+<ul>
+<li>生产环境推荐静态IP，避免DHCP租约过期导致控制器”失联”</li>
+<li>Machine Expert中配置路径：设备树 → 控制器 → Ethernet → IP配置</li>
+<li>设置静态IP时，务必确认网段与上位机&#x2F;交换机一致</li>
+</ul>
+<p><strong>第二板斧：网关与子网掩码</strong></p>
+<figure class="highlight st"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 常见配置参数示例</span><br><span class="line"><span class="type">IP</span>地址: <span class="number">192.168</span><span class="number">.1</span><span class="number">.100</span></span><br><span class="line">子网掩码: <span class="number">255.255</span><span class="number">.255</span><span class="number">.0</span></span><br><span class="line">默认网关: <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第三板斧：设备名称(Device Name)唯一性</strong></p>
+<ul>
+<li>Profinet&#x2F;EtherNet&#x2F;IP环境必须设置唯一设备名</li>
+<li>名称长度≤240字符，仅支持字母、数字、下划线、连字符</li>
+</ul>
+<h3 id="2-多网口控制器的路由配置"><a href="#2-多网口控制器的路由配置" class="headerlink" title="2. 多网口控制器的路由配置"></a>2. 多网口控制器的路由配置</h3><p>Modicon M262提供双以太网口，可实现”办公网+控制网”隔离。关键配置：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>网口1（控制网）</th>
+<th>网口2（办公网）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IP地址</td>
+<td>192.168.10.10</td>
+<td>10.0.0.50</td>
+</tr>
+<tr>
+<td>子网掩码</td>
+<td>255.255.255.0</td>
+<td>255.255.0.0</td>
+</tr>
+<tr>
+<td>网关</td>
+<td>不设置</td>
+<td>10.0.0.1</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>调试技巧</strong>：双网口场景下，务必在路由表中添加静态路由，确保控制网数据不会”窜”到办公网。</p>
+</blockquote>
+<h2 id="二、通信诊断：Modbus-IO-Scanner实战"><a href="#二、通信诊断：Modbus-IO-Scanner实战" class="headerlink" title="二、通信诊断：Modbus IO Scanner实战"></a>二、通信诊断：Modbus IO Scanner实战</h2><p>Modbus RTU&#x2F;TCP是边缘控制器与变频器、仪表通信的主流协议。以下为Machine Expert中Modbus IO Scanner配置要点：</p>
+<h3 id="1-Modbus通道配置详解"><a href="#1-Modbus通道配置详解" class="headerlink" title="1. Modbus通道配置详解"></a>1. Modbus通道配置详解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">通道参数说明：</span><br><span class="line">├── 名称：给通道命名（如&quot;变频器频率读取&quot;）</span><br><span class="line">├── 访问类型：读/写/读写</span><br><span class="line">├── 触发器：循环触发（按时间间隔）/ 上升沿触发</span><br><span class="line">├── 偏移：寄存器起始地址</span><br><span class="line">└── 长度：读取寄存器数量</span><br></pre></td></tr></table></figure>
+
+<p><strong>常见配置错误与解决</strong>：</p>
+<ul>
+<li>错误1：地址偏移计算错误 → 使用Modbus Poll工具验证地址</li>
+<li>错误2：超时时间过短 → 将响应超时从默认500ms调整为1000ms</li>
+<li>错误3：从站地址冲突 → 现场逐一排查设备从站号</li>
+</ul>
+<h3 id="2-通信状态监控代码"><a href="#2-通信状态监控代码" class="headerlink" title="2. 通信状态监控代码"></a>2. 通信状态监控代码</h3><p>以下Structured Text代码实现通信状态监测：</p>
+<figure class="highlight st"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Modbus</span>通信状态监控功能块</span><br><span class="line"><span class="type">FUNCTION_BLOCK</span> <span class="type">FB_ModbusMonitor</span></span><br><span class="line"><span class="type">VAR_INPUT</span></span><br><span class="line">    bCommActive : <span class="type">BOOL</span>;    // 通信活动标志</span><br><span class="line">    tTimeout    : <span class="type">TIME</span> := <span class="type">T</span>#<span class="number">5</span>S;  // 超时时间</span><br><span class="line"><span class="type">END_VAR</span></span><br><span class="line"><span class="type">VAR_OUTPUT</span></span><br><span class="line">    bCommOK     : <span class="type">BOOL</span>;    // 通信正常</span><br><span class="line">    wCommCount  : <span class="type">WORD</span>;    // 通信计数</span><br><span class="line"><span class="type">END_VAR</span></span><br><span class="line"><span class="type">VAR</span></span><br><span class="line">    tonTimeout  : <span class="type">TON</span>;</span><br><span class="line"><span class="type">END_VAR</span></span><br><span class="line"></span><br><span class="line">// 超时检测逻辑</span><br><span class="line">tonTimeout(<span class="type">IN</span> := <span class="type">NOT</span> bCommActive, <span class="type">PT</span> := tTimeout);</span><br><span class="line"></span><br><span class="line">// 通信状态判断</span><br><span class="line">bCommOK := <span class="type">NOT</span> tonTimeout.<span class="type">Q</span>;</span><br><span class="line"></span><br><span class="line">// 正常通信计数</span><br><span class="line"><span class="type">IF</span> bCommActive <span class="type">AND</span> <span class="type">NOT</span> tonTimeout.<span class="type">Q</span> <span class="type">THEN</span></span><br><span class="line">    wCommCount := wCommCount + <span class="number">1</span>;</span><br><span class="line"><span class="type">END_IF</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、在线调试：变量监视与强制技巧"><a href="#三、在线调试：变量监视与强制技巧" class="headerlink" title="三、在线调试：变量监视与强制技巧"></a>三、在线调试：变量监视与强制技巧</h2><h3 id="1-变量监视最佳实践"><a href="#1-变量监视最佳实践" class="headerlink" title="1. 变量监视最佳实践"></a>1. 变量监视最佳实践</h3><p>Machine Expert提供多种变量监视方式：</p>
+<ul>
+<li><strong>监视窗口</strong>：适合批量监视多个变量</li>
+<li><strong>趋势视图</strong>：适合模拟量信号分析</li>
+<li><strong>逻辑分析器</strong>：适合时序问题排查</li>
+</ul>
+<blockquote>
+<p><strong>工程师Tips</strong>：趋势视图采样周期设为任务周期的整数倍，避免数据”锯齿”。</p>
+</blockquote>
+<h3 id="2-变量强制-Force-操作规范"><a href="#2-变量强制-Force-操作规范" class="headerlink" title="2. 变量强制(Force)操作规范"></a>2. 变量强制(Force)操作规范</h3><p>强制功能是调试利器，但也存在风险。建议遵循以下规范：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>是否使用强制</th>
+<th>替代方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>测试单机逻辑</td>
+<td>✅ 允许</td>
+<td>-</td>
+</tr>
+<tr>
+<td>联机调试</td>
+<td>⚠️ 谨慎</td>
+<td>修改程序逻辑</td>
+</tr>
+<tr>
+<td>生产运行</td>
+<td>❌ 禁止</td>
+<td>使用HMI手动模式</td>
+</tr>
+<tr>
+<td>安全回路</td>
+<td>❌ 绝对禁止</td>
+<td>修改安全程序</td>
+</tr>
+</tbody></table>
+<h2 id="四、故障排查：常见问题速查表"><a href="#四、故障排查：常见问题速查表" class="headerlink" title="四、故障排查：常见问题速查表"></a>四、故障排查：常见问题速查表</h2><table>
+<thead>
+<tr>
+<th>故障现象</th>
+<th>可能原因</th>
+<th>排查步骤</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无法Ping通控制器</td>
+<td>IP冲突&#x2F;网线故障</td>
+<td>1.断开网络单独连接 2.检查网口指示灯</td>
+</tr>
+<tr>
+<td>程序无法下载</td>
+<td>防火墙&#x2F;权限</td>
+<td>1.关闭防火墙测试 2.检查控制器权限设置</td>
+</tr>
+<tr>
+<td>Modbus通信中断</td>
+<td>从站掉线&#x2F;地址错误</td>
+<td>1.检查从站供电 2.验证寄存器地址</td>
+</tr>
+<tr>
+<td>运行灯闪烁</td>
+<td>程序错误&#x2F;硬件故障</td>
+<td>1.查看诊断日志 2.检查I&#x2F;O模块状态</td>
+</tr>
+</tbody></table>
+<h2 id="五、调试效率提升工具"><a href="#五、调试效率提升工具" class="headerlink" title="五、调试效率提升工具"></a>五、调试效率提升工具</h2><h3 id="1-必备软件工具箱"><a href="#1-必备软件工具箱" class="headerlink" title="1. 必备软件工具箱"></a>1. 必备软件工具箱</h3><ul>
+<li><strong>Modbus Poll&#x2F;Slave</strong>：Modbus协议测试神器</li>
+<li><strong>Wireshark</strong>：网络抓包分析</li>
+<li><strong>Putty&#x2F;TeraTerm</strong>：串口调试</li>
+<li><strong>Machine Expert诊断工具</strong>：内置故障分析</li>
+</ul>
+<h3 id="2-调试流程优化建议"><a href="#2-调试流程优化建议" class="headerlink" title="2. 调试流程优化建议"></a>2. 调试流程优化建议</h3><ol>
+<li><strong>离线验证优先</strong>：先在仿真环境验证逻辑，减少现场调试时间</li>
+<li><strong>分段调试策略</strong>：按功能模块划分，逐个验证</li>
+<li><strong>文档同步更新</strong>：调试过程中同步更新IO表、变量表</li>
+<li><strong>版本管理规范</strong>：每次修改后打标签，便于回溯</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>边缘控制器调试是一项需要耐心与经验的工作。掌握网络配置要点、通信诊断技巧以及规范的调试流程，可以显著提升项目交付效率。建议工程师在日常工作中建立个人调试知识库，积累典型问题的解决方案，逐步形成”调试直觉”。</p>
+<hr>
+<p><em>更多边缘控制技术文章，请关注本专栏。如有技术问题，欢迎留言交流。</em></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/28/edge-tech-2026-05-28-0953/" data-id="cmq43egxm00a52oun5bobf1kf" data-title="边缘控制器调试实战：Modicon M241/M262网络配置与通信诊断完全指南" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Machine-Expert/" rel="tag">Machine Expert</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon/" rel="tag">Modicon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" rel="tag">网络配置</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7/" rel="tag">调试技巧</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/28/schneider-news-20260528-1209/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气：以实效型AI赋能快速消费品行业新增长
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/28/schneider-news-20260528-0930/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气EcoStruxure：以实效型AI赋能快速消费品行业新增长</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0808/">施耐德电气六月动态：牵手Kraken加速电网柔性调度，AI与能源管理双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E8%A5%BF%E5%8C%97%E5%AE%9E%E8%B7%B5-2026-06-13/">边缘控制技术在西北能源与工控项目中的深度实践：2026年中趋势洞察</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0702/">工业边缘网关实战：从协议转换到端-边-云协同的完整部署指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0637/">施耐德电气SNEC 2026重磅亮相：技术-场景-生态三维升级，重塑新能源产业格局</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0602/">FBD功能块图设计模式：边缘控制器中的模块化编程艺术</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-2026-06-13/">边缘控制技术在西北工业自动化中的落地实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0537/">施耐德电气引领新能源与数据中心双重变革：从SNEC 2026到液冷技术突破</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/northwest-edge-control-automation-2026/">边缘控制技术在西北工业自动化领域的应用与前景</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0502/">IEC 61499在边缘控制中的实践：分布式自动化架构的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0402/">IEC 61499分布式控制架构：边缘计算时代的工业自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-china-2026/">边缘控制技术在西北工业自动化中的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0302/">IEC 61499分布式控制：边缘控制的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0302/">施耐德电气重磅新品密集发布：从EvoPacT HVX到热管理实验室，引领工业自动化新趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0238/">施耐德电气厦门基地竣工：打造全球最大中压生产基地与灯塔工厂</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-edge-control-northwest-automation/">边缘控制技术在西北工业自动化中的创新应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-202606130202/">OPC UA在边缘计算中的深度应用：从协议架构到实战部署</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-202606130137/">施耐德电气布局全球最大中压生产基地，数字化与可持续发展双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-northwest-edge-control-automation/">西北工业自动化新趋势：边缘控制技术在PLC与配电系统中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0102/">IEC 61499分布式控制架构：边缘控制的技术革新与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0051/">施耐德电气ATV610QC变频器重磅发布：以创新技术驱动工业自动化新升级</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

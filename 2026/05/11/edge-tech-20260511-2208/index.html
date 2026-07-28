@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>TSN时间敏感网络在工业控制中的应用实践 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="引言随着工业4.0的推进，制造企业对网络提出了更高要求：既要满足实时控制的确定性需求，又要支持大数据传输的IT&#x2F;OT融合。传统工业总线与普通以太网各有所长，但难以兼顾。时间敏感网络（TSN）正是为解决这一矛盾而生的新一代标准。 TSN技术解析核心标准族   标准 名称 功能    IEEE 802.1AS gPTP 精确时钟同步   IEEE 802.1Qbv 时间感知调度 确定性调度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TSN时间敏感网络在工业控制中的应用实践">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-2208/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="引言随着工业4.0的推进，制造企业对网络提出了更高要求：既要满足实时控制的确定性需求，又要支持大数据传输的IT&#x2F;OT融合。传统工业总线与普通以太网各有所长，但难以兼顾。时间敏感网络（TSN）正是为解决这一矛盾而生的新一代标准。 TSN技术解析核心标准族   标准 名称 功能    IEEE 802.1AS gPTP 精确时钟同步   IEEE 802.1Qbv 时间感知调度 确定性调度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605112208.jpg">
+<meta property="article:published_time" content="2026-05-11T14:08:00.000Z">
+<meta property="article:modified_time" content="2026-05-21T00:35:13.230Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="施耐德">
+<meta property="article:tag" content="TSN">
+<meta property="article:tag" content="时间敏感网络">
+<meta property="article:tag" content="确定性网络">
+<meta property="article:tag" content="实时以太网">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605112208.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260511-2208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/11/edge-tech-20260511-2208/" class="article-date">
+  <time class="dt-published" datetime="2026-05-11T14:08:00.000Z" itemprop="datePublished">2026-05-11 22:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      TSN时间敏感网络在工业控制中的应用实践
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202605112208.jpg" alt="边缘控制技术"></p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>随着工业4.0的推进，制造企业对网络提出了更高要求：既要满足实时控制的确定性需求，又要支持大数据传输的IT&#x2F;OT融合。传统工业总线与普通以太网各有所长，但难以兼顾。时间敏感网络（TSN）正是为解决这一矛盾而生的新一代标准。</p>
+<h2 id="TSN技术解析"><a href="#TSN技术解析" class="headerlink" title="TSN技术解析"></a>TSN技术解析</h2><h3 id="核心标准族"><a href="#核心标准族" class="headerlink" title="核心标准族"></a>核心标准族</h3><table>
+<thead>
+<tr>
+<th>标准</th>
+<th>名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IEEE 802.1AS</td>
+<td>gPTP</td>
+<td>精确时钟同步</td>
+</tr>
+<tr>
+<td>IEEE 802.1Qbv</td>
+<td>时间感知调度</td>
+<td>确定性调度</td>
+</tr>
+<tr>
+<td>IEEE 802.1Qcc</td>
+<td>配置协议</td>
+<td>网络配置管理</td>
+</tr>
+<tr>
+<td>IEEE 802.1Qbu</td>
+<td>帧抢占</td>
+<td>低延迟传输</td>
+</tr>
+<tr>
+<td>IEEE 802.1CB</td>
+<td>冗余传输</td>
+<td>高可靠性</td>
+</tr>
+<tr>
+<td>IEEE 802.1Qci</td>
+<td>入口流量管控</td>
+<td>安全隔离</td>
+</tr>
+</tbody></table>
+<h3 id="TSN与传统网络对比"><a href="#TSN与传统网络对比" class="headerlink" title="TSN与传统网络对比"></a>TSN与传统网络对比</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">传统以太网                          TSN网络</span><br><span class="line">─────────────────────────────────────────────────</span><br><span class="line">┌───────────────────┐              ┌───────────────────┐</span><br><span class="line">│  随机访问          │              │  时隙调度         │</span><br><span class="line">│  丢包可能性       │      →       │  确定性传输       │</span><br><span class="line">│  延迟不确定       │              │  零丢包保证       │</span><br><span class="line">│  无时钟同步       │              │  纳秒级同步       │</span><br><span class="line">└───────────────────┘              └───────────────────┘</span><br><span class="line"></span><br><span class="line">传统工业总线                        TSN网络</span><br><span class="line">─────────────────────────────────────────────────</span><br><span class="line">┌───────────────────┐              ┌───────────────────┐</span><br><span class="line">│  实时性好         │              │  实时+带宽兼得    │</span><br><span class="line">│  带宽有限         │      →       │  Gbps级带宽       │</span><br><span class="line">│  协议封闭         │              │  开放以太网       │</span><br><span class="line">│  无IT集成         │              │  IT/OT融合        │</span><br><span class="line">└───────────────────┘              └───────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="精确时钟同步（gPTP）"><a href="#精确时钟同步（gPTP）" class="headerlink" title="精确时钟同步（gPTP）"></a>精确时钟同步（gPTP）</h2><h3 id="同步原理"><a href="#同步原理" class="headerlink" title="同步原理"></a>同步原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">主时钟(Grand Master)                    从时钟(Slave)</span><br><span class="line">        │                                     │</span><br><span class="line">        │  ──────────── t1 ─────────────▶    │  Sync报文发送时间</span><br><span class="line">        │                                     │</span><br><span class="line">        │  ◀─────────── t2 ─────────────     │  Sync报文接收时间</span><br><span class="line">        │                                     │</span><br><span class="line">        │  ◀─────────── t3 ─────────────     │  Delay_Req发送时间</span><br><span class="line">        │                                     │</span><br><span class="line">        │  ──────────── t4 ─────────────▶    │  Delay_Resp报文</span><br><span class="line">        │                                     │</span><br><span class="line">        </span><br><span class="line">时钟偏差计算：</span><br><span class="line">Offset = [(t2 - t1) + (t3 - t4)] / 2</span><br><span class="line">传输延迟：</span><br><span class="line">Delay = [(t2 - t1) - (t3 - t4)] / 2</span><br><span class="line"></span><br><span class="line">精度目标：&lt; 1μs（典型&lt; 100ns）</span><br></pre></td></tr></table></figure>
+
+<h3 id="时钟同步配置"><a href="#时钟同步配置" class="headerlink" title="时钟同步配置"></a>时钟同步配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linuxptp配置示例（gPTP守护进程）</span></span><br><span class="line"><span class="comment"># /etc/linuxptp/ptp4l.conf</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">global</span>]</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 时间戳模式</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">time_stamping   hardware</span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># gPTP配置</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">twoStepFlag     <span class="number">1</span></span><br><span class="line">slaveOnly       <span class="number">0</span></span><br><span class="line">priority1       <span class="number">128</span></span><br><span class="line">priority2       <span class="number">128</span></span><br><span class="line">clockClass      <span class="number">248</span></span><br><span class="line">clockAccuracy   <span class="number">0xFE</span></span><br><span class="line">offsetScaledLogVariance <span class="number">0x7FFF</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 传输延迟不对称性补偿</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">neighborPropDelayThresh  <span class="number">800</span></span><br><span class="line">min_neighbor_prop_delay  -<span class="number">20000000</span></span><br><span class="line">max_neighbor_prop_delay   <span class="number">20000000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 日志级别</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">logging_level   <span class="number">6</span></span><br><span class="line">summary_interval <span class="number">0</span></span><br><span class="line"></span><br><span class="line">[eth0]</span><br><span class="line"><span class="comment"># 网络接口配置</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="时间感知调度器（802-1Qbv）"><a href="#时间感知调度器（802-1Qbv）" class="headerlink" title="时间感知调度器（802.1Qbv）"></a>时间感知调度器（802.1Qbv）</h2><h3 id="调度原理"><a href="#调度原理" class="headerlink" title="调度原理"></a>调度原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">时间轴（周期重复）</span><br><span class="line">┌────────────────────────────────────────────────────────┐</span><br><span class="line">│     Gate Control List执行                               │</span><br><span class="line">│                                                        │</span><br><span class="line">│  ┌──────────┬──────────┬──────────┬──────────┐        │</span><br><span class="line">│  │ Gate A   │ Gate B   │ Gate A   │ Gate C   │        │</span><br><span class="line">│  │ open     │ open      │ open     │ open     │        │</span><br><span class="line">│  │          │           │          │          │        │</span><br><span class="line">│  │ 队列7    │ 队列5     │ 队列7    │ 队列3    │        │</span><br><span class="line">│  │ 控制报文 │ 视频流    │ 控制报文 │ IT流量   │        │</span><br><span class="line">│  └──────────┴──────────┴──────────┴──────────┘        │</span><br><span class="line">│   0-100μs    100-500μs  500-600μs  600-1000μs        │</span><br><span class="line">│                                                        │</span><br><span class="line">└────────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">周期时间：1ms（根据应用需求配置）</span><br><span class="line">关键流量（队列7）：独占时隙，保证传输</span><br><span class="line">尽力流量（队列3）：剩余时隙传输</span><br></pre></td></tr></table></figure>
+
+<h3 id="TSN交换机配置"><a href="#TSN交换机配置" class="headerlink" title="TSN交换机配置"></a>TSN交换机配置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TSN交换机配置示例</span></span><br><span class="line"><span class="attr">switch:</span></span><br><span class="line">  <span class="attr">model:</span> <span class="string">&quot;TSN-Switch-Pro&quot;</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">role:</span> <span class="string">endpoint</span></span><br><span class="line">      <span class="attr">queues:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="number">7</span>                    <span class="comment"># 最高优先级（控制流量）</span></span><br><span class="line">          <span class="attr">priority:</span> <span class="number">7</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">scheduled</span>          <span class="comment"># 时间调度</span></span><br><span class="line">          <span class="attr">gate_open:</span> [<span class="number">0</span>, <span class="number">100</span>, <span class="number">500</span>, <span class="number">600</span>]  <span class="comment"># 时隙起始时间(μs)</span></span><br><span class="line">          <span class="attr">gate_close:</span> [<span class="number">100</span>, <span class="number">500</span>, <span class="number">600</span>, <span class="number">1000</span>]</span><br><span class="line">          </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="number">5</span>                    <span class="comment"># 视频流量</span></span><br><span class="line">          <span class="attr">priority:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">scheduled</span></span><br><span class="line">          <span class="attr">gate_open:</span> [<span class="number">100</span>]</span><br><span class="line">          <span class="attr">gate_close:</span> [<span class="number">500</span>]</span><br><span class="line">          </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="number">3</span>                    <span class="comment"># IT流量</span></span><br><span class="line">          <span class="attr">priority:</span> <span class="number">3</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">best_effort</span>        <span class="comment"># 尽力传输</span></span><br><span class="line">          </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">2</span></span><br><span class="line">      <span class="attr">role:</span> <span class="string">trunk</span></span><br><span class="line">      <span class="attr">queues:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="number">7</span></span><br><span class="line">          <span class="attr">priority:</span> <span class="number">7</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">scheduled</span></span><br><span class="line">          </span><br><span class="line"><span class="attr">gptp:</span></span><br><span class="line">  <span class="attr">grandmaster:</span> <span class="string">auto</span></span><br><span class="line">  <span class="attr">priority1:</span> <span class="number">128</span></span><br><span class="line">  <span class="attr">domain:</span> <span class="number">0</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">qbv:</span></span><br><span class="line">  <span class="attr">cycle_time_ns:</span> <span class="number">1000000</span>          <span class="comment"># 1ms周期</span></span><br><span class="line">  <span class="attr">gate_list:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gate_state:</span> <span class="string">&quot;11000000&quot;</span>      <span class="comment"># 队列7,6开放</span></span><br><span class="line">      <span class="attr">time_interval_ns:</span> <span class="number">100000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gate_state:</span> <span class="string">&quot;00100000&quot;</span>      <span class="comment"># 队列5开放</span></span><br><span class="line">      <span class="attr">time_interval_ns:</span> <span class="number">400000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gate_state:</span> <span class="string">&quot;11000000&quot;</span></span><br><span class="line">      <span class="attr">time_interval_ns:</span> <span class="number">100000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gate_state:</span> <span class="string">&quot;00010000&quot;</span>      <span class="comment"># 队列3开放</span></span><br><span class="line">      <span class="attr">time_interval_ns:</span> <span class="number">400000</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="TSN网络架构设计"><a href="#TSN网络架构设计" class="headerlink" title="TSN网络架构设计"></a>TSN网络架构设计</h2><h3 id="典型部署架构"><a href="#典型部署架构" class="headerlink" title="典型部署架构"></a>典型部署架构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">┌───────────────────────────────────────────────────────────────┐</span><br><span class="line">│                     企业IT网络                                  │</span><br><span class="line">│                    (标准以太网)                                 │</span><br><span class="line">└───────────────────────────┬───────────────────────────────────┘</span><br><span class="line">                            │</span><br><span class="line">                     ┌──────▼──────┐</span><br><span class="line">                     │ TSN边界网关  │</span><br><span class="line">                     │ (IT/OT转换) │</span><br><span class="line">                     └──────┬──────┘</span><br><span class="line">                            │</span><br><span class="line">         ┌──────────────────┼──────────────────┐</span><br><span class="line">         │                  │                  │</span><br><span class="line">    ┌────▼────┐        ┌────▼────┐       ┌────▼────┐</span><br><span class="line">    │ TSN交换 │        │ TSN交换 │       │ TSN交换 │</span><br><span class="line">    │ 机 #1   │◀──────▶│ 机 #2   │◀─────▶│ 机 #3   │</span><br><span class="line">    └────┬────┘        └────┬────┘       └────┬────┘</span><br><span class="line">         │                  │                  │</span><br><span class="line">    ┌────┴────┐        ┌────┴────┐       ┌────┴────┐</span><br><span class="line">    │         │        │         │       │         │</span><br><span class="line">┌───▼───┐ ┌───▼───┐ ┌──▼──┐ ┌───▼───┐ ┌─▼──┐ ┌───▼───┐</span><br><span class="line">│Modicon│ │ATV680│ │CNC │ │视觉系统│ │HMI│ │服务器 │</span><br><span class="line">│ M580  │ │变频器│ │机床│ │       │ │    │ │       │</span><br><span class="line">│(PLC) │ │      │ │   │ │       │ │    │ │       │</span><br><span class="line">└───────┘ └──────┘ └────┘ └───────┘ └────┘ └───────┘</span><br><span class="line"> 控制流量   驱动流量   运动控制  视频流    HMI    IT数据</span><br><span class="line"> 优先级7   优先级6    优先级7  优先级5   优先级4  优先级3</span><br></pre></td></tr></table></figure>
+
+<h3 id="流量规划矩阵"><a href="#流量规划矩阵" class="headerlink" title="流量规划矩阵"></a>流量规划矩阵</h3><table>
+<thead>
+<tr>
+<th>流量类型</th>
+<th>优先级</th>
+<th>带宽需求</th>
+<th>延迟要求</th>
+<th>调度策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PLC控制</td>
+<td>7</td>
+<td>&lt;1Mbps</td>
+<td>&lt;1ms</td>
+<td>独占时隙</td>
+</tr>
+<tr>
+<td>驱动同步</td>
+<td>6-7</td>
+<td>1-10Mbps</td>
+<td>&lt;100μs</td>
+<td>独占时隙</td>
+</tr>
+<tr>
+<td>视频流</td>
+<td>5</td>
+<td>10-50Mbps</td>
+<td>&lt;10ms</td>
+<td>共享时隙</td>
+</tr>
+<tr>
+<td>HMI数据</td>
+<td>4</td>
+<td>1-5Mbps</td>
+<td>&lt;50ms</td>
+<td>尽力传输</td>
+</tr>
+<tr>
+<td>IT数据</td>
+<td>3</td>
+<td>不确定</td>
+<td>无要求</td>
+<td>剩余带宽</td>
+</tr>
+</tbody></table>
+<h2 id="TSN性能测试"><a href="#TSN性能测试" class="headerlink" title="TSN性能测试"></a>TSN性能测试</h2><h3 id="测试环境配置"><a href="#测试环境配置" class="headerlink" title="测试环境配置"></a>测试环境配置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试配置</span></span><br><span class="line"><span class="attr">test_setup:</span></span><br><span class="line">  <span class="attr">dut:</span> <span class="string">&quot;TSN-Switch-Pro&quot;</span></span><br><span class="line">  <span class="attr">tester:</span> <span class="string">&quot;Spirent TestCenter&quot;</span></span><br><span class="line">  <span class="attr">topology:</span> <span class="string">&quot;daisy_chain&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">devices:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">talker</span></span><br><span class="line">      <span class="attr">interface:</span> <span class="string">&quot;10Gbps SFP+&quot;</span></span><br><span class="line">      <span class="attr">mac:</span> <span class="string">&quot;00:11:22:33:44:55&quot;</span></span><br><span class="line">      <span class="attr">vlan:</span> <span class="number">100</span></span><br><span class="line">      <span class="attr">pcp:</span> <span class="number">7</span></span><br><span class="line">      </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">listener</span></span><br><span class="line">      <span class="attr">interface:</span> <span class="string">&quot;10Gbps SFP+&quot;</span></span><br><span class="line">      <span class="attr">mac:</span> <span class="string">&quot;00:11:22:33:44:56&quot;</span></span><br><span class="line">      <span class="attr">vlan:</span> <span class="number">100</span></span><br><span class="line">      </span><br><span class="line">  <span class="attr">traffic_profiles:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">control_traffic</span></span><br><span class="line">      <span class="attr">frame_size:</span> <span class="number">64</span><span class="number">-1518</span></span><br><span class="line">      <span class="attr">rate:</span> <span class="string">1Gbps</span></span><br><span class="line">      <span class="attr">pcp:</span> <span class="number">7</span></span><br><span class="line">      <span class="attr">scheduled:</span> <span class="literal">true</span></span><br><span class="line">      </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">background_traffic</span></span><br><span class="line">      <span class="attr">frame_size:</span> <span class="number">1518</span></span><br><span class="line">      <span class="attr">rate:</span> <span class="string">5Gbps</span></span><br><span class="line">      <span class="attr">pcp:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">scheduled:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="性能测试结果"><a href="#性能测试结果" class="headerlink" title="性能测试结果"></a>性能测试结果</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TSN性能基准测试结果</span><br><span class="line">──────────────────────────────────────────────────────</span><br><span class="line">测试项目                          测量值        要求</span><br><span class="line">──────────────────────────────────────────────────────</span><br><span class="line">时钟同步精度（gPTP）              85ns         &lt;1μs ✓</span><br><span class="line">同步建立时间                      2.3s         &lt;5s ✓</span><br><span class="line">端到端延迟（队列7）               45μs         &lt;100μs ✓</span><br><span class="line">延迟抖动（队列7）                ±2μs         &lt;10μs ✓</span><br><span class="line">丢包率（队列7）                   0            0 ✓</span><br><span class="line">吞吐量（全部队列）                9.8Gbps      &gt;9Gbps ✓</span><br><span class="line">背景流量影响                      无           无 ✓</span><br><span class="line">──────────────────────────────────────────────────────</span><br><span class="line">测试条件：</span><br><span class="line">- 90%背景流量负载</span><br><span class="line">- 混合帧长（64-1518字节）</span><br><span class="line">- 25°C环境温度</span><br></pre></td></tr></table></figure>
+
+<h2 id="与施耐德系统集成"><a href="#与施耐德系统集成" class="headerlink" title="与施耐德系统集成"></a>与施耐德系统集成</h2><h3 id="Modicon-M580-TSN支持"><a href="#Modicon-M580-TSN支持" class="headerlink" title="Modicon M580 TSN支持"></a>Modicon M580 TSN支持</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Unity Pro TSN配置</span></span><br><span class="line"><span class="attr">controller:</span></span><br><span class="line">  <span class="attr">model:</span> <span class="string">&quot;M580 BMEN0510&quot;</span></span><br><span class="line">  <span class="attr">firmware:</span> <span class="string">&quot;V3.20&quot;</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">ethernet_interface:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">&quot;ETH1&quot;</span></span><br><span class="line">  <span class="attr">mode:</span> <span class="string">&quot;TSN_endpoint&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">gptp:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">grandmaster_priority:</span> <span class="number">200</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">streams:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;control_stream&quot;</span></span><br><span class="line">      <span class="attr">stream_id:</span> <span class="string">&quot;00:00:00:00:00:01:0001&quot;</span></span><br><span class="line">      <span class="attr">destination_mac:</span> <span class="string">&quot;01:00:5E:00:00:01&quot;</span></span><br><span class="line">      <span class="attr">vlan_id:</span> <span class="number">100</span></span><br><span class="line">      <span class="attr">pcp:</span> <span class="number">7</span></span><br><span class="line">      <span class="attr">max_latency_ms:</span> <span class="number">1</span></span><br><span class="line">      </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;video_stream&quot;</span></span><br><span class="line">      <span class="attr">stream_id:</span> <span class="string">&quot;00:00:00:00:00:01:0002&quot;</span></span><br><span class="line">      <span class="attr">destination_mac:</span> <span class="string">&quot;01:00:5E:00:00:02&quot;</span></span><br><span class="line">      <span class="attr">vlan_id:</span> <span class="number">100</span></span><br><span class="line">      <span class="attr">pcp:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">max_latency_ms:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Lexium-TSN驱动系统"><a href="#Lexium-TSN驱动系统" class="headerlink" title="Lexium TSN驱动系统"></a>Lexium TSN驱动系统</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Lexium TSN驱动系统架构</span><br><span class="line">┌─────────────────────────────────────────────────┐</span><br><span class="line">│                 运动控制器                       │</span><br><span class="line">│  ┌───────────────────────────────────────────┐ │</span><br><span class="line">│  │        Lexium MC4T TSN运动控制器           │ │</span><br><span class="line">│  │  - 8轴同步控制                              │ │</span><br><span class="line">│  │  - TSN原生支持                              │ │</span><br><span class="line">│  │  - 周期时间: 250μs                         │ │</span><br><span class="line">│  └───────────────────────────────────────────┘ │</span><br><span class="line">└─────────────────────────┬───────────────────────┘</span><br><span class="line">                          │ TSN网络</span><br><span class="line">         ┌────────────────┼────────────────┐</span><br><span class="line">         │                │                │</span><br><span class="line">    ┌────▼────┐      ┌────▼────┐     ┌────▼────┐</span><br><span class="line">    │ Lexium  │      │ Lexium  │     │ Lexium  │</span><br><span class="line">    │ iHCF062│      │ iHCF062│     │ iHCF062│</span><br><span class="line">    │伺服驱动 │      │伺服驱动 │     │伺服驱动 │</span><br><span class="line">    └────┬────┘      └────┬────┘     └────┬────┘</span><br><span class="line">         │                │                │</span><br><span class="line">    ┌────▼────┐      ┌────▼────┐     ┌────▼────┐</span><br><span class="line">    │伺服电机 │      │伺服电机 │     │伺服电机 │</span><br><span class="line">    └─────────┘      └─────────┘     └─────────┘</span><br><span class="line">    </span><br><span class="line">电子齿轮同步：</span><br><span class="line">- 主从同步延迟: &lt;50μs</span><br><span class="line">- 同步精度: ±0.01°</span><br><span class="line">- 支持多轴龙门同步</span><br></pre></td></tr></table></figure>
+
+<h2 id="故障诊断与运维"><a href="#故障诊断与运维" class="headerlink" title="故障诊断与运维"></a>故障诊断与运维</h2><h3 id="TSN网络监控"><a href="#TSN网络监控" class="headerlink" title="TSN网络监控"></a>TSN网络监控</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> yaml</span><br><span class="line"><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass</span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TSNMetrics</span>:</span><br><span class="line">    clock_offset_ns: <span class="built_in">float</span></span><br><span class="line">    path_delay_ns: <span class="built_in">float</span></span><br><span class="line">    tx_latency_ns: <span class="built_in">float</span></span><br><span class="line">    rx_latency_ns: <span class="built_in">float</span></span><br><span class="line">    queue_discards: <span class="built_in">int</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TSNMonitor</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config_path: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(config_path) <span class="keyword">as</span> f:</span><br><span class="line">            <span class="variable language_">self</span>.config = yaml.safe_load(f)</span><br><span class="line">        <span class="variable language_">self</span>.baseline = &#123;&#125;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">collect_metrics</span>(<span class="params">self</span>) -&gt; TSNMetrics:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;从交换机SNMP/NETCONF接口采集指标&quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 实现省略</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">detect_anomaly</span>(<span class="params">self, metrics: TSNMetrics</span>) -&gt; <span class="built_in">list</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;检测网络异常&quot;&quot;&quot;</span></span><br><span class="line">        anomalies = []</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(metrics.clock_offset_ns) &gt; <span class="number">1000</span>:</span><br><span class="line">            anomalies.append(&#123;</span><br><span class="line">                <span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;clock_drift&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;severity&#x27;</span>: <span class="string">&#x27;high&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;value&#x27;</span>: metrics.clock_offset_ns</span><br><span class="line">            &#125;)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span> metrics.queue_discards &gt; <span class="number">0</span>:</span><br><span class="line">            anomalies.append(&#123;</span><br><span class="line">                <span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;queue_congestion&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;severity&#x27;</span>: <span class="string">&#x27;medium&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;queue&#x27;</span>: <span class="number">7</span></span><br><span class="line">            &#125;)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> anomalies</span><br></pre></td></tr></table></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>TSN正在重塑工业网络格局，将实时控制与IT融合统一在标准以太网架构之上。施耐德电气的Modicon、Lexium等产品已原生支持TSN标准，为客户提供面向未来的开放自动化网络解决方案。随着标准的成熟和生态的完善，TSN将成为工业4.0的核心基础设施。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-2208/" data-id="cmq43egyv00iv2oun8vjgcxsv" data-title="TSN时间敏感网络在工业控制中的应用实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TSN/" rel="tag">TSN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%9E%E6%97%B6%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">实时以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E6%95%8F%E6%84%9F%E7%BD%91%E7%BB%9C/" rel="tag">时间敏感网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%BD%91%E7%BB%9C/" rel="tag">确定性网络</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/12/schneider-news-20260512-0808/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          施耐德电气：EcoStruxure平台助力智能制造升级
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/11/schneider-news-20260511-2208/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德电气：全球可持续发展指数报告发布，中国领先</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0808/">施耐德电气六月动态：牵手Kraken加速电网柔性调度，AI与能源管理双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E8%A5%BF%E5%8C%97%E5%AE%9E%E8%B7%B5-2026-06-13/">边缘控制技术在西北能源与工控项目中的深度实践：2026年中趋势洞察</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0702/">工业边缘网关实战：从协议转换到端-边-云协同的完整部署指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0637/">施耐德电气SNEC 2026重磅亮相：技术-场景-生态三维升级，重塑新能源产业格局</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0602/">FBD功能块图设计模式：边缘控制器中的模块化编程艺术</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-2026-06-13/">边缘控制技术在西北工业自动化中的落地实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0537/">施耐德电气引领新能源与数据中心双重变革：从SNEC 2026到液冷技术突破</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/northwest-edge-control-automation-2026/">边缘控制技术在西北工业自动化领域的应用与前景</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0502/">IEC 61499在边缘控制中的实践：分布式自动化架构的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0402/">IEC 61499分布式控制架构：边缘计算时代的工业自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-control-northwest-china-2026/">边缘控制技术在西北工业自动化中的深度应用与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0302/">IEC 61499分布式控制：边缘控制的新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0302/">施耐德电气重磅新品密集发布：从EvoPacT HVX到热管理实验室，引领工业自动化新趋势</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0238/">施耐德电气厦门基地竣工：打造全球最大中压生产基地与灯塔工厂</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-edge-control-northwest-automation/">边缘控制技术在西北工业自动化中的创新应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-202606130202/">OPC UA在边缘计算中的深度应用：从协议架构到实战部署</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-202606130137/">施耐德电气布局全球最大中压生产基地，数字化与可持续发展双轮驱动</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/2026-06-13-northwest-edge-control-automation/">西北工业自动化新趋势：边缘控制技术在PLC与配电系统中的深度应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/edge-tech-20260613-0102/">IEC 61499分布式控制架构：边缘控制的技术革新与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/13/schneider-news-20260613-0051/">施耐德电气ATV610QC变频器重磅发布：以创新技术驱动工业自动化新升级</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>
