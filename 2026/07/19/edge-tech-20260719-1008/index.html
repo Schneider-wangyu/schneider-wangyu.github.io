@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>IEC 61499功能块在分布式产线控制中的工程应用 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="概述IEC 61499以事件驱动功能块重构控制逻辑，支持跨控制器分布式部署。在西北某装备产线中，将装配、检测、包装等功能块分布于多台M580，通过订阅&#x2F;发布机制实现协同，产线调整周期由数周缩短至数日。 技术背景工业4.0推进下，边缘控制成为自动化主线。施耐德EcoStruxure平台以开放架构整合OT与IT，M580边缘控制器在西北能源、化工、水务、矿山场景中持续验证价值。 核心要点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IEC 61499功能块在分布式产线控制中的工程应用">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/07/19/edge-tech-20260719-1008/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="概述IEC 61499以事件驱动功能块重构控制逻辑，支持跨控制器分布式部署。在西北某装备产线中，将装配、检测、包装等功能块分布于多台M580，通过订阅&#x2F;发布机制实现协同，产线调整周期由数周缩短至数日。 技术背景工业4.0推进下，边缘控制成为自动化主线。施耐德EcoStruxure平台以开放架构整合OT与IT，M580边缘控制器在西北能源、化工、水务、矿山场景中持续验证价值。 核心要点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-20260719-1008.jpg">
+<meta property="article:published_time" content="2026-07-19T02:08:00.000Z">
+<meta property="article:modified_time" content="2026-07-24T10:39:19.435Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业自动化">
+<meta property="article:tag" content="施耐德电气">
+<meta property="article:tag" content="M580">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-20260719-1008.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260719-1008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/07/19/edge-tech-20260719-1008/" class="article-date">
+  <time class="dt-published" datetime="2026-07-19T02:08:00.000Z" itemprop="datePublished">2026-07-19 10:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      IEC 61499功能块在分布式产线控制中的工程应用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-20260719-1008.jpg" alt="工业自动化"></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>IEC 61499以事件驱动功能块重构控制逻辑，支持跨控制器分布式部署。在西北某装备产线中，将装配、检测、包装等功能块分布于多台M580，通过订阅&#x2F;发布机制实现协同，产线调整周期由数周缩短至数日。</p>
+<h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>工业4.0推进下，边缘控制成为自动化主线。施耐德EcoStruxure平台以开放架构整合OT与IT，M580边缘控制器在西北能源、化工、水务、矿山场景中持续验证价值。</p>
+<h2 id="核心要点"><a href="#核心要点" class="headerlink" title="核心要点"></a>核心要点</h2><ul>
+<li><strong>实时性</strong>：本地闭环控制，通信延迟降至毫秒级</li>
+<li><strong>可靠性</strong>：分布式自治，单点故障不影响全局</li>
+<li><strong>开放性</strong>：原生支持Modbus TCP、OPC UA、Ethernet&#x2F;IP</li>
+<li><strong>可扩展</strong>：功能块化设计，新增测点即插即用</li>
+</ul>
+<h2 id="实施建议"><a href="#实施建议" class="headerlink" title="实施建议"></a>实施建议</h2><p>需求梳理→硬件选型→Machine Expert编程→网络集成→现场调试。注重I&#x2F;O预留、程序注释与定期备份，可保障长周期稳定运行。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>边缘控制赋能西北工业智能化，施耐德成熟方案助力企业降本增效与绿色低碳转型。</p>
+<p><em>作者：施耐德技术团队 · 2026年7月19日</em></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/07/19/edge-tech-20260719-1008/" data-id="cmryt6nl6006a7wunam55hw1e" data-title="IEC 61499功能块在分布式产线控制中的工程应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/M580/" rel="tag">M580</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/07/19/schneider-news-20260719-1208/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          EcoStruxure边缘控制平台在半导体封测产线规模部署
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/07/19/schneider-news-20260719-1008/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">施耐德与西北某钢铁集团签订千万级自动化总包合同</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/28/2026-07-28-northwest-datacenter-news-july/">西北数据中心集群加速建设：庆阳算力突破15万P，中卫D区机电工程中标公示</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/28/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF%E5%9C%A8%E8%A5%BF%E5%8C%97%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%AD%E7%9A%84%E5%AE%9E%E8%B7%B5%E4%B8%8E%E6%9C%BA%E9%81%87/">边缘控制技术在西北工业自动化中的实践与机遇</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/28/schneider-news-20260728-1530/">施耐德电气亮相WAIC 2026：AI+能源融合，驱动工业自动化新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/northwest-edge-control-automation-2026-07-25/">边缘控制技术赋能西北工业自动化转型升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0630/">AI+能源双轮驱动：施耐德电气如何用「算电协同」重新定义工业未来</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0609/">确定性边缘通信新范式：OPC UA over TSN 与 Modicon Edge I/O NTS 实战解析</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/northwest-edge-control-2026-07-25/">从西北中标风向看边缘控制：让PLC与变频柜在现场&#34;就地决策&#34;</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0524/">域智能 驭未来——施耐德电气&#34;AI+能源&#34;重塑工业增长新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0518/">边缘控制器调试不再靠猜：从上电到上线的七个实战技巧</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0511/">FBD 功能块图不是画图游戏：边缘控制器上的模块化设计五原则</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0411/">从梯形图到ST：IEC 61131-3五种语言选型与边缘控制器编程实战</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0411/">AI能源&#34;智驭&#34;时代来临！施耐德电气WAIC 2026全栈方案解读：从ETAP数字孪生到SmartCool节能黑科技</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/2026-07-25-northwest-oilgas-edge-control-bids/">从井口到配电室——西北油气与能源项目招采背后的边缘控制逻辑</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0311/">从功能块到边缘节点：IEC 61499 如何重塑分布式控制的部署逻辑</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0311/">从中压变频到运动控制：施耐德电气多线发力，工业自动化&#34;软硬兼施&#34;再提速</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/2026-07-25-northwest-edge-control-vfd-plc-bids/">边缘控制赋能西北工业现场——从7月中标看PLC与变频器的智能升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0218/">从配电到算力：施耐德电气如何用 AI 重塑工业与能源新范式</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/edge-tech-20260725-0211/">数字孪生落到边缘侧：EcoStruxure 如何用边缘计算驱动实时孪生模型</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/northwest-automation-edge-control-2026-07-25/">西北地区工业自动化新动向：边缘控制技术赋能油田智能化转型</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/25/schneider-news-20260725-0119/">从&#34;新型工控&#34;到工业AI智能体：施耐德电气开放自动化的进化之路</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>
