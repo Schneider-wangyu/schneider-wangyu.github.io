@@ -81,6 +81,79 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-edge-tech-20260903-0510" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/09/03/edge-tech-20260903-0510/" class="article-date">
+  <time class="dt-published" datetime="2026-09-02T21:10:00.000Z" itemprop="datePublished">2026-09-03 05:10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/09/03/edge-tech-20260903-0510/">FBD功能块图实战：用EN/ENO故障级联与派生功能块写出可维护的边缘控制程序</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在施耐德 EcoStruxure Control Expert（原 Unity Pro）与 EcoStruxure Automation Expert（EAE）的工程实践里，功能块图（FBD）是与梯形图（LD）并列的主力语言。对于 Modicon M580 &#x2F; M262 这类边缘控制器上的连续过程、PID 回路与信号调理链，FBD 的信号流表达远比梯形图清晰。但 FBD 看似”连线即可”，藏着几个高频坑。本文结合 IEC 61131-3 第 4 版（2025-06 发布）规范，拆解三条最实用的设计纪律。</p>
+<p><img src="/images/edge-tech-202609030510.jpg" alt="FBD功能块图：边缘控制器上以信号流表达的控制网络"></p>
+<h2 id="一、EN-ENO：被忽视的故障级联开关"><a href="#一、EN-ENO：被忽视的故障级联开关" class="headerlink" title="一、EN&#x2F;ENO：被忽视的故障级联开关"></a>一、EN&#x2F;ENO：被忽视的故障级联开关</h2><p>IEC 61131-3 给标准块与用户块都定义了可选引脚 EN（使能输入）与 ENO（使能输出）。ENO 的语义是”本块执行成功才为真”，于是工程上常把前一块的 ENO 接到下一块的 EN，构成故障短路链：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SCALE_Raw ──ENO──▶ EN(PID) ──ENO──▶ EN(AO_Write)</span><br></pre></td></tr></table></figure>
+
+<p>一旦 SCALE 因输入超量程或换算错误导致 ENO 变假，下游 PID 的 EN 也变假——PID 保持上一周期输出、模拟量输出卡在原值、HMI 报故障，<strong>不会发生危险动作</strong>。</p>
+<p>最常见的错误是”EN 不接线就以为块被禁用”。恰恰相反：IEC 规范中 EN 悬空时<strong>默认恒为真</strong>，块每个扫描周期都执行。若想让某块仅在条件满足时运行，必须显式把条件接到 EN。反过来，可利用 EN 跳过”贵”的块——例如一个 50 次迭代的传热估算器，把 EN 接到”输入变化”标志，仅在输入变动时重算，高扫描率下能省出可观 CPU。</p>
+<h2 id="二、派生功能块：把重复网络封装成资产"><a href="#二、派生功能块：把重复网络封装成资产" class="headerlink" title="二、派生功能块：把重复网络封装成资产"></a>二、派生功能块：把重复网络封装成资产</h2><p>FBD 最被低估的能力是”自己造块”。把反复出现的模式——消抖（Debounce）、带确认复位的故障锁存、带复位的运行时间累加器——封装成派生 FUNCTION_BLOCK，带命名输入&#x2F;输出引脚，处处复用。在 EcoStruxure 体系里它就是用户自定义 POU，编译后可拖拽实例化。</p>
+<p>一个可复用的”故障锁存 + 确认”功能块（ST 外壳）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK FB_FaultLatch</span><br><span class="line">VAR_INPUT</span><br><span class="line">    Trig    : BOOL;   // 故障触发</span><br><span class="line">    Ack     : BOOL;   // 操作员确认</span><br><span class="line">    Reset   : BOOL;   // 复位</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    Active  : BOOL;   // 当前故障态</span><br><span class="line">    Latched : BOOL;   // 已锁存(待确认)</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    _mem : BOOL;</span><br><span class="line">END_VAR</span><br><span class="line">---</span><br><span class="line">IF Reset THEN</span><br><span class="line">    _mem := FALSE;</span><br><span class="line">ELSIF Trig THEN</span><br><span class="line">    _mem := TRUE;</span><br><span class="line">END_IF;</span><br><span class="line">Active  := _mem OR Trig;</span><br><span class="line">Latched := _mem AND NOT Ack;</span><br></pre></td></tr></table></figure>
+
+<p>良好派生块的纪律：接口要小（5<del>10 个引脚足够，超 20 即过度设计）；内部状态用实例内存隔离，每个调用必须有独立实例名（M580 中每个 FB 实例占用独立背景数据区，否则多台电机的运行时间会互相串扰）；内部逻辑封装好，调用方只关心引脚语义。低于 5</del>6 个块深度、调用不足 3~4 次的”小逻辑”别封装，内联反而更省。</p>
+<h2 id="三、边沿检测-R-TRIG-F-TRIG：实例名陷阱"><a href="#三、边沿检测-R-TRIG-F-TRIG：实例名陷阱" class="headerlink" title="三、边沿检测 R_TRIG &#x2F; F_TRIG：实例名陷阱"></a>三、边沿检测 R_TRIG &#x2F; F_TRIG：实例名陷阱</h2><p>计数、事件只在跳变时动作，必须用边沿检测块。IEC 标准两个块：</p>
+<ul>
+<li><code>R_TRIG</code>：CLK 由 0→1 时 Q 仅一个周期为真；</li>
+<li><code>F_TRIG</code>：CLK 由 1→0 时 Q 仅一个周期为真。</li>
+</ul>
+<p>二者内部各自保存上一周期 CLK 值，因此<strong>每个边沿检测器必须有唯一实例名</strong>。经典 bug：在多个网络误用同一个 R_TRIG 实例名，结果是”只有最后一次调用触发”。在 Control Expert &#x2F; EAE 中给每个 R_TRIG 起独立实例，并上线监控验证。</p>
+<h2 id="四、FBD-还是-LD？给工程一个决策矩阵"><a href="#四、FBD-还是-LD？给工程一个决策矩阵" class="headerlink" title="四、FBD 还是 LD？给工程一个决策矩阵"></a>四、FBD 还是 LD？给工程一个决策矩阵</h2><p>不必全程序死守一种语言。经验法则：</p>
+<ul>
+<li>离散 I&#x2F;O、起保停、联锁、安全电路 → <strong>LD</strong>（维护电工读得懂，对应继电器原理图）；</li>
+<li>模拟量缩放、PID、信号选择、驱动控制 → <strong>FBD</strong>；</li>
+<li>批处理、多步序列、配方 → <strong>SFC</strong>；</li>
+<li>复杂数学、字符串、文件&#x2F;数组处理 → <strong>ST</strong>。</li>
+</ul>
+<p>IEC 61131-3 允许同一工程内不同 POU 用不同语言：电机控制用 LD、模拟量缩放与 PID 用 FBD、上位调度用 SFC。Modicon 项目里把电机起停留在 LD、把回路留在 FBD 是行业常态。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>FBD 的威力不在”画连线”，而在三条纪律：<strong>用 EN&#x2F;ENO 搭故障级联链保安全、把重复网络封成派生功能块做资产复用、给每个边沿检测器独立实例名防串扰</strong>。把这些习惯带进 Modicon 边缘控制器的工程，代码既可靠又易维护——别忘了给每个 I&#x2F;O 起具名变量、写清单位与量程，下个半夜被叫起来的同事会感谢你。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0510/" data-id="cmtkle0kf0000wwun32055y3e" data-title="FBD功能块图实战：用EN/ENO故障级联与派生功能块写出可维护的边缘控制程序" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FBD/" rel="tag">FBD</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61131-3/" rel="tag">IEC 61131-3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon/" rel="tag">Modicon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%9F%E8%83%BD%E5%9D%97/" rel="tag">功能块</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
     <article id="post-2026-09-03-northwest-edge-control-practice" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/09/03/2026-09-03-northwest-edge-control-practice/" class="article-date">
@@ -680,77 +753,6 @@
 
 
   
-    <article id="post-edge-tech-20260903-0208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/09/03/edge-tech-20260903-0208/" class="article-date">
-  <time class="dt-published" datetime="2026-09-02T18:08:08.000Z" itemprop="datePublished">2026-09-03 02:08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/09/03/edge-tech-20260903-0208/">IEC 61499 + 边缘计算：从集中式 PLC 到事件驱动分布式自动化</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/edge-tech-202609030208.jpg" alt="IEC 61499 与边缘计算驱动的分布式工业自动化"></p>
-<h2 id="为什么集中式-PLC-走到了尽头？"><a href="#为什么集中式-PLC-走到了尽头？" class="headerlink" title="为什么集中式 PLC 走到了尽头？"></a>为什么集中式 PLC 走到了尽头？</h2><p>传统工厂自动化建立在 ISA-95 五层金字塔之上：现场设备 → PLC（毫秒级扫描周期）→ SCADA → MES → ERP。PLC 作为”中央大脑”集中处理逻辑，优点是确定性强、调试直观，但在工业边缘计算（Industrial Edge Computing）场景下暴露出三大瓶颈：</p>
-<ol>
-<li><strong>反馈连接歧义</strong>：IEC 61131-3 功能块图中一旦出现反馈连接，系统行为依赖具体厂商的底层实现，难以跨平台复现；</li>
-<li><strong>跨厂商通信割裂</strong>：不同品牌 PLC 互操作缺乏标准，网关协议转换成本高；</li>
-<li><strong>OT&#x2F;IT 难以融合</strong>：边缘节点既要跑实时运动控制，又要跑 ML 故障预测、数据预处理等 IT 负载，集中式扫描周期模型无法承载。</li>
-</ol>
-<p>IEC 61499 正是为打破这一范式而生——它把 IEC 61131-3 的功能块（FB）扩展到分布式系统，定义了”事件（Event）+ 数据（Data）”双通道接口，并被 IEEE TII 2025 多篇论文确立为工业边缘应用的系统级建模语言。</p>
-<h2 id="核心机制：事件驱动-软件-硬件解耦"><a href="#核心机制：事件驱动-软件-硬件解耦" class="headerlink" title="核心机制：事件驱动 + 软件-硬件解耦"></a>核心机制：事件驱动 + 软件-硬件解耦</h2><p>IEC 61499 的 Function Block 接口自上而下分两部分：<strong>事件接口</strong>（红色连线，触发执行）与<strong>数据接口</strong>（蓝色连线，携带值）。二者不可互连，一个输入事件到达时，仅刷新与之绑定的数据输入，再交给<strong>执行控制图（ECC，一个状态机）</strong>决定运行哪段算法。</p>
-<p>这种设计带来三个工程价值：</p>
-<ul>
-<li><strong>无全局变量</strong>：FB 完全封装，应用由 FB 网络通过连接拼装，天然可移植、可复用；</li>
-<li><strong>软硬解耦</strong>：同一份 FB 网络可映射到 ARM 低成本控制器、边缘计算节点甚至云端；</li>
-<li><strong>动态重配置</strong>：支持运行时替换 FB 子网络，是柔性制造与数字孪生的底层基础。</li>
-</ul>
-<h2 id="工程实战：边缘节点的温度采集-预测性维护-FB"><a href="#工程实战：边缘节点的温度采集-预测性维护-FB" class="headerlink" title="工程实战：边缘节点的温度采集 + 预测性维护 FB"></a>工程实战：边缘节点的温度采集 + 预测性维护 FB</h2><p>下面是一个 Basic Function Block 的算法（ST 片段），在边缘网关上周期性采集温度，并在超阈值时发布报警与剩余寿命预测：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(* FB: EdgeTempMonitor, 事件 INIT/REQ 触发, 数据 IN_T/THRESH *)</span><br><span class="line">VAR_INPUT</span><br><span class="line">    IN_T    : REAL;   (* 当前温度 ℃ *)</span><br><span class="line">    THRESH  : REAL;   (* 报警阈值 *)</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    ALARM    : BOOL;</span><br><span class="line">    PRED_RUL : REAL;  (* 剩余寿命预测, 简化线性模型 *)</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF IN_T &gt; THRESH THEN</span><br><span class="line">    ALARM := TRUE;</span><br><span class="line">    PRED_RUL := MAX(0.0, (IN_T - THRESH) * (-1.5) + 12.0);</span><br><span class="line">ELSE</span><br><span class="line">    ALARM := FALSE;</span><br><span class="line">    PRED_RUL := 12.0;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
-
-<p>部署时通过<strong>设备-资源映射</strong>把该 FB 绑定到边缘节点（如 Eclipse FORTE runtime），并通过 OPC UA PubSub 把 <code>ALARM</code> &#x2F; <code>PRED_RUL</code> 上送云端，形成”边缘实时控制 + 云端训练”的协同闭环。多核调度可借助 IEEE TII 2025 提出的<strong>基于事件类型的优先级确定性实时语义</strong>，让运动控制（高优先级事件）与数据预处理（低优先级事件）在同一边缘设备上并行，且不破坏确定性。</p>
-<h2 id="落地建议"><a href="#落地建议" class="headerlink" title="落地建议"></a>落地建议</h2><ul>
-<li><strong>工具链</strong>：开源 4DIAC-IDE 建模 + FORTE 运行时，或施耐德 EcoStruxure 开放自动化阵营；</li>
-<li><strong>网络底座</strong>：用 TSN 保障事件触发的确定性时延，OPC UA 做跨层信息建模；</li>
-<li><strong>渐进路径</strong>：先在单一产线工位用 IEC 61499 重写一个非安全关键子功能，验证软硬解耦与动态重配置收益，再逐步扩展。</li>
-</ul>
-<p>边缘计算不是把云搬到现场，而是让控制逻辑”长”在设备与网络拓扑里。IEC 61499 给了我们一套可被机器理解、可被重配置的分布式自动化母语——这正是开放自动化的起点。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0208/" data-id="cmtkewyn800007kune89k5q2u" data-title="IEC 61499 + 边缘计算：从集中式 PLC 到事件驱动分布式自动化" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%8E%A7%E5%88%B6/" rel="tag">分布式控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%BE%B9%E7%BC%98/" rel="tag">工业边缘</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%80%E6%94%BE%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">开放自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -767,6 +769,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260903-0510/">FBD功能块图实战：用EN/ENO故障级联与派生功能块写出可维护的边缘控制程序</a>
+          </li>
         
           <li>
             <a href="/2026/09/03/2026-09-03-northwest-edge-control-practice/">广袤西北的分散式站点，为什么越来越离不开边缘控制？</a>
@@ -842,10 +848,6 @@
         
           <li>
             <a href="/2026/09/03/schneider-news-20260914-1608/">施耐德电气发布2026年度可持续经营报告</a>
-          </li>
-        
-          <li>
-            <a href="/2026/09/03/edge-tech-20260922-2208/">Modicon Edge I/O NTS分布式I/O扩展实战</a>
           </li>
         
       </ul>
