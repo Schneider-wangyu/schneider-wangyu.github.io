@@ -81,6 +81,69 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-edge-tech-20260903-0317" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/09/03/edge-tech-20260903-0317/" class="article-date">
+  <time class="dt-published" datetime="2026-09-02T19:17:00.000Z" itemprop="datePublished">2026-09-03 03:17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/09/03/edge-tech-20260903-0317/">工业边缘网关实战：从 Harmony Edge Box 到云边协同的部署范式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202609030317.jpg" alt="工业边缘计算与云边协同架构"></p>
+<p>在边缘控制（Edge Control）架构中，边缘网关&#x2F;边缘盒子处于”承上启下”的关键位置：南向对接 PLC、dPAC 与现场设备，北向通过云边协同把数据实时送达分析与服务平台。它把算力下沉到产线侧，让关键控制逻辑与预处理在本地完成，只把高价值信息上云。</p>
+<h2 id="一、真实落地案例"><a href="#一、真实落地案例" class="headerlink" title="一、真实落地案例"></a>一、真实落地案例</h2><p><strong>案例 1：水处理行业的云边协同（Intidaya DS）</strong><br>印尼水处理企业 Intidaya DS 采用”EcoStruxure 开放自动化平台 + Soft dPAC”组合，配合 <strong>Harmony Edge Box</strong> 边缘盒子与部署在 AVEVA Connect 云平台的 <strong>AVEVA Edge</strong> 状态监控软件，为罗茨鼓风机打造了 24 小时在线智能监控系统。基于 IEC 61499 的开放平台实现了应用程序与硬件解耦，可直接基于现成资产模型封装可移植自动化对象，工程效率大幅提升；最终技术效率与运营效率提升 100%，能源效率优化 43%。</p>
+<p><strong>案例 2：远程运维驱动的商业模式（NIT Korea）</strong><br>韩国工业空气净化设备商 NIT Korea 采用 <strong>Modicon M172</strong> 控制器 + EcoStruxure Machine Expert，并通过 <strong>EcoStruxure Machine Advisor</strong> 上云，实现静电除尘设备的远程监控。单一供应商的端到端方案使其初始投资与人力需求降低约 20%，并催生了”远程服务终端用户”的新商业模式。</p>
+<h2 id="二、边缘网关部署实战"><a href="#二、边缘网关部署实战" class="headerlink" title="二、边缘网关部署实战"></a>二、边缘网关部署实战</h2><p>以 Harmony Edge Box 运行 EcoStruxure Edge Apps 为例，部署可抽象为三层：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">南向采集层  →  Modbus TCP / OPC UA 对接 M580 dPAC、M172 等控制器</span><br><span class="line">边缘处理层  →  在 Edge Box 内做数据清洗、异常判定、聚合（Soft dPAC / AVEVA Edge）</span><br><span class="line">北向上报层  →  MQTT/HTTPS 推送至 EcoStruxure Machine Advisor 或 AVEVA Connect 云</span><br></pre></td></tr></table></figure>
+
+<p>一个典型的上报配置（YAML 示意）如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">edge_gateway:</span></span><br><span class="line">  <span class="attr">southbound:</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">opcua</span></span><br><span class="line">    <span class="attr">endpoint:</span> <span class="string">&quot;opc.tcp://192.168.1.10:4840&quot;</span></span><br><span class="line">    <span class="attr">subscribe:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">node:</span> <span class="string">&quot;ns=2;s=Blower01.Speed&quot;</span>      <span class="comment"># 鼓风机转速</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">node:</span> <span class="string">&quot;ns=2;s=Blower01.Temp&quot;</span>       <span class="comment"># 轴承温度</span></span><br><span class="line">  <span class="attr">edge_process:</span></span><br><span class="line">    <span class="attr">rule:</span> <span class="string">&quot;Temp &gt; 85 ? alarm(&#x27;OVERHEAT&#x27;) : none&quot;</span>   <span class="comment"># 本地异常判定</span></span><br><span class="line">    <span class="attr">aggregate:</span> <span class="string">window_1m_avg</span></span><br><span class="line">  <span class="attr">northbound:</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">mqtt</span></span><br><span class="line">    <span class="attr">broker:</span> <span class="string">&quot;mqtts://advisor.eco.schneider.io:8883&quot;</span></span><br><span class="line">    <span class="attr">topic:</span> <span class="string">&quot;plant/water/blower01/telemetry&quot;</span></span><br><span class="line">    <span class="attr">qos:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、工程经验小结"><a href="#三、工程经验小结" class="headerlink" title="三、工程经验小结"></a>三、工程经验小结</h2><ol>
+<li><strong>先解耦、再上云</strong>：用 IEC 61499 &#x2F; Soft dPAC 把控制应用与硬件解耦，复用可移植对象，降低重复工程。</li>
+<li>**边缘侧做”减法”**：只把异常、聚合后的高价值数据上云，既降带宽又保实时。</li>
+<li><strong>统一纳管</strong>：借助 EcoStruxure Edge Apps - Manager 对边缘设备与应用做集中部署、备份与升级，避免盒子”野长”。</li>
+<li><strong>安全基线</strong>：启用零信任安全接入（Zero-touch onboarding），保证设备与应用完整性与机密性。</li>
+</ol>
+<p>边缘网关不是”弱化的云”，而是把确定性与智能前置到现场的关键一环。把握好云边分工，才能把边缘控制的价值真正落到产能与能效上。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0317/" data-id="cmtkhbafh00002wungz3j24ic" data-title="工业边缘网关实战：从 Harmony Edge Box 到云边协同的部署范式" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Harmony-Edge-Box/" rel="tag">Harmony Edge Box</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Soft-dPAC/" rel="tag">Soft dPAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%91%E8%BE%B9%E5%8D%8F%E5%90%8C/" rel="tag">云边协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%BE%B9%E7%BC%98%E7%BD%91%E5%85%B3/" rel="tag">工业边缘网关</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
     <article id="post-schneider-news-20260903-0313" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/09/03/schneider-news-20260903-0313/" class="article-date">
@@ -757,58 +820,6 @@
 
 
   
-    <article id="post-edge-tech-20260903-0104" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/09/03/edge-tech-20260903-0104/" class="article-date">
-  <time class="dt-published" datetime="2026-09-02T17:04:00.000Z" itemprop="datePublished">2026-09-03 01:04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/09/03/edge-tech-20260903-0104/">从西北中标潮看边缘控制在工业现场的落地</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>进入2026年，西北五省（陕西、甘肃、青海、宁夏、新疆）的工业自动化招投标市场持续升温。从公开的公共资源交易平台与公司采购公告看，PLC、控制系统、变频器、配电柜类项目密集落地，且普遍呈现出”分布式、就地化、可远程”的共性特征——这正是边缘控制技术在区域工业场景中的真实落点。</p>
-<h2 id="中标数据折射出的三大趋势"><a href="#中标数据折射出的三大趋势" class="headerlink" title="中标数据折射出的三大趋势"></a>中标数据折射出的三大趋势</h2><p><strong>第一，传统流程工业的PLC系统进入集中改造期。</strong> 新疆天富能源售电有限公司2×330MW机组信息化改造项目中，输煤、除灰PLC系统升级改造由杭州和利时中标，金额306万元；新疆河润科技KWS工程总承包（EPC）项目对现状PLC及上位机程序进行更新服务采购，沈阳尚源智慧科技以108.56万元中标，改造范围覆盖粗格栅间、鼓风机房、MBR膜设备间、变配电室、脱水机房等5个PLC控制站。这类项目不再追求”大而全”的集中DCS，而是以控制站为单位就地升级，体现典型的边缘化思路。</p>
-<p><strong>第二，节能环保与新能源场景对变频、控制柜需求旺盛。</strong> 宁夏贺兰县金贵镇现代设施农业温室建设项目采购10kV高压开闭所配电柜及配套设施，宁夏凯晨电气以361.75万元中标，含22面高压开关柜与4面二次设备控制柜；中盐榆林盐化生产设备变频节能改造项目高低压变频器采购安装由陕西新银海电气中标（138万元）；酒钢集团宏翔能源2026年高压变频柜等零固集中采购成交65.38万元；青海铜业年度检修变频柜及仪表、国家管网西北公司彭阳站与蒲县站变频器国产化改造施工项目亦相继落地。变频器作为边缘侧的”执行大脑”，正从单一调速走向与PLC、网关协同的能效闭环。</p>
-<p><strong>第三，市政与民生基础设施加速自动化渗透。</strong> 新疆阿克苏地区第一人民医院污水处理站设备采购中，核心标的为PLC控制系统（含≥128点I&#x2F;O、MODBUS通讯、GPRS无线模块、断电保持、IP54防护），中标金额260万元；中卫新能源香山风电场PLC控制模块、西安高新区信息产业园三期变配电工程（容量14400kVA，合同额3638万元）等项目，均将控制器、配电柜与远程监控能力打包采购。</p>
-<h2 id="边缘控制的技术内核"><a href="#边缘控制的技术内核" class="headerlink" title="边缘控制的技术内核"></a>边缘控制的技术内核</h2><p>所谓边缘控制，本质是在靠近设备的”边缘层”部署具备实时控制、数据采集、本地运算与协议转换能力的控制器，使其既能独立完成逻辑与运动控制，又能与上层MES&#x2F;云平台协同。施耐德电气EcoStruxure架构中的Modicon M580&#x2F;M262等PLC、Altivar系列变频器、智能配电柜，恰好构成”控制—驱动—配电”三位一体的边缘节点。在西北地广人稀、站点分散的条件下，边缘节点通过MODBUS、OPC UA或工业以太网向上汇聚，既保证了本地毫秒级响应，又降低了中心平台的算力与带宽压力。</p>
-<h2 id="对工程实施的启示"><a href="#对工程实施的启示" class="headerlink" title="对工程实施的启示"></a>对工程实施的启示</h2><p>从上述中标项目看，买方越来越关注几项硬指标：多协议兼容（MODBUS为主）、远程监控与断网保持、防护等级（IP54及以上）、双电源供电与本地调试。这要求供应商在边缘侧提供”即插即用、可远程运维”的整体方案，而非孤立的硬件。可以预见，随着西北能源、化工、市政基础设施的持续投入，边缘控制将从单点PLC改造走向”站级边缘+区域云”的层级化架构，成为区域工业数字化最务实的入口。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0104/" data-id="cmtkckq3500008wun06et6qto" data-title="从西北中标潮看边缘控制在工业现场的落地" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC/" rel="tag">PLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%98%E9%A2%91%E5%99%A8/" rel="tag">变频器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%A5%BF%E5%8C%97%E4%B8%AD%E6%A0%87/" rel="tag">西北中标</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -828,6 +839,10 @@
         
           <li>
             <a href="/2026/09/03/schneider-news-202609030613/">施耐德电气2026重磅出击：AI驱动的软件定义自动化如何重塑工业未来</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-202609030620/">施耐德电气×AMD Helios AI Factory：AI算力基础设施的下一个十年</a>
           </li>
         
           <li>
@@ -900,10 +915,6 @@
         
           <li>
             <a href="/2026/09/03/schneider-news-20260903-0111/">246kW 一个机架：施耐德电气正在为 AI 工厂重铺电力与冷却底座</a>
-          </li>
-        
-          <li>
-            <a href="/2026/09/03/edge-tech-20260903-0104/">从西北中标潮看边缘控制在工业现场的落地</a>
           </li>
         
       </ul>
