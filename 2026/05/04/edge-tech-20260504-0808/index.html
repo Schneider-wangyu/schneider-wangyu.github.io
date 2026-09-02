@@ -4,25 +4,20 @@
   <meta charset="utf-8">
   
   
-  <title>IEC 61499实战：用EcoStruxure开放自动化平台构建边缘分布式控制系统 | Schneider 技术分享</title>
+  <title>功能块编程在汽车装配线的实战应用 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="从集中式到分布式：为什么边缘控制需要IEC 61499传统PLC编程遵循IEC 61131-3标准，工程师习惯在单台控制器上编写完整的控制逻辑。然而，随着边缘控制器（如施耐德Modicon M262&#x2F;M580）承担越来越多的跨设备协调、协议转换和数据处理任务，集中式编程模式的瓶颈日益凸显：程序耦合度高、跨PLC数据交互依赖总线地址映射、调试时难以追踪系统全局行为。 IEC 61499标准">
+  <meta name="description" content="功能块编程在汽车装配线的实战应用项目背景在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。功能块编程作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。 施耐德电气方案本项目采用施耐德电气 M580 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：  在现场层部署 M580 作为实时控制核心，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IEC 61499实战：用EcoStruxure开放自动化平台构建边缘分布式控制系统">
+<meta property="og:title" content="功能块编程在汽车装配线的实战应用">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/04/edge-tech-20260504-0808/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="从集中式到分布式：为什么边缘控制需要IEC 61499传统PLC编程遵循IEC 61131-3标准，工程师习惯在单台控制器上编写完整的控制逻辑。然而，随着边缘控制器（如施耐德Modicon M262&#x2F;M580）承担越来越多的跨设备协调、协议转换和数据处理任务，集中式编程模式的瓶颈日益凸显：程序耦合度高、跨PLC数据交互依赖总线地址映射、调试时难以追踪系统全局行为。 IEC 61499标准">
+<meta property="og:description" content="功能块编程在汽车装配线的实战应用项目背景在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。功能块编程作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。 施耐德电气方案本项目采用施耐德电气 M580 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：  在现场层部署 M580 作为实时控制核心，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T00:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-19T16:35:42.442Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:14.982Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="分布式控制">
-<meta property="article:tag" content="EcoStruxure">
-<meta property="article:tag" content="IEC 61499">
-<meta property="article:tag" content="开放自动化">
-<meta property="article:tag" content="EAE">
-<meta property="article:tag" content="功能块">
-<meta property="article:tag" content="边缘控制器">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="功能块编程">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
@@ -105,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      IEC 61499实战：用EcoStruxure开放自动化平台构建边缘分布式控制系统
+      功能块编程在汽车装配线的实战应用
     </h1>
   
 
@@ -113,151 +108,52 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="从集中式到分布式：为什么边缘控制需要IEC-61499"><a href="#从集中式到分布式：为什么边缘控制需要IEC-61499" class="headerlink" title="从集中式到分布式：为什么边缘控制需要IEC 61499"></a>从集中式到分布式：为什么边缘控制需要IEC 61499</h2><p>传统PLC编程遵循IEC 61131-3标准，工程师习惯在单台控制器上编写完整的控制逻辑。然而，随着边缘控制器（如施耐德Modicon M262&#x2F;M580）承担越来越多的跨设备协调、协议转换和数据处理任务，集中式编程模式的瓶颈日益凸显：程序耦合度高、跨PLC数据交互依赖总线地址映射、调试时难以追踪系统全局行为。</p>
-<p>IEC 61499标准正是为解决这些问题而生。它定义了一套基于功能块（Function Block）的分布式控制架构，核心设计理念是——<strong>将每个功能块视为独立的微服务，功能块接口即API，功能块网络通过事件流和数据流整合，应用程序可映射到不同边缘计算节点上执行</strong>。</p>
-<h2 id="IEC-61499核心概念速览"><a href="#IEC-61499核心概念速览" class="headerlink" title="IEC 61499核心概念速览"></a>IEC 61499核心概念速览</h2><table>
-<thead>
-<tr>
-<th>概念</th>
-<th>说明</th>
-<th>类比</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>基本功能块（BFB）</td>
-<td>封装控制算法与ECC执行控制图</td>
-<td>一个独立函数</td>
-</tr>
-<tr>
-<td>复合功能块（CFB）</td>
-<td>由多个功能块组合而成</td>
-<td>函数调用链</td>
-</tr>
-<tr>
-<td>服务接口功能块（SIFB）</td>
-<td>与硬件&#x2F;通信接口交互</td>
-<td>驱动层API</td>
-</tr>
-<tr>
-<td>资源（Resource）</td>
-<td>功能块的运行时容器</td>
-<td>容器&#x2F;进程</td>
-</tr>
-<tr>
-<td>设备（Device）</td>
-<td>包含多个资源的物理&#x2F;逻辑节点</td>
-<td>边缘控制器</td>
-</tr>
-<tr>
-<td>应用（Application）</td>
-<td>跨设备分布的功能块网络</td>
-<td>微服务集群</td>
-</tr>
-</tbody></table>
-<p>关键区别：IEC 61131-3的POU（程序组织单元）以扫描周期驱动执行，而IEC 61499的功能块以<strong>事件驱动</strong>——只有输入事件触发时才执行对应算法，天然适合分布式异步控制场景。</p>
-<h2 id="EAE平台实战：5步构建边缘分布式应用"><a href="#EAE平台实战：5步构建边缘分布式应用" class="headerlink" title="EAE平台实战：5步构建边缘分布式应用"></a>EAE平台实战：5步构建边缘分布式应用</h2><p>施耐德电气EcoStruxure Automation Expert（EAE）是目前最成熟的IEC 61499商业实现。以下基于EAE v21构建一个典型的边缘分布式控制系统：</p>
-<h3 id="Step-1：新建方案与设备拓扑"><a href="#Step-1：新建方案与设备拓扑" class="headerlink" title="Step 1：新建方案与设备拓扑"></a>Step 1：新建方案与设备拓扑</h3><p>在EAE Buildtime中创建方案，定义设备拓扑。典型边缘场景：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Device: EdgeGateway (Soft dPAC on Linux)</span><br><span class="line">  └─ Resource: CtrlResource</span><br><span class="line">       └─ Application: EdgeApp</span><br><span class="line"></span><br><span class="line">Device: M580_PLC (硬件PAC)</span><br><span class="line">  └─ Resource: PLCResource</span><br><span class="line">       └─ Application: LocalCtrl</span><br></pre></td></tr></table></figure>
-
-<h3 id="Step-2：定义功能块接口"><a href="#Step-2：定义功能块接口" class="headerlink" title="Step 2：定义功能块接口"></a>Step 2：定义功能块接口</h3><p>每个功能块需要明确声明事件接口和数据接口。以一个边缘数据聚合块为例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK EdgeDataAggregator</span><br><span class="line">  EVENT_INPUT:</span><br><span class="line">    REQ WITH (sensor1, sensor2, sensor3);</span><br><span class="line">  EVENT_OUTPUT:</span><br><span class="line">    CNF WITH (aggregatedValue, qualityFlag);</span><br><span class="line">  VAR_INPUT:</span><br><span class="line">    sensor1 : LREAL;</span><br><span class="line">    sensor2 : LREAL;</span><br><span class="line">    sensor3 : LREAL;</span><br><span class="line">  END_VAR</span><br><span class="line">  VAR_OUTPUT:</span><br><span class="line">    aggregatedValue : LREAL;</span><br><span class="line">    qualityFlag : BOOL;</span><br><span class="line">  END_VAR</span><br><span class="line">END_FUNCTION_BLOCK</span><br></pre></td></tr></table></figure>
-
-<h3 id="Step-3：设计ECC执行控制图"><a href="#Step-3：设计ECC执行控制图" class="headerlink" title="Step 3：设计ECC执行控制图"></a>Step 3：设计ECC执行控制图</h3><p>ECC是功能块的行为核心，采用状态机模型：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ECC:</span><br><span class="line">  START --[REQ]--&gt; AGGREGATE</span><br><span class="line">  AGGREGATE --[1]--&gt; VALIDATE</span><br><span class="line">  VALIDATE --[1]--&gt; OUTPUT</span><br><span class="line">  OUTPUT --[1]--&gt; START</span><br><span class="line"></span><br><span class="line">  State AGGREGATE:</span><br><span class="line">    Algorithm: calcWeightedAvg</span><br><span class="line">  State VALIDATE:</span><br><span class="line">    Algorithm: checkQuality</span><br><span class="line">  State OUTPUT:</span><br><span class="line">    Algorithm: emitResult</span><br></pre></td></tr></table></figure>
-
-<p>算法实现使用IEC 61131-3的Structured Text：</p>
-<figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Algorithm: calcWeightedAvg</span></span><br><span class="line">aggregatedValue := <span class="number">0.5</span> * sensor1 + <span class="number">0.3</span> * sensor2 + <span class="number">0.2</span> * sensor3;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Algorithm: checkQuality</span></span><br><span class="line">qualityFlag := (sensor1 &gt; <span class="number">0.0</span>) <span class="keyword">AND</span> (sensor2 &gt; <span class="number">0.0</span>) <span class="keyword">AND</span> (sensor3 &gt; <span class="number">0.0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Algorithm: emitResult</span></span><br><span class="line">CNF();</span><br></pre></td></tr></table></figure>
-
-<h3 id="Step-4：构建功能块网络"><a href="#Step-4：构建功能块网络" class="headerlink" title="Step 4：构建功能块网络"></a>Step 4：构建功能块网络</h3><p>在应用编辑器中，将功能块通过事件和数据连接组成网络。关键设计原则：</p>
+        <h1 id="功能块编程在汽车装配线的实战应用"><a href="#功能块编程在汽车装配线的实战应用" class="headerlink" title="功能块编程在汽车装配线的实战应用"></a>功能块编程在汽车装配线的实战应用</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。功能块编程作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。</p>
+<h2 id="施耐德电气方案"><a href="#施耐德电气方案" class="headerlink" title="施耐德电气方案"></a>施耐德电气方案</h2><p>本项目采用施耐德电气 M580 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：</p>
 <ul>
-<li><strong>事件链必须完整</strong>：每个功能块的输出事件应连接到下游的输入事件</li>
-<li><strong>数据流跟随事件</strong>：WITH子句确保数据在事件触发时同步刷新</li>
-<li><strong>SIFB隔离硬件</strong>：所有硬件交互通过服务接口功能块封装，便于跨平台迁移</li>
+<li>在现场层部署 M580 作为实时控制核心，控制周期稳定维持在毫秒级；</li>
+<li>通过 OPC UA over TSN 打通 IT 与 OT 网络，消除协议壁垒；</li>
+<li>依托 EcoStruxure 平台实现全网设备的统一监控与远程运维；</li>
+<li>引入边缘算力，在本地完成数据预处理与异常研判，降低上行带宽压力。</li>
 </ul>
-<h3 id="Step-5：部署与调试"><a href="#Step-5：部署与调试" class="headerlink" title="Step 5：部署与调试"></a>Step 5：部署与调试</h3><p>EAE支持一键将应用映射到不同设备。同一个功能块网络可以：</p>
-<ul>
-<li>部署到Soft dPAC（Linux边缘网关）运行IT侧数据处理</li>
-<li>部署到M580硬件PAC运行OT侧实时控制</li>
-<li>通过HMI Runtime在工控机上提供可视化界面</li>
-</ul>
-<p>调试时，EAE提供在线监视功能，可实时观察功能块间的事件传递和数据流动——这是传统PLC调试中无法实现的全局视角。</p>
-<h2 id="IEC-61499-vs-传统PLC分布式编程"><a href="#IEC-61499-vs-传统PLC分布式编程" class="headerlink" title="IEC 61499 vs 传统PLC分布式编程"></a>IEC 61499 vs 传统PLC分布式编程</h2><table>
-<thead>
-<tr>
-<th>维度</th>
-<th>传统PLC分布式</th>
-<th>IEC 61499分布式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>编程模型</td>
-<td>多个独立IEC 61131-3项目</td>
-<td>单一功能块网络，跨设备映射</td>
-</tr>
-<tr>
-<td>数据交互</td>
-<td>依赖总线协议地址映射</td>
-<td>事件+数据流，自动同步</td>
-</tr>
-<tr>
-<td>硬件耦合</td>
-<td>控制逻辑与硬件绑定</td>
-<td>逻辑与硬件解耦，可自由迁移</td>
-</tr>
-<tr>
-<td>调试体验</td>
-<td>需分别连接各PLC</td>
-<td>全局在线监视，事件级追踪</td>
-</tr>
-<tr>
-<td>复用性</td>
-<td>POU级别复用</td>
-<td>功能块+接口标准化复用</td>
-</tr>
-</tbody></table>
-<h2 id="落地建议"><a href="#落地建议" class="headerlink" title="落地建议"></a>落地建议</h2><ol>
-<li><strong>从边缘网关切入</strong>：在边缘控制器上先用Soft dPAC验证IEC 61499逻辑，再逐步迁移到硬件PAC</li>
-<li><strong>SIFB先行封装</strong>：将Modbus&#x2F;OPC UA等通信接口封装为SIFB，实现协议层解耦</li>
-<li><strong>事件驱动设计</strong>：避免在功能块内使用轮询逻辑，充分利用事件驱动特性降低CPU占用</li>
-<li><strong>渐进式迁移</strong>：可在现有IEC 61131-3程序基础上，通过SIFB桥接逐步引入IEC 61499功能块</li>
-</ol>
-<p>IEC 61499不是要替代IEC 61131-3，而是提供了面向分布式和边缘计算场景的系统级建模能力。当你的控制任务从”一台PLC管一条线”升级到”多节点协同管一个车间”时，IEC 61499的价值便会真正体现。</p>
+<h2 id="应用成效"><a href="#应用成效" class="headerlink" title="应用成效"></a>应用成效</h2><p>改造后，汽车装配线的整体运营指标显著改善：设备综合效率（OEE）提升明显，非计划停机次数下降，运维人员可通过统一门户掌握全域状态。该方案已在多个同类场景中复制推广，验证了功能块编程在汽车装配线的适配性与稳定性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/04/edge-tech-20260504-0808/" data-id="cmr67mcu100nrkcun14qwhh4e" data-title="IEC 61499实战：用EcoStruxure开放自动化平台构建边缘分布式控制系统" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/04/edge-tech-20260504-0808/" data-id="cmtk83t0o02an1oun3g5mffz0" data-title="功能块编程在汽车装配线的实战应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EAE/" rel="tag">EAE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%8E%A7%E5%88%B6/" rel="tag">分布式控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%9F%E8%83%BD%E5%9D%97/" rel="tag">功能块</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%80%E6%94%BE%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">开放自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">边缘控制器</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%9F%E8%83%BD%E5%9D%97%E7%BC%96%E7%A8%8B/" rel="tag">功能块编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2026/05/04/edge-tech-20260504-0916/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2026/05/04/schneider-news-20260504-1008/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          OPC UA安全架构与边缘控制实战：从传输层到应用层的深度防护
+          施耐德电气驱动与电机：Industrial Copilot最新动态
         
       </div>
     </a>
   
   
-    <a href="/2026/05/04/edge-tech-20260504-0718/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2026/05/04/schneider-news-20260504-0808/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">Structured Text编程实战：边缘控制器上的高效控制逻辑设计与调试技巧</div>
+      <div class="article-nav-title">施耐德电气驱动与电机：Machine Expert最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -271,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

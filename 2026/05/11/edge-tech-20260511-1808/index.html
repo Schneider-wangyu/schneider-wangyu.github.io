@@ -4,26 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>工业网络安全架构设计与零信任实践 | Schneider 技术分享</title>
+  <title>工业以太网深度解析 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="引言随着工业物联网的推进，传统封闭的OT网络正面临前所未有的安全威胁。勒索软件、供应链攻击、内部威胁等风险日益突出。本文将系统阐述工业网络安全架构设计，重点介绍零信任模型在工业场景的实践应用。 工业网络威胁分析攻击面分析1234567891011121314151617┌─────────────────────────────────────────────────────────────┐│">
+  <meta name="description" content="工业以太网深度解析与工程实践技术原理工业以太网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。 关键特性 确定性与实时性：通过时间敏感网络保障关键数据的传输时效； 互操作性：基于开放标准，兼容多厂商设备； 可重构性：控制功能以软件形式封装，支持按需编排； 信息融合：原生打通控制层与信息层数据。  施耐德电气的实现施耐">
 <meta property="og:type" content="article">
-<meta property="og:title" content="工业网络安全架构设计与零信任实践">
+<meta property="og:title" content="工业以太网深度解析">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1808/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="引言随着工业物联网的推进，传统封闭的OT网络正面临前所未有的安全威胁。勒索软件、供应链攻击、内部威胁等风险日益突出。本文将系统阐述工业网络安全架构设计，重点介绍零信任模型在工业场景的实践应用。 工业网络威胁分析攻击面分析1234567891011121314151617┌─────────────────────────────────────────────────────────────┐│">
+<meta property="og:description" content="工业以太网深度解析与工程实践技术原理工业以太网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。 关键特性 确定性与实时性：通过时间敏感网络保障关键数据的传输时效； 互操作性：基于开放标准，兼容多厂商设备； 可重构性：控制功能以软件形式封装，支持按需编排； 信息融合：原生打通控制层与信息层数据。  施耐德电气的实现施耐">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605111808.jpg">
 <meta property="article:published_time" content="2026-05-11T10:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-21T00:35:13.079Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.127Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="施耐德">
-<meta property="article:tag" content="网络安全">
-<meta property="article:tag" content="零信任">
-<meta property="article:tag" content="工业安全">
-<meta property="article:tag" content="IEC 62443">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业以太网">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605111808.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
   
@@ -105,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      工业网络安全架构设计与零信任实践
+      工业以太网深度解析
     </h1>
   
 
@@ -113,109 +108,26 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605111808.jpg" alt="边缘控制技术"></p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>随着工业物联网的推进，传统封闭的OT网络正面临前所未有的安全威胁。勒索软件、供应链攻击、内部威胁等风险日益突出。本文将系统阐述工业网络安全架构设计，重点介绍零信任模型在工业场景的实践应用。</p>
-<h2 id="工业网络威胁分析"><a href="#工业网络威胁分析" class="headerlink" title="工业网络威胁分析"></a>工业网络威胁分析</h2><h3 id="攻击面分析"><a href="#攻击面分析" class="headerlink" title="攻击面分析"></a>攻击面分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    工业控制系统攻击面                         │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                             │</span><br><span class="line">│  外部攻击面                  内部攻击面                     │</span><br><span class="line">│  ├── 互联网暴露资产           ├── 工程师站                   │</span><br><span class="line">│  ├── 远程访问VPN             ├── 操作员站                   │</span><br><span class="line">│  ├── 供应链通道              ├── 维护笔记本                 │</span><br><span class="line">│  └── 云服务接口              └── 移动存储设备               │</span><br><span class="line">│                                                             │</span><br><span class="line">│  协议漏洞                    系统漏洞                       │</span><br><span class="line">│  ├── Modbus无认证            ├── Windows XP漏洞             │</span><br><span class="line">│  ├── OPC DCOM              ├── PLC固件漏洞                 │</span><br><span class="line">│  ├── Ethernet/IP           └── 工程软件漏洞                │</span><br><span class="line">│  └── Profinet                                             │</span><br><span class="line">│                                                             │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h3 id="典型攻击案例"><a href="#典型攻击案例" class="headerlink" title="典型攻击案例"></a>典型攻击案例</h3><table>
-<thead>
-<tr>
-<th>年份</th>
-<th>事件</th>
-<th>影响</th>
-<th>攻击向量</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2010</td>
-<td>Stuxnet</td>
-<td>伊朗核设施</td>
-<td>USB传播</td>
-</tr>
-<tr>
-<td>2015</td>
-<td>乌克兰电网</td>
-<td>23万用户停电</td>
-<td>钓鱼邮件</td>
-</tr>
-<tr>
-<td>2017</td>
-<td>Triton</td>
-<td>安全系统被控</td>
-<td>工程师站入侵</td>
-</tr>
-<tr>
-<td>2021</td>
-<td>Colonial Pipeline</td>
-<td>美东燃油短缺</td>
-<td>VPN漏洞</td>
-</tr>
-<tr>
-<td>2024</td>
-<td>某制造企业</td>
-<td>产线停工3周</td>
-<td>勒索软件</td>
-</tr>
-</tbody></table>
-<h2 id="IEC-62443标准框架"><a href="#IEC-62443标准框架" class="headerlink" title="IEC 62443标准框架"></a>IEC 62443标准框架</h2><h3 id="标准结构"><a href="#标准结构" class="headerlink" title="标准结构"></a>标准结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IEC 62443标准族</span><br><span class="line">├── 62443-1: 概念与术语</span><br><span class="line">├── 62443-2: 政策与流程</span><br><span class="line">│   ├── -2-1: 安全管理体系要求</span><br><span class="line">│   └── -2-4: IACS集成商要求</span><br><span class="line">├── 62443-3: 系统</span><br><span class="line">│   ├── -3-2: 安全区域划分</span><br><span class="line">│   └── -3-3: 系统安全要求</span><br><span class="line">└── 62443-4: 组件</span><br><span class="line">    ├── -4-1: 安全开发生命周期</span><br><span class="line">    └── -4-2: 组件技术要求</span><br></pre></td></tr></table></figure>
-
-<h3 id="安全等级（SL）定义"><a href="#安全等级（SL）定义" class="headerlink" title="安全等级（SL）定义"></a>安全等级（SL）定义</h3><table>
-<thead>
-<tr>
-<th>SL</th>
-<th>特性</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SL 1</td>
-<td>防止无意错误</td>
-<td>基础防护，防止偶然错误</td>
-</tr>
-<tr>
-<td>SL 2</td>
-<td>防止简单攻击</td>
-<td>防止低技能攻击者</td>
-</tr>
-<tr>
-<td>SL 3</td>
-<td>防止复杂攻击</td>
-<td>防止有组织攻击团队</td>
-</tr>
-<tr>
-<td>SL 4</td>
-<td>防止国家级攻击</td>
-<td>防止高级持续威胁</td>
-</tr>
-</tbody></table>
-<h2 id="零信任架构设计"><a href="#零信任架构设计" class="headerlink" title="零信任架构设计"></a>零信任架构设计</h2><h3 id="核心原则"><a href="#核心原则" class="headerlink" title="核心原则"></a>核心原则</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">零信任三大核心原则</span><br><span class="line">───────────────────────────────────────────</span><br><span class="line">1. 永不信任，持续验证</span><br><span class="line">   └─ 所有访问请求必须验证身份和权限</span><br><span class="line">   </span><br><span class="line">2. 最小权限原则</span><br><span class="line">   └─ 仅授予完成任务所需的最小权限</span><br><span class="line">   </span><br><span class="line">3. 假设已被入侵</span><br><span class="line">   └─ 设计中假设网络已被渗透，实施微隔离</span><br><span class="line">───────────────────────────────────────────</span><br></pre></td></tr></table></figure>
-
-<h3 id="架构组件"><a href="#架构组件" class="headerlink" title="架构组件"></a>架构组件</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    零信任安全架构                             │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                             │</span><br><span class="line">│     ┌────────────────────────────────────────────────┐      │</span><br><span class="line">│     │              策略决策点 (PDP)                   │      │</span><br><span class="line">│     │  ┌──────────┐ ┌──────────┐ ┌──────────┐      │      │</span><br><span class="line">│     │  │身份认证  │ │权限管理  │ │策略引擎  │      │      │</span><br><span class="line">│     │  └──────────┘ └──────────┘ └──────────┘      │      │</span><br><span class="line">│     └────────────────────────────────────────────────┘      │</span><br><span class="line">│                          │                                  │</span><br><span class="line">│                          │ 策略决策                         │</span><br><span class="line">│                          ▼                                  │</span><br><span class="line">│     ┌────────────────────────────────────────────────┐      │</span><br><span class="line">│     │              策略执行点 (PEP)                   │      │</span><br><span class="line">│     │  ┌──────────┐ ┌──────────┐ ┌──────────┐      │      │</span><br><span class="line">│     │  │网关      │ │防火墙    │ │代理      │      │      │</span><br><span class="line">│     │  └──────────┘ └──────────┘ └──────────┘      │      │</span><br><span class="line">│     └────────────────────────────────────────────────┘      │</span><br><span class="line">│                          │                                  │</span><br><span class="line">│         ┌────────────────┼────────────────┐                │</span><br><span class="line">│         │                │                │                │</span><br><span class="line">│         ▼                ▼                ▼                │</span><br><span class="line">│    ┌─────────┐     ┌─────────┐     ┌─────────┐            │</span><br><span class="line">│    │ 操作站  │     │ 工程站  │     │ 历史库  │            │</span><br><span class="line">│    │ Zone A  │     │ Zone B  │     │ Zone C  │            │</span><br><span class="line">│    └─────────┘     └─────────┘     └─────────┘            │</span><br><span class="line">│                                                             │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h3 id="身份认证实现"><a href="#身份认证实现" class="headerlink" title="身份认证实现"></a>身份认证实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ZeroTrustAuth</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, secret_key: <span class="built_in">str</span>, mfa_enabled: <span class="built_in">bool</span> = <span class="literal">True</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.secret_key = secret_key</span><br><span class="line">        <span class="variable language_">self</span>.mfa_enabled = mfa_enabled</span><br><span class="line">        <span class="variable language_">self</span>.session_duration = timedelta(hours=<span class="number">8</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">authenticate</span>(<span class="params">self, username: <span class="built_in">str</span>, password: <span class="built_in">str</span>, mfa_code: <span class="built_in">str</span> = <span class="literal">None</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;身份认证&quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 1. 基础认证</span></span><br><span class="line">        user = <span class="variable language_">self</span>._verify_credentials(username, password)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> user:</span><br><span class="line">            <span class="keyword">raise</span> AuthenticationError(<span class="string">&quot;凭证无效&quot;</span>)</span><br><span class="line">            </span><br><span class="line">        <span class="comment"># 2. MFA验证</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.mfa_enabled:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>._verify_mfa(user, mfa_code):</span><br><span class="line">                <span class="keyword">raise</span> AuthenticationError(<span class="string">&quot;MFA验证失败&quot;</span>)</span><br><span class="line">                </span><br><span class="line">        <span class="comment"># 3. 设备信任验证</span></span><br><span class="line">        device_trust = <span class="variable language_">self</span>._verify_device_trust(user.device_id)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 4. 生成令牌</span></span><br><span class="line">        token = jwt.encode(&#123;</span><br><span class="line">            <span class="string">&#x27;user_id&#x27;</span>: user.<span class="built_in">id</span>,</span><br><span class="line">            <span class="string">&#x27;role&#x27;</span>: user.role,</span><br><span class="line">            <span class="string">&#x27;device_id&#x27;</span>: user.device_id,</span><br><span class="line">            <span class="string">&#x27;exp&#x27;</span>: datetime.utcnow() + <span class="variable language_">self</span>.session_duration,</span><br><span class="line">            <span class="string">&#x27;trust_level&#x27;</span>: device_trust.level</span><br><span class="line">        &#125;, <span class="variable language_">self</span>.secret_key, algorithm=<span class="string">&#x27;HS256&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&#x27;token&#x27;</span>: token,</span><br><span class="line">            <span class="string">&#x27;expires_at&#x27;</span>: datetime.utcnow() + <span class="variable language_">self</span>.session_duration,</span><br><span class="line">            <span class="string">&#x27;trust_level&#x27;</span>: device_trust.level</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">authorize</span>(<span class="params">self, token: <span class="built_in">str</span>, resource: <span class="built_in">str</span>, action: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;权限验证&quot;&quot;&quot;</span></span><br><span class="line">        payload = jwt.decode(token, <span class="variable language_">self</span>.secret_key, algorithms=[<span class="string">&#x27;HS256&#x27;</span>])</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 策略评估</span></span><br><span class="line">        policy = <span class="variable language_">self</span>._evaluate_policy(</span><br><span class="line">            user_id=payload[<span class="string">&#x27;user_id&#x27;</span>],</span><br><span class="line">            role=payload[<span class="string">&#x27;role&#x27;</span>],</span><br><span class="line">            resource=resource,</span><br><span class="line">            action=action,</span><br><span class="line">            trust_level=payload[<span class="string">&#x27;trust_level&#x27;</span>],</span><br><span class="line">            context=<span class="variable language_">self</span>._get_context()</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> policy.allowed</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用装饰器保护资源访问</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">require_permission</span>(<span class="params">resource: <span class="built_in">str</span>, action: <span class="built_in">str</span></span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decorator</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">        @wraps(<span class="params">func</span>)</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">            token = kwargs.get(<span class="string">&#x27;token&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> auth.authorize(token, resource, action):</span><br><span class="line">                <span class="keyword">raise</span> AuthorizationError(<span class="string">&quot;权限不足&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> decorator</span><br></pre></td></tr></table></figure>
-
-<h2 id="网络分区与微隔离"><a href="#网络分区与微隔离" class="headerlink" title="网络分区与微隔离"></a>网络分区与微隔离</h2><h3 id="Purdue模型扩展"><a href="#Purdue模型扩展" class="headerlink" title="Purdue模型扩展"></a>Purdue模型扩展</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ Level 5: 企业网络                                            │</span><br><span class="line">│ ERP, MES, 办公系统                                           │</span><br><span class="line">└──────────────────────────┬──────────────────────────────────┘</span><br><span class="line">                           │ 防火墙 + DMZ</span><br><span class="line">┌──────────────────────────▼──────────────────────────────────┐</span><br><span class="line">│ Level 4: 运营管理                                            │</span><br><span class="line">│ Historian, 工程师站（部分）                                   │</span><br><span class="line">└──────────────────────────┬──────────────────────────────────┘</span><br><span class="line">                           │ 数据二极管 / 单向网闸</span><br><span class="line">┌──────────────────────────▼──────────────────────────────────┐</span><br><span class="line">│ Level 3.5: 安全DMZ                                           │</span><br><span class="line">│ OPC服务器, 远程访问网关                                       │</span><br><span class="line">└──────────────────────────┬──────────────────────────────────┘</span><br><span class="line">                           │ 防火墙</span><br><span class="line">┌──────────────────────────▼──────────────────────────────────┐</span><br><span class="line">│ Level 3: 监控网络                                            │</span><br><span class="line">│ HMI, SCADA服务器, 工程师站                                   │</span><br><span class="line">└──────────────────────────┬──────────────────────────────────┘</span><br><span class="line">                           │ 工业防火墙</span><br><span class="line">┌──────────────────────────▼──────────────────────────────────┐</span><br><span class="line">│ Level 1-2: 控制网络                                          │</span><br><span class="line">│ PLC, DCS控制器, I/O模块                                       │</span><br><span class="line">└──────────────────────────┬──────────────────────────────────┘</span><br><span class="line">                           │ 物理隔离</span><br><span class="line">┌──────────────────────────▼──────────────────────────────────┐</span><br><span class="line">│ Level 0: 现场设备                                            │</span><br><span class="line">│ 传感器, 执行器, 变频器                                        │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h3 id="微隔离策略"><a href="#微隔离策略" class="headerlink" title="微隔离策略"></a>微隔离策略</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 网络微隔离策略定义</span></span><br><span class="line"><span class="attr">policies:</span></span><br><span class="line">  <span class="comment"># PLC访问策略</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">plc_access</span></span><br><span class="line">    <span class="attr">source:</span></span><br><span class="line">      <span class="attr">zone:</span> <span class="string">control_network</span></span><br><span class="line">      <span class="attr">roles:</span> [<span class="string">engineer</span>, <span class="string">operator</span>]</span><br><span class="line">    <span class="attr">destination:</span></span><br><span class="line">      <span class="attr">zone:</span> <span class="string">plc_network</span></span><br><span class="line">      <span class="attr">resources:</span> [<span class="string">plc1</span>, <span class="string">plc2</span>, <span class="string">plc3</span>]</span><br><span class="line">    <span class="attr">protocols:</span> [<span class="string">modbus_tcp</span>, <span class="string">ethernet_ip</span>]</span><br><span class="line">    <span class="attr">ports:</span> [<span class="number">502</span>, <span class="number">44818</span>]</span><br><span class="line">    <span class="attr">actions:</span> [<span class="string">read</span>, <span class="string">write</span>]</span><br><span class="line">    <span class="attr">conditions:</span></span><br><span class="line">      <span class="attr">time_window:</span> <span class="string">&quot;08:00-18:00&quot;</span></span><br><span class="line">      <span class="attr">mfa_verified:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">device_trust_level:</span> <span class="string">high</span></span><br><span class="line">      </span><br><span class="line">  <span class="comment"># 操作员站访问策略</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">hmi_access</span></span><br><span class="line">    <span class="attr">source:</span></span><br><span class="line">      <span class="attr">zone:</span> <span class="string">control_network</span></span><br><span class="line">      <span class="attr">roles:</span> [<span class="string">operator</span>]</span><br><span class="line">    <span class="attr">destination:</span></span><br><span class="line">      <span class="attr">zone:</span> <span class="string">hmi_network</span></span><br><span class="line">      <span class="attr">resources:</span> [<span class="string">hmi1</span>, <span class="string">hmi2</span>]</span><br><span class="line">    <span class="attr">protocols:</span> [<span class="string">rdp</span>, <span class="string">vnc</span>]</span><br><span class="line">    <span class="attr">ports:</span> [<span class="number">3389</span>, <span class="number">5900</span>]</span><br><span class="line">    <span class="attr">actions:</span> [<span class="string">read</span>]</span><br><span class="line">    <span class="attr">conditions:</span></span><br><span class="line">      <span class="attr">mfa_verified:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="安全监控与响应"><a href="#安全监控与响应" class="headerlink" title="安全监控与响应"></a>安全监控与响应</h2><h3 id="安全运营中心（SOC）"><a href="#安全运营中心（SOC）" class="headerlink" title="安全运营中心（SOC）"></a>安全运营中心（SOC）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                   工业安全运营中心                           │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  ┌────────────────┐  ┌────────────────┐                    │</span><br><span class="line">│  │  SIEM         │  │  SOAR          │                    │</span><br><span class="line">│  │  安全事件管理  │──▶  安全编排响应  │                    │</span><br><span class="line">│  └────────────────┘  └────────────────┘                    │</span><br><span class="line">│         │                   │                               │</span><br><span class="line">│         ▼                   ▼                               │</span><br><span class="line">│  ┌───────────────────────────────────────────────────────┐ │</span><br><span class="line">│  │                   安全事件仪表盘                       │ │</span><br><span class="line">│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐  │ │</span><br><span class="line">│  │  │告警数量  │ │事件趋势  │ │威胁类型  │ │响应时间  │  │ │</span><br><span class="line">│  │  │  247     │ │  ▁▂▃▄▅  │ │ 勒索 32% │ │  平均15m │  │ │</span><br><span class="line">│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘  │ │</span><br><span class="line">│  └───────────────────────────────────────────────────────┘ │</span><br><span class="line">│                                                             │</span><br><span class="line">│  数据源                                                     │</span><br><span class="line">│  ├── 防火墙日志                                             │</span><br><span class="line">│  ├── IDS/IPS告警                                            │</span><br><span class="line">│  ├── 终端EDR                                                │</span><br><span class="line">│  └── 网络流量分析                                           │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h3 id="入侵检测规则"><a href="#入侵检测规则" class="headerlink" title="入侵检测规则"></a>入侵检测规则</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 工控协议异常检测规则</span></span><br><span class="line"><span class="attr">rules:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">MODBUS_001</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">Modbus异常功能码</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">modbus</span></span><br><span class="line">    <span class="attr">condition:</span> <span class="string">function_code</span> <span class="string">not</span> <span class="string">in</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">15</span>,<span class="number">16</span>]</span><br><span class="line">    <span class="attr">severity:</span> <span class="string">high</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">alert_and_block</span></span><br><span class="line">    </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">MODBUS_002</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">Modbus写入操作</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">modbus</span></span><br><span class="line">    <span class="attr">condition:</span> <span class="string">function_code</span> <span class="string">in</span> [<span class="number">5</span>,<span class="number">6</span>,<span class="number">15</span>,<span class="number">16</span>]</span><br><span class="line">    <span class="attr">severity:</span> <span class="string">medium</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">alert_and_log</span></span><br><span class="line">    <span class="attr">whitelist:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.100</span></span><br><span class="line">        <span class="attr">destination:</span> <span class="number">192.168</span><span class="number">.10</span><span class="number">.10</span></span><br><span class="line">        </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">PLC_001</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">PLC程序变更</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">ethernet_ip</span></span><br><span class="line">    <span class="attr">condition:</span> </span><br><span class="line">      <span class="attr">command:</span> <span class="string">program_download</span></span><br><span class="line">      <span class="attr">source_not_in:</span> <span class="string">engineers</span></span><br><span class="line">    <span class="attr">severity:</span> <span class="string">critical</span></span><br><span class="line">    <span class="attr">action:</span> <span class="string">alert_and_block</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="合规与审计"><a href="#合规与审计" class="headerlink" title="合规与审计"></a>合规与审计</h2><h3 id="安全评估检查项"><a href="#安全评估检查项" class="headerlink" title="安全评估检查项"></a>安全评估检查项</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IEC 62443合规检查清单</span></span><br><span class="line"><span class="attr">assessment:</span></span><br><span class="line">  <span class="string">组织层面:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">安全策略与程序文档</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">安全组织架构</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">人员安全培训</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">供应商安全管理</span></span><br><span class="line">    </span><br><span class="line">  <span class="string">技术层面:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">网络分区与隔离</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">访问控制机制</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">加密通信</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">安全监控能力</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">备份与恢复</span></span><br><span class="line">    </span><br><span class="line">  <span class="string">流程层面:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">变更管理流程</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">事件响应流程</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">漏洞管理流程</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">安全审计机制</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>工业网络安全是一个持续演进的过程，零信任架构为应对复杂威胁环境提供了新的思路。通过身份为中心的访问控制、网络微隔离、持续监控等手段，可以显著提升工业控制系统的安全态势。施耐德电气的产品遵循IEC 62443标准，为客户构建安全可靠的工业系统提供坚实基础。</p>
+        <h1 id="工业以太网深度解析与工程实践"><a href="#工业以太网深度解析与工程实践" class="headerlink" title="工业以太网深度解析与工程实践"></a>工业以太网深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>工业以太网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
+</ul>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 ConneXium 原生支持工业以太网，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1808/" data-id="cmr67mcv600t6kcuncgk2363w" data-title="工业网络安全架构设计与零信任实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1808/" data-id="cmtk83t6e02ft1oun1cyu7iyy" data-title="工业以太网深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-62443/" rel="tag">IEC 62443</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E5%AE%89%E5%85%A8/" rel="tag">工业安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag">网络安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9B%B6%E4%BF%A1%E4%BB%BB/" rel="tag">零信任</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">工业以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
@@ -226,7 +138,7 @@
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气：西门子合作深化，共建开放自动化生态
+          施耐德电气软件更新：Foxboro SDA最新动态
         
       </div>
     </a>
@@ -234,13 +146,14 @@
   
     <a href="/2026/05/11/schneider-news-20260511-1808/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：全球渠道合作伙伴大会召开，共谋数字化未来</div>
+      <div class="article-nav-title">施耐德电气软件更新：Industrial Copilot最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -254,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

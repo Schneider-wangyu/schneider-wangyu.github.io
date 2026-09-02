@@ -4,25 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>Docker容器化部署工业边缘应用的最佳实践 | Schneider 技术分享</title>
+  <title>工业以太网在汽车装配线的实战应用 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="工业边缘计算正在经历一场从传统嵌入式开发向容器化部署的变革。Docker容器技术为工业应用带来了前所未有的灵活性和可移植性。本文将详细介绍在工业边缘环境中容器化部署的最佳实践，以及与施耐德电气EcoStruxure平台的集成方案。 容器化在工业边缘的价值传统部署的痛点   问题 影响    环境依赖复杂 部署周期长，易出错   版本管理困难 升级回退风险高   资源隔离不足 应用冲突，稳定性差">
+  <meta name="description" content="工业以太网在汽车装配线的实战应用项目背景在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。工业以太网作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。 施耐德电气方案本项目采用施耐德电气 ConneXium 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：  在现场层部署 ConneXium">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker容器化部署工业边缘应用的最佳实践">
+<meta property="og:title" content="工业以太网在汽车装配线的实战应用">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/15/edge-tech-20260515-1208/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="工业边缘计算正在经历一场从传统嵌入式开发向容器化部署的变革。Docker容器技术为工业应用带来了前所未有的灵活性和可移植性。本文将详细介绍在工业边缘环境中容器化部署的最佳实践，以及与施耐德电气EcoStruxure平台的集成方案。 容器化在工业边缘的价值传统部署的痛点   问题 影响    环境依赖复杂 部署周期长，易出错   版本管理困难 升级回退风险高   资源隔离不足 应用冲突，稳定性差">
+<meta property="og:description" content="工业以太网在汽车装配线的实战应用项目背景在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。工业以太网作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。 施耐德电气方案本项目采用施耐德电气 ConneXium 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：  在现场层部署 ConneXium">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605151208.jpg">
 <meta property="article:published_time" content="2026-05-15T04:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-21T00:29:06.147Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.202Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="边缘计算">
-<meta property="article:tag" content="施耐德">
-<meta property="article:tag" content="Docker">
-<meta property="article:tag" content="容器化">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业以太网">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605151208.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
   
@@ -104,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      Docker容器化部署工业边缘应用的最佳实践
+      工业以太网在汽车装配线的实战应用
     </h1>
   
 
@@ -112,115 +108,26 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605151208.jpg" alt="边缘控制技术"></p>
-<p>工业边缘计算正在经历一场从传统嵌入式开发向容器化部署的变革。Docker容器技术为工业应用带来了前所未有的灵活性和可移植性。本文将详细介绍在工业边缘环境中容器化部署的最佳实践，以及与施耐德电气EcoStruxure平台的集成方案。</p>
-<h2 id="容器化在工业边缘的价值"><a href="#容器化在工业边缘的价值" class="headerlink" title="容器化在工业边缘的价值"></a>容器化在工业边缘的价值</h2><h3 id="传统部署的痛点"><a href="#传统部署的痛点" class="headerlink" title="传统部署的痛点"></a>传统部署的痛点</h3><table>
-<thead>
-<tr>
-<th>问题</th>
-<th>影响</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>环境依赖复杂</td>
-<td>部署周期长，易出错</td>
-</tr>
-<tr>
-<td>版本管理困难</td>
-<td>升级回退风险高</td>
-</tr>
-<tr>
-<td>资源隔离不足</td>
-<td>应用冲突，稳定性差</td>
-</tr>
-<tr>
-<td>扩展性差</td>
-<td>硬件升级成本高</td>
-</tr>
-</tbody></table>
-<h3 id="容器化优势"><a href="#容器化优势" class="headerlink" title="容器化优势"></a>容器化优势</h3><ul>
-<li><strong>一致性</strong>：开发、测试、生产环境完全一致</li>
-<li><strong>隔离性</strong>：应用独立运行，互不干扰</li>
-<li><strong>轻量级</strong>：相比虚拟机，资源占用更少</li>
-<li><strong>快速部署</strong>：秒级启动，CI&#x2F;CD友好</li>
-<li><strong>版本控制</strong>：镜像标签管理，回退便捷</li>
-</ul>
-<h2 id="边缘容器架构设计"><a href="#边缘容器架构设计" class="headerlink" title="边缘容器架构设计"></a>边缘容器架构设计</h2><h3 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                   边缘网关主机                        │</span><br><span class="line">│  ┌───────────────────────────────────────────────┐  │</span><br><span class="line">│  │              Docker Engine                     │  │</span><br><span class="line">│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐      │  │</span><br><span class="line">│  │  │ 数据采集  │ │ 数据处理 │ │ 云端通信 │      │  │</span><br><span class="line">│  │  │ 容器     │ │ 容器     │ │ 容器     │      │  │</span><br><span class="line">│  │  │          │ │          │ │          │      │  │</span><br><span class="line">│  │  │OPC UA   │ │Spark/    │ │MQTT/    │      │  │</span><br><span class="line">│  │  │Modbus   │ │Python    │ │HTTP     │      │  │</span><br><span class="line">│  │  └────┬─────┘ └────┬─────┘ └────┬─────┘      │  │</span><br><span class="line">│  │       │            │            │            │  │</span><br><span class="line">│  │  ┌────┴────────────┴────────────┴────┐       │  │</span><br><span class="line">│  │  │         共享数据卷                  │       │  │</span><br><span class="line">│  │  │         /data                      │       │  │</span><br><span class="line">│  │  └────────────────────────────────────┘       │  │</span><br><span class="line">│  └───────────────────────────────────────────────┘  │</span><br><span class="line">│  ┌───────────────────────────────────────────────┐  │</span><br><span class="line">│  │              Portainer (管理界面)              │  │</span><br><span class="line">│  └───────────────────────────────────────────────┘  │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h3 id="Dockerfile最佳实践"><a href="#Dockerfile最佳实践" class="headerlink" title="Dockerfile最佳实践"></a>Dockerfile最佳实践</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于轻量级镜像</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.11</span>-slim-bookworm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装系统依赖</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; apt-get install -y --no-install-recommends \</span></span><br><span class="line"><span class="language-bash">    libmodbus5 \</span></span><br><span class="line"><span class="language-bash">    libssl3 \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制依赖文件并安装</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> requirements.txt .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制应用代码</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> src/ ./src/</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> config/ ./config/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建非root用户</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> useradd -m -u 1000 edgeuser &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chown</span> -R edgeuser:edgeuser /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> edgeuser</span><br><span class="line"></span><br><span class="line"><span class="comment"># 健康检查</span></span><br><span class="line"><span class="keyword">HEALTHCHECK</span><span class="language-bash"> --interval=30s --<span class="built_in">timeout</span>=10s --start-period=5s --retries=3 \</span></span><br><span class="line"><span class="language-bash">    CMD python -c <span class="string">&quot;import requests; requests.get(&#x27;http://localhost:8080/health&#x27;)&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;src/main.py&quot;</span>]</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="工业协议容器化示例"><a href="#工业协议容器化示例" class="headerlink" title="工业协议容器化示例"></a>工业协议容器化示例</h2><h3 id="OPC-UA数据采集容器"><a href="#OPC-UA数据采集容器" class="headerlink" title="OPC UA数据采集容器"></a>OPC UA数据采集容器</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">opcua-collector:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./opcua-collector</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">opcua-collector</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">OPCUA_ENDPOINT=opc.tcp://192.168.1.10:4840</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">OPCUA_SECURITY_MODE=SignAndEncrypt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MQTT_BROKER=tcp://mqtt-broker:1883</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POLLING_INTERVAL=1000</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./certs:/app/certs:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">opcuacache:/app/cache</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">edge-network</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mqtt-broker</span></span><br><span class="line">    <span class="attr">security_opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="literal">no</span><span class="string">-new-privileges:true</span></span><br><span class="line">    <span class="attr">read_only:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">tmpfs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/tmp</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">mqtt-broker:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">eclipse-mosquitto:2</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mqtt-broker</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mosquitto/config:/mosquitto/config:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mosquittodata:/mosquitto/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mosquittolog:/mosquitto/log</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;1883:1883&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9001:9001&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">edge-network</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">data-processor:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./data-processor</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">data-processor</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MQTT_BROKER=tcp://mqtt-broker:1883</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">INFLUXDB_URL=http://influxdb:8086</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BATCH_SIZE=100</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FLUSH_INTERVAL=5000</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">processorcache:/app/cache</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">edge-network</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mqtt-broker</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">influxdb</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">influxdb:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">influxdb:2.7</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">influxdb</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_MODE=setup</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_USERNAME=admin</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_PASSWORD=$&#123;INFLUX_PASSWORD&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_ORG=edge-org</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DOCKER_INFLUXDB_INIT_BUCKET=telemetry</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">influxdbdata:/var/lib/influxdb2</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8086:8086&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">edge-network</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">opcuacache:</span></span><br><span class="line">  <span class="attr">mosquittodata:</span></span><br><span class="line">  <span class="attr">mosquittolog:</span></span><br><span class="line">  <span class="attr">processorcache:</span></span><br><span class="line">  <span class="attr">influxdbdata:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">edge-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="资源限制与隔离"><a href="#资源限制与隔离" class="headerlink" title="资源限制与隔离"></a>资源限制与隔离</h2><h3 id="资源配额设置"><a href="#资源配额设置" class="headerlink" title="资源配额设置"></a>资源配额设置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">opcua-collector:</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">cpus:</span> <span class="string">&#x27;0.5&#x27;</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">256M</span></span><br><span class="line">        <span class="attr">reservations:</span></span><br><span class="line">          <span class="attr">cpus:</span> <span class="string">&#x27;0.25&#x27;</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">128M</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="CPU亲和性配置"><a href="#CPU亲和性配置" class="headerlink" title="CPU亲和性配置"></a>CPU亲和性配置</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">real-time-process:</span></span><br><span class="line">    <span class="attr">cpuset:</span> <span class="string">&quot;0,1&quot;</span>  <span class="comment"># 绑定到CPU核心0和1</span></span><br><span class="line">    <span class="attr">cpu_rt_runtime:</span> <span class="string">&#x27;950000&#x27;</span>  <span class="comment"># 实时调度</span></span><br><span class="line">    <span class="attr">cpu_rt_period:</span> <span class="string">&#x27;1000000&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="网络安全配置"><a href="#网络安全配置" class="headerlink" title="网络安全配置"></a>网络安全配置</h2><h3 id="网络分段"><a href="#网络分段" class="headerlink" title="网络分段"></a>网络分段</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">ot-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">    <span class="attr">internal:</span> <span class="literal">true</span>  <span class="comment"># 禁止外部访问</span></span><br><span class="line">  <span class="attr">it-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">  <span class="attr">dmz-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">plc-connector:</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ot-network</span></span><br><span class="line">    <span class="comment"># 仅连接OT网络</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">cloud-gateway:</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ot-network</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">dmz-network</span></span><br><span class="line">    <span class="comment"># 连接OT和DMZ</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">edge-api:</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">dmz-network</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">it-network</span></span><br><span class="line">    <span class="comment"># 对外服务</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="与EcoStruxure集成"><a href="#与EcoStruxure集成" class="headerlink" title="与EcoStruxure集成"></a>与EcoStruxure集成</h2><h3 id="Modicon-M262容器支持"><a href="#Modicon-M262容器支持" class="headerlink" title="Modicon M262容器支持"></a>Modicon M262容器支持</h3><p>施耐德Modicon M262支持Docker容器部署：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># SSH连接到M262</span></span><br><span class="line">ssh admin@192.168.1.10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拉取镜像</span></span><br><span class="line">docker pull schneider/edge-app:latest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行容器</span></span><br><span class="line">docker run -d \</span><br><span class="line">  --name edge-app \</span><br><span class="line">  --restart unless-stopped \</span><br><span class="line">  --network host \</span><br><span class="line">  -v /var/data:/app/data \</span><br><span class="line">  -e PLC_IP=127.0.0.1 \</span><br><span class="line">  schneider/edge-app:latest</span><br></pre></td></tr></table></figure>
-
-<h3 id="EcoStruxure-IT应用管理"><a href="#EcoStruxure-IT应用管理" class="headerlink" title="EcoStruxure IT应用管理"></a>EcoStruxure IT应用管理</h3><p>通过EcoStruxure IT平台可远程管理边缘容器：</p>
+        <h1 id="工业以太网在汽车装配线的实战应用"><a href="#工业以太网在汽车装配线的实战应用" class="headerlink" title="工业以太网在汽车装配线的实战应用"></a>工业以太网在汽车装配线的实战应用</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在汽车装配线的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。工业以太网作为新一代边缘控制关键技术，为汽车装配线的智能化改造提供了切实可行的落地路径。</p>
+<h2 id="施耐德电气方案"><a href="#施耐德电气方案" class="headerlink" title="施耐德电气方案"></a>施耐德电气方案</h2><p>本项目采用施耐德电气 ConneXium 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：</p>
 <ul>
-<li>镜像拉取与部署</li>
-<li>容器状态监控</li>
-<li>日志收集与分析</li>
-<li>配置推送与更新</li>
+<li>在现场层部署 ConneXium 作为实时控制核心，控制周期稳定维持在毫秒级；</li>
+<li>通过 OPC UA over TSN 打通 IT 与 OT 网络，消除协议壁垒；</li>
+<li>依托 EcoStruxure 平台实现全网设备的统一监控与远程运维；</li>
+<li>引入边缘算力，在本地完成数据预处理与异常研判，降低上行带宽压力。</li>
 </ul>
-<h2 id="持续集成-持续部署-CI-CD"><a href="#持续集成-持续部署-CI-CD" class="headerlink" title="持续集成&#x2F;持续部署(CI&#x2F;CD)"></a>持续集成&#x2F;持续部署(CI&#x2F;CD)</h2><h3 id="GitLab-CI示例"><a href="#GitLab-CI示例" class="headerlink" title="GitLab CI示例"></a>GitLab CI示例</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .gitlab-ci.yml</span></span><br><span class="line"><span class="attr">stages:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">build</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">test</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">deploy</span></span><br><span class="line"></span><br><span class="line"><span class="attr">build-image:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">build</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">docker:24</span></span><br><span class="line">  <span class="attr">services:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker:24-dind</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span> <span class="string">login</span> <span class="string">-u</span> <span class="string">$CI_REGISTRY_USER</span> <span class="string">-p</span> <span class="string">$CI_REGISTRY_PASSWORD</span> <span class="string">$CI_REGISTRY</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span> <span class="string">build</span> <span class="string">-t</span> <span class="string">$CI_REGISTRY/edge-app:$CI_COMMIT_SHA</span> <span class="string">.</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span> <span class="string">push</span> <span class="string">$CI_REGISTRY/edge-app:$CI_COMMIT_SHA</span></span><br><span class="line"></span><br><span class="line"><span class="attr">test-image:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">test</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">$CI_REGISTRY/edge-app:$CI_COMMIT_SHA</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">pytest</span> <span class="string">tests/</span> <span class="string">-v</span></span><br><span class="line"></span><br><span class="line"><span class="attr">deploy-edge:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">deploy</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">alpine:latest</span></span><br><span class="line">  <span class="attr">before_script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">apk</span> <span class="string">add</span> <span class="string">--no-cache</span> <span class="string">openssh-client</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh</span> <span class="string">$EDGE_USER@$EDGE_HOST</span> <span class="string">&quot;docker pull $CI_REGISTRY/edge-app:$CI_COMMIT_SHA&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh</span> <span class="string">$EDGE_USER@$EDGE_HOST</span> <span class="string">&quot;docker stop edge-app || true&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh</span> <span class="string">$EDGE_USER@$EDGE_HOST</span> <span class="string">&quot;docker rm edge-app || true&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh</span> <span class="string">$EDGE_USER@$EDGE_HOST</span> <span class="string">&quot;docker run -d --name edge-app --restart unless-stopped $CI_REGISTRY/edge-app:$CI_COMMIT_SHA&quot;</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="监控与日志"><a href="#监控与日志" class="headerlink" title="监控与日志"></a>监控与日志</h2><h3 id="Prometheus-Grafana监控"><a href="#Prometheus-Grafana监控" class="headerlink" title="Prometheus + Grafana监控"></a>Prometheus + Grafana监控</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.monitoring.yml</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">prometheus:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">prom/prometheus:v2.45.0</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./prometheus.yml:/etc/prometheus/prometheus.yml:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">prometheusdata:/prometheus</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;--config.file=/etc/prometheus/prometheus.yml&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;--storage.tsdb.retention.time=15d&#x27;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9090:9090&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">monitoring</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">grafana:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">grafana/grafana:10.0.0</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">GF_SECURITY_ADMIN_PASSWORD=$&#123;GRAFANA_PASSWORD&#125;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">grafanadata:/var/lib/grafana</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./dashboards:/etc/grafana/provisioning/dashboards</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">monitoring</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">cadvisor:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">gcr.io/cadvisor/cadvisor:v0.47.0</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/:/rootfs:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/run:/var/run:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/sys:/sys:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/docker/:/var/lib/docker:ro</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8080:8080&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">monitoring</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="容器安全加固"><a href="#容器安全加固" class="headerlink" title="容器安全加固"></a>容器安全加固</h2><h3 id="安全清单"><a href="#安全清单" class="headerlink" title="安全清单"></a>安全清单</h3><table>
-<thead>
-<tr>
-<th>检查项</th>
-<th>建议</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>基础镜像</td>
-<td>使用官方minimal镜像，定期更新</td>
-</tr>
-<tr>
-<td>用户权限</td>
-<td>非root用户运行</td>
-</tr>
-<tr>
-<td>只读文件系统</td>
-<td><code>read_only: true</code></td>
-</tr>
-<tr>
-<td>特权模式</td>
-<td>禁用 <code>privileged: false</code></td>
-</tr>
-<tr>
-<td>能力限制</td>
-<td><code>cap_drop: [ALL]</code></td>
-</tr>
-<tr>
-<td>安全选项</td>
-<td><code>security_opt: [no-new-privileges:true]</code></td>
-</tr>
-<tr>
-<td>漏洞扫描</td>
-<td>定期执行镜像扫描</td>
-</tr>
-</tbody></table>
-<h2 id="故障恢复与高可用"><a href="#故障恢复与高可用" class="headerlink" title="故障恢复与高可用"></a>故障恢复与高可用</h2><h3 id="自动重启策略"><a href="#自动重启策略" class="headerlink" title="自动重启策略"></a>自动重启策略</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">edge-app:</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">restart_policy:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">on-failure</span></span><br><span class="line">        <span class="attr">delay:</span> <span class="string">5s</span></span><br><span class="line">        <span class="attr">max_attempts:</span> <span class="number">3</span></span><br><span class="line">        <span class="attr">window:</span> <span class="string">120s</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>Docker容器化技术为工业边缘计算带来了现代化的部署和管理方式。通过合理的架构设计、资源限制和安全加固，可以在保证工业应用可靠性的同时，显著提升开发和运维效率。结合施耐德电气的EcoStruxure平台，企业可以快速构建灵活、可扩展的工业物联网解决方案。</p>
+<h2 id="应用成效"><a href="#应用成效" class="headerlink" title="应用成效"></a>应用成效</h2><p>改造后，汽车装配线的整体运营指标显著改善：设备综合效率（OEE）提升明显，非计划停机次数下降，运维人员可通过统一门户掌握全域状态。该方案已在多个同类场景中复制推广，验证了工业以太网在汽车装配线的适配性与稳定性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/15/edge-tech-20260515-1208/" data-id="cmr67mcvu00vzkcunb58kel3k" data-title="Docker容器化部署工业边缘应用的最佳实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/15/edge-tech-20260515-1208/" data-id="cmtk83t9702i81ounc3pp9prp" data-title="工业以太网在汽车装配线的实战应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" rel="tag">容器化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">工业以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
@@ -231,7 +138,7 @@
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气：智能配电系统助力制药企业GMP合规
+          施耐德电气新品发布：Premium最新动态
         
       </div>
     </a>
@@ -239,13 +146,14 @@
   
     <a href="/2026/05/15/schneider-news-20260515-1208/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：Modicon M340助力锂电池产线智能化升级</div>
+      <div class="article-nav-title">施耐德电气新品发布：Quantum最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -259,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

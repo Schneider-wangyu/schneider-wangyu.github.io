@@ -4,24 +4,20 @@
   <meta charset="utf-8">
   
   
-  <title>SCADA系统边缘化改造方案：从集中监控到分布式智能 | Schneider 技术分享</title>
+  <title>工业以太网编程指南：水泵站场景 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="传统SCADA系统采用”终端采集-中心监控”的集中式架构，在工业数字化转型的浪潮下面临诸多挑战：单点故障风险、通信带宽瓶颈、响应延迟偏高、扩展性受限。边缘化改造是SCADA系统演进的重要方向，通过将计算和决策能力下沉到边缘节点，构建”分布式智能”的新架构。施耐德电气基于EcoStruxure平台，提供系统化的SCADA边缘化改造方案，本文将深入阐述其技术路径。 一、传统SCADA架构的局限1.1">
+  <meta name="description" content="工业以太网编程指南：水泵站场景实战开发环境本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 工业以太网 — 水泵站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_INP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SCADA系统边缘化改造方案：从集中监控到分布式智能">
+<meta property="og:title" content="工业以太网编程指南：水泵站场景">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1408/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="传统SCADA系统采用”终端采集-中心监控”的集中式架构，在工业数字化转型的浪潮下面临诸多挑战：单点故障风险、通信带宽瓶颈、响应延迟偏高、扩展性受限。边缘化改造是SCADA系统演进的重要方向，通过将计算和决策能力下沉到边缘节点，构建”分布式智能”的新架构。施耐德电气基于EcoStruxure平台，提供系统化的SCADA边缘化改造方案，本文将深入阐述其技术路径。 一、传统SCADA架构的局限1.1">
+<meta property="og:description" content="工业以太网编程指南：水泵站场景实战开发环境本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 工业以太网 — 水泵站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_INP">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-11T06:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-20T02:18:18.303Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.126Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="工业自动化">
-<meta property="article:tag" content="PLC">
-<meta property="article:tag" content="边缘计算">
-<meta property="article:tag" content="SCADA">
-<meta property="article:tag" content="边缘化改造">
-<meta property="article:tag" content="分布式系统">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业以太网">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
@@ -93,7 +89,7 @@
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF/">边缘控制技术</a>
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
   </div>
 
   </div>
@@ -104,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      SCADA系统边缘化改造方案：从集中监控到分布式智能
+      工业以太网编程指南：水泵站场景
     </h1>
   
 
@@ -112,111 +108,37 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>传统SCADA系统采用”终端采集-中心监控”的集中式架构，在工业数字化转型的浪潮下面临诸多挑战：单点故障风险、通信带宽瓶颈、响应延迟偏高、扩展性受限。边缘化改造是SCADA系统演进的重要方向，通过将计算和决策能力下沉到边缘节点，构建”分布式智能”的新架构。施耐德电气基于EcoStruxure平台，提供系统化的SCADA边缘化改造方案，本文将深入阐述其技术路径。</p>
-<h2 id="一、传统SCADA架构的局限"><a href="#一、传统SCADA架构的局限" class="headerlink" title="一、传统SCADA架构的局限"></a>一、传统SCADA架构的局限</h2><h3 id="1-1-集中式架构的典型问题"><a href="#1-1-集中式架构的典型问题" class="headerlink" title="1.1 集中式架构的典型问题"></a>1.1 集中式架构的典型问题</h3><p>传统SCADA架构中，所有现场数据通过通信网络汇聚到中心服务器，由中心服务器完成监控、报警、历史存储和报表生成等全部功能。这种架构的典型问题包括：</p>
-<ul>
-<li><strong>通信带宽瓶颈</strong>：数千个测点的实时数据同时上传，带宽需求持续增长</li>
-<li><strong>响应延迟</strong>：从现场变化到操作员看到信息，需经过采集、传输、处理、显示多个环节，延迟通常在2-5秒</li>
-<li><strong>单点故障</strong>：中心服务器故障将导致全系统监控中断</li>
-<li><strong>扩展困难</strong>：新增站点需要调整中心系统配置，影响在线运行</li>
+        <h1 id="工业以太网编程指南：水泵站场景实战"><a href="#工业以太网编程指南：水泵站场景实战" class="headerlink" title="工业以太网编程指南：水泵站场景实战"></a>工业以太网编程指南：水泵站场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 工业以太网 — 水泵站场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 水泵站 实际负载下标定 PID 参数，确保动态品质。</li>
 </ul>
-<h3 id="1-2-边缘化改造的必要性"><a href="#1-2-边缘化改造的必要性" class="headerlink" title="1.2 边缘化改造的必要性"></a>1.2 边缘化改造的必要性</h3><p>随着IoT设备数量的增长和实时性要求的提高，集中式SCADA架构已触及天花板。边缘化改造不是推翻现有系统，而是在现有架构上引入边缘层，实现”边缘自治、中心协同”的新运行模式。</p>
-<h2 id="二、边缘化改造的架构设计"><a href="#二、边缘化改造的架构设计" class="headerlink" title="二、边缘化改造的架构设计"></a>二、边缘化改造的架构设计</h2><h3 id="2-1-三层架构"><a href="#2-1-三层架构" class="headerlink" title="2.1 三层架构"></a>2.1 三层架构</h3><p>改造后的SCADA系统采用三层架构：</p>
-<ul>
-<li><strong>现场层</strong>：PLC、RTU、智能仪表等现场设备，负责过程控制</li>
-<li><strong>边缘层</strong>：边缘网关&#x2F;边缘控制器，负责数据汇聚、边缘分析和本地监控</li>
-<li><strong>中心层</strong>：SCADA主站，负责全局监控、历史分析和决策支持</li>
-</ul>
-<h3 id="2-2-边缘节点的功能定位"><a href="#2-2-边缘节点的功能定位" class="headerlink" title="2.2 边缘节点的功能定位"></a>2.2 边缘节点的功能定位</h3><p>边缘节点在SCADA系统中承担以下功能：</p>
-<ul>
-<li><strong>数据汇聚与预处理</strong>：汇集多个现场设备数据，执行数据过滤、工程量转换和有效性校验</li>
-<li><strong>本地监控</strong>：运行轻量级HMI，支持本地操作员的实时监控和手动操作</li>
-<li><strong>边缘分析</strong>：运行规则引擎和轻量级AI模型，实现异常检测和故障预警</li>
-<li><strong>数据缓存</strong>：在通信中断时缓存历史数据，恢复后自动同步到中心</li>
-<li><strong>协议转换</strong>：将Modbus&#x2F;IEC 61850等工业协议转换为OPC UA&#x2F;MQTT等IT协议</li>
-</ul>
-<h3 id="2-3-边云数据同步"><a href="#2-3-边云数据同步" class="headerlink" title="2.3 边云数据同步"></a>2.3 边云数据同步</h3><p>边缘节点与中心主站的数据同步是边缘化改造的关键技术：</p>
-<ul>
-<li><strong>实时数据</strong>：通过OPC UA Pub&#x2F;Sub或MQTT推送变化数据，延迟&lt;1秒</li>
-<li><strong>历史数据</strong>：按可配置周期批量同步，支持断点续传</li>
-<li><strong>配置数据</strong>：中心统一管理配置，增量下发到边缘节点</li>
-<li><strong>告警事件</strong>：优先级最高，立即推送，确保关键告警不遗漏</li>
-</ul>
-<h2 id="三、施耐德电气的改造方案"><a href="#三、施耐德电气的改造方案" class="headerlink" title="三、施耐德电气的改造方案"></a>三、施耐德电气的改造方案</h2><h3 id="3-1-软件平台：EcoStruxure-Geo-SCADA"><a href="#3-1-软件平台：EcoStruxure-Geo-SCADA" class="headerlink" title="3.1 软件平台：EcoStruxure Geo SCADA"></a>3.1 软件平台：EcoStruxure Geo SCADA</h3><p>EcoStruxure Geo SCADA（原ClearSCADA）天然支持分布式架构，其边缘化改造方案的核心是部署”边缘SCADA节点”：</p>
-<ul>
-<li>边缘节点运行完整的SCADA逻辑（数据采集、报警处理、历史记录）</li>
-<li>中心主站通过客户端架构连接各边缘节点，实现全局视图</li>
-<li>边缘节点之间通过服务器间通信（Inter-Server Communication）交换数据</li>
-<li>支持主备冗余，边缘节点故障时自动切换到备用节点</li>
-</ul>
-<h3 id="3-2-硬件平台选择"><a href="#3-2-硬件平台选择" class="headerlink" title="3.2 硬件平台选择"></a>3.2 硬件平台选择</h3><p>根据边缘节点的功能需求，施耐德电气提供三种硬件方案：</p>
-<ul>
-<li><strong>轻量级方案</strong>：Magelis HMIF工业网关，支持数据汇聚和MQTT转发，适合远程站点</li>
-<li><strong>标准方案</strong>：Industrial PC，运行Windows IoT + Geo SCADA边缘节点，支持本地HMI和边缘分析</li>
-<li><strong>高性能方案</strong>：EcoStruxure Edge Controller，融合PLC控制与边缘计算，适合控制+监控一体化场景</li>
-</ul>
-<h3 id="3-3-通信网络设计"><a href="#3-3-通信网络设计" class="headerlink" title="3.3 通信网络设计"></a>3.3 通信网络设计</h3><p>边缘化改造的通信网络需要满足不同数据流的QoS要求：</p>
-<ul>
-<li>控制数据：光纤环网，延迟&lt;10ms，冗余路径保护</li>
-<li>监控数据：以太网&#x2F;MPLS，延迟&lt;100ms</li>
-<li>管理数据：互联网&#x2F;4G&#x2F;5G，延迟&lt;1秒</li>
-</ul>
-<h2 id="四、改造实施路径"><a href="#四、改造实施路径" class="headerlink" title="四、改造实施路径"></a>四、改造实施路径</h2><h3 id="4-1-分阶段实施"><a href="#4-1-分阶段实施" class="headerlink" title="4.1 分阶段实施"></a>4.1 分阶段实施</h3><p>施耐德电气建议采用”渐进式改造”策略，避免”推倒重来”的风险：</p>
-<p><strong>第一阶段：边缘数据汇聚</strong></p>
-<ul>
-<li>部署边缘网关，汇聚现场设备数据</li>
-<li>边缘网关通过MQTT将数据转发到现有SCADA系统</li>
-<li>现有系统无需修改，边缘网关作为”透明数据源”接入</li>
-</ul>
-<p><strong>第二阶段：边缘本地监控</strong></p>
-<ul>
-<li>在边缘节点部署轻量级HMI</li>
-<li>实现本地操作员的实时监控和报警处理</li>
-<li>中心主站保持全局监控角色</li>
-</ul>
-<p><strong>第三阶段：边缘智能分析</strong></p>
-<ul>
-<li>在边缘节点部署规则引擎和AI模型</li>
-<li>实现异常检测、故障预警和辅助决策</li>
-<li>逐步将部分决策权从中心下放到边缘</li>
-</ul>
-<h3 id="4-2-平滑过渡策略"><a href="#4-2-平滑过渡策略" class="headerlink" title="4.2 平滑过渡策略"></a>4.2 平滑过渡策略</h3><p>改造过程中必须保证现有SCADA系统的连续运行：</p>
-<ol>
-<li>边缘节点并行部署，与现有系统同时运行</li>
-<li>核对边缘数据与中心数据的一致性</li>
-<li>逐步将数据源从直接采集切换为边缘转发</li>
-<li>验证稳定后，关闭冗余采集通道</li>
-</ol>
-<h2 id="五、案例与价值"><a href="#五、案例与价值" class="headerlink" title="五、案例与价值"></a>五、案例与价值</h2><p>某燃气公司对覆盖3000公里管网的SCADA系统进行边缘化改造，部署了50个边缘节点。改造后的效果：</p>
-<ul>
-<li>中心主站CPU负载从85%降至30%，系统响应速度提升3倍</li>
-<li>通信中断时边缘节点可独立运行8小时以上，数据零丢失</li>
-<li>异常检测响应时间从5秒缩短至500毫秒</li>
-<li>新增站点的接入时间从2周缩短至2天</li>
-</ul>
-<p>SCADA系统的边缘化改造是工业数字化转型的必经之路。施耐德电气的”渐进式改造”策略，帮助客户在不中断业务的前提下，逐步实现SCADA系统从集中式到分布式的平滑演进，为后续的智能化升级奠定坚实基础。</p>
+<p>掌握上述方法后，可将该模式复用到其他 工业以太网 相关控制任务中，显著提升水泵站的编程效率与可维护性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1408/" data-id="cmr67mcv400szkcunc4tzgylx" data-title="SCADA系统边缘化改造方案：从集中监控到分布式智能" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/11/edge-tech-20260511-1408/" data-id="cmtk83t6702fn1ound4ssdsgd" data-title="工业以太网编程指南：水泵站场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC/" rel="tag">PLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SCADA/" rel="tag">SCADA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" rel="tag">分布式系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E5%8C%96%E6%94%B9%E9%80%A0/" rel="tag">边缘化改造</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">工业以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2026/05/11/schneider-news-20260511-1510/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2026/05/11/schneider-news-20260511-1608/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气智能制造与能源管理：双轮驱动工业绿色转型
+          施耐德电气软件更新：Machine Expert最新动态
         
       </div>
     </a>
@@ -224,13 +146,14 @@
   
     <a href="/2026/05/11/schneider-news-20260511-1408/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：Triconex安全系统守护重大危险源</div>
+      <div class="article-nav-title">施耐德电气软件更新：Modicon最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -244,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

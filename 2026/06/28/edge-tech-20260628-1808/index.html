@@ -4,23 +4,19 @@
   <meta charset="utf-8">
   
   
-  <title>IEC 61499分布式控制：工业自动化的下一代架构 | Schneider 技术分享</title>
+  <title>Modicon M580 ePAC程序优化实录：温度串级控制回路组态的工程实现（甘肃酒泉水务水厂项目） | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="IEC 61499分布式控制：工业自动化的下一代架构在工业4.0时代，传统的集中式PLC控制架构正面临前所未有的挑战。复杂的分布式产线、灵活的生产调度需求，以及边缘计算与云计算的协同，都在呼唤一种更加现代化的控制范式。IEC 61499功能块标准，正是为这一挑战而生的下一代工业控制架构。 为什么需要IEC 61499？传统的IEC 61131-3标准虽然广泛应用于PLC编程，但其本质上仍是集中式思">
+  <meta name="description" content="场景与常见问题很多项目的后期返工都源于前期对温度串级控制回路组态考虑不足。程序不仅要实现功能，还要考虑操作习惯、故障恢复与维护便利性：大惯性温度对象单回路难以兼顾快速性与稳定性，串级结构可显著改善抗扰能力。结合在多个现场的实施经验，这里给出Modicon M580 ePAC上的推荐做法与参数建议。 程序实现思路以下代码在 Control Expert &#x2F; EcoStruxure Mach">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IEC 61499分布式控制：工业自动化的下一代架构">
+<meta property="og:title" content="Modicon M580 ePAC程序优化实录：温度串级控制回路组态的工程实现（甘肃酒泉水务水厂项目）">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/06/28/edge-tech-20260628-1808/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="IEC 61499分布式控制：工业自动化的下一代架构在工业4.0时代，传统的集中式PLC控制架构正面临前所未有的挑战。复杂的分布式产线、灵活的生产调度需求，以及边缘计算与云计算的协同，都在呼唤一种更加现代化的控制范式。IEC 61499功能块标准，正是为这一挑战而生的下一代工业控制架构。 为什么需要IEC 61499？传统的IEC 61131-3标准虽然广泛应用于PLC编程，但其本质上仍是集中式思">
+<meta property="og:description" content="场景与常见问题很多项目的后期返工都源于前期对温度串级控制回路组态考虑不足。程序不仅要实现功能，还要考虑操作习惯、故障恢复与维护便利性：大惯性温度对象单回路难以兼顾快速性与稳定性，串级结构可显著改善抗扰能力。结合在多个现场的实施经验，这里给出Modicon M580 ePAC上的推荐做法与参数建议。 程序实现思路以下代码在 Control Expert &#x2F; EcoStruxure Mach">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-28T11:03:00.000Z">
-<meta property="article:modified_time" content="2026-06-28T11:07:35.614Z">
+<meta property="article:published_time" content="2026-06-28T10:08:00.000Z">
+<meta property="article:modified_time" content="2026-09-02T12:52:03.353Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="工业自动化">
-<meta property="article:tag" content="边缘计算">
-<meta property="article:tag" content="分布式控制">
-<meta property="article:tag" content="IEC 61499">
-<meta property="article:tag" content="功能块">
+<meta property="article:tag" content="Modicon, EcoStruxure, 工业4.0, 控制器">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
@@ -88,11 +84,11 @@
         <section id="main"><article id="post-edge-tech-20260628-1808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/06/28/edge-tech-20260628-1808/" class="article-date">
-  <time class="dt-published" datetime="2026-06-28T11:03:00.000Z" itemprop="datePublished">2026-06-28 19:03</time>
+  <time class="dt-published" datetime="2026-06-28T10:08:00.000Z" itemprop="datePublished">2026-06-28 18:08</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF/">边缘控制技术</a>
   </div>
 
   </div>
@@ -103,7 +99,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      IEC 61499分布式控制：工业自动化的下一代架构
+      Modicon M580 ePAC程序优化实录：温度串级控制回路组态的工程实现（甘肃酒泉水务水厂项目）
     </h1>
   
 
@@ -111,90 +107,57 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="IEC-61499分布式控制：工业自动化的下一代架构"><a href="#IEC-61499分布式控制：工业自动化的下一代架构" class="headerlink" title="IEC 61499分布式控制：工业自动化的下一代架构"></a>IEC 61499分布式控制：工业自动化的下一代架构</h1><p>在工业4.0时代，传统的集中式PLC控制架构正面临前所未有的挑战。复杂的分布式产线、灵活的生产调度需求，以及边缘计算与云计算的协同，都在呼唤一种更加现代化的控制范式。IEC 61499功能块标准，正是为这一挑战而生的下一代工业控制架构。</p>
-<h2 id="为什么需要IEC-61499？"><a href="#为什么需要IEC-61499？" class="headerlink" title="为什么需要IEC 61499？"></a>为什么需要IEC 61499？</h2><p>传统的IEC 61131-3标准虽然广泛应用于PLC编程，但其本质上仍是集中式思维——所有逻辑都在一个控制器中执行。而现代工业场景需要：</p>
-<ul>
-<li><strong>分布式执行</strong>：控制逻辑可以分散在多个边缘设备上</li>
-<li><strong>动态重配置</strong>：生产线调整时无需停机重新编程</li>
-<li><strong>软硬件解耦</strong>：功能块独立于具体硬件平台</li>
+        <h2 id="场景与常见问题"><a href="#场景与常见问题" class="headerlink" title="场景与常见问题"></a>场景与常见问题</h2><p>很多项目的后期返工都源于前期对温度串级控制回路组态考虑不足。程序不仅要实现功能，还要考虑操作习惯、故障恢复与维护便利性：大惯性温度对象单回路难以兼顾快速性与稳定性，串级结构可显著改善抗扰能力。结合在多个现场的实施经验，这里给出Modicon M580 ePAC上的推荐做法与参数建议。</p>
+<h2 id="程序实现思路"><a href="#程序实现思路" class="headerlink" title="程序实现思路"></a>程序实现思路</h2><p>以下代码在 Control Expert &#x2F; EcoStruxure Machine Expert 环境中编写，采用梯形图与 ST 混合，要点如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(* 温度-流量串级控制 *)</span><br><span class="line">// 副回路先整定：流量环 P=200%, Ti=2s</span><br><span class="line">pid_Flow(xSet := rFlowSp, xIn := rFlowPv);</span><br><span class="line">// 主回路慢调：温度环 P=80%, Ti=60s</span><br><span class="line">pid_Temp(xSet := rTempSp, xIn := rTempPv);</span><br><span class="line">rFlowSp := pid_Temp.yOut;  // 主回路输出作为副回路给定</span><br><span class="line">rValve := pid_Flow.yOut;</span><br></pre></td></tr></table></figure>
+<p>代码中的关键参数均定义为符号变量而非常量，方便操作员在 HMI 上按工况调整，也便于后期统一修改。</p>
+<h2 id="关键参数与注意事项"><a href="#关键参数与注意事项" class="headerlink" title="关键参数与注意事项"></a>关键参数与注意事项</h2><p>涉及安全联锁的部分，建议单独成块并设置独立的看门狗与掉电保持策略，确保任何异常情况下设备都能进入预定的安全状态。</p>
+<p>变量命名建议采用”前缀+含义”的统一风格（如 b 表示布尔、r 表示实数、ton 表示定时器），团队评审时一目了然。</p>
+<h2 id="要点速览"><a href="#要点速览" class="headerlink" title="要点速览"></a>要点速览</h2><ul>
+<li>状态管理：避免隐性状态依赖，关键路径设置看门狗；</li>
+<li>文档同步：程序、IO 清单与维护手册随版本一起交付；</li>
+<li>输入处理：坏值判断、范围检查与滤波缺一不可；</li>
+<li>联锁优先：安全相关逻辑独立成块，与工艺逻辑清晰隔离；</li>
+<li>版本管理：程序头维护修改记录，变更可追溯。</li>
 </ul>
-<p>IEC 61449通过<strong>功能块（Function Block）</strong>的封装和事件驱动机制，完美解决了这些问题。</p>
-<h2 id="核心概念：事件驱动的功能块"><a href="#核心概念：事件驱动的功能块" class="headerlink" title="核心概念：事件驱动的功能块"></a>核心概念：事件驱动的功能块</h2><p>与IEC 61131-3不同，IEC 61499的功能块采用事件-数据分离的设计：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────┐</span><br><span class="line">│         Function Block          │</span><br><span class="line">├─────────────────────────────────┤</span><br><span class="line">│  EVENT INPUTS    EVENT OUTPUTS  │</span><br><span class="line">│  ○ INIT         INITO ○         │</span><br><span class="line">│  ○ REQ          CNF  ○          │</span><br><span class="line">├─────────────────────────────────┤</span><br><span class="line">│  DATA INPUTS     DATA OUTPUTS   │</span><br><span class="line">│  ○ Input1       Output1 ○       │</span><br><span class="line">│  ○ Input2       Output2 ○       │</span><br><span class="line">└─────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<p><strong>事件输入</strong>触发功能块执行，<strong>数据输入</strong>提供执行参数。这种设计使得功能块的执行顺序完全由事件流决定，而非传统的扫描周期。</p>
-<h2 id="分布式应用案例：智能产线控制"><a href="#分布式应用案例：智能产线控制" class="headerlink" title="分布式应用案例：智能产线控制"></a>分布式应用案例：智能产线控制</h2><p>假设一条装配线有3个工作站，每个站点配备一个边缘控制器。使用IEC 61499，我们可以这样设计：</p>
-<h3 id="1-定义基础功能块"><a href="#1-定义基础功能块" class="headerlink" title="1. 定义基础功能块"></a>1. 定义基础功能块</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK ConveyorControl</span><br><span class="line">  EVENT_INPUT</span><br><span class="line">    INIT WITH Speed;</span><br><span class="line">    START;</span><br><span class="line">    STOP;</span><br><span class="line">    EMERGENCY_STOP;</span><br><span class="line">  END_EVENT</span><br><span class="line">  </span><br><span class="line">  EVENT_OUTPUT</span><br><span class="line">    INITO;</span><br><span class="line">    STARTED;</span><br><span class="line">    STOPPED;</span><br><span class="line">    ERROR;</span><br><span class="line">  END_EVENT</span><br><span class="line">  </span><br><span class="line">  DATA_INPUT</span><br><span class="line">    Speed : INT := 100;  (* 速度百分比 *)</span><br><span class="line">  END_DATA</span><br><span class="line">  </span><br><span class="line">  DATA_OUTPUT</span><br><span class="line">    Status : INT := 0;   (* 0=停止, 1=运行, 2=故障 *)</span><br><span class="line">    ActualSpeed : INT;</span><br><span class="line">  END_DATA</span><br><span class="line">  </span><br><span class="line">  INTERNAL</span><br><span class="line">    State : INT := 0;</span><br><span class="line">    ErrorCount : INT := 0;</span><br><span class="line">  END_INTERNAL</span><br><span class="line">  </span><br><span class="line">  ALGORITHM INIT</span><br><span class="line">    State := 0;</span><br><span class="line">    ErrorCount := 0;</span><br><span class="line">    Status := 0;</span><br><span class="line">  END_ALGORITHM</span><br><span class="line">  </span><br><span class="line">  ALGORITHM START</span><br><span class="line">    IF ErrorCount &lt; 3 THEN</span><br><span class="line">      State := 1;</span><br><span class="line">      Status := 1;</span><br><span class="line">      ActualSpeed := Speed;</span><br><span class="line">    ELSE</span><br><span class="line">      Status := 2;</span><br><span class="line">    END_IF</span><br><span class="line">  END_ALGORITHM</span><br><span class="line">END_FUNCTION_BLOCK</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-构建分布式应用"><a href="#2-构建分布式应用" class="headerlink" title="2. 构建分布式应用"></a>2. 构建分布式应用</h3><p>将三个<code>ConveyorControl</code>功能块分别部署到三个边缘控制器，通过<strong>服务接口功能块（SIFB）</strong>实现跨设备通信：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[Station1]                [Station2]                [Station3]</span><br><span class="line">Conveyor_1 ──SIFB──►     Conveyor_2 ──SIFB──►     Conveyor_3</span><br><span class="line">   │                         │                         │</span><br><span class="line">   └── 完成信号 ─────────────┘                         │</span><br><span class="line">                              └── 完成信号 ─────────────┘</span><br></pre></td></tr></table></figure>
-
-<p>每个站点独立运行，通过事件链传递生产节拍，实现<strong>无中心协调</strong>的分布式控制。</p>
-<h2 id="与边缘计算的天然融合"><a href="#与边缘计算的天然融合" class="headerlink" title="与边缘计算的天然融合"></a>与边缘计算的天然融合</h2><p>IEC 61499的分布式特性与边缘计算理念高度契合：</p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>IEC 61449优势</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>就近控制</td>
-<td>功能块直接部署到边缘网关，减少通信延迟</td>
-</tr>
-<tr>
-<td>云边协同</td>
-<td>边缘执行实时控制，云端处理数据分析</td>
-</tr>
-<tr>
-<td>快速部署</td>
-<td>功能块独立打包，支持热更新</td>
-</tr>
-</tbody></table>
-<h2 id="实践建议"><a href="#实践建议" class="headerlink" title="实践建议"></a>实践建议</h2><ol>
-<li><strong>工具选择</strong>：Eclipse 4diac是目前最成熟的开源IEC 61449开发环境，支持FORTE运行时</li>
-<li><strong>渐进迁移</strong>：可以先用IEC 61449封装现有IEC 61131-3代码，逐步向分布式架构过渡</li>
-<li><strong>关注TSN</strong>：结合时间敏感网络（TSN），IEC 61449的分布式实时性能更加出色</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>IEC 61449不是对IEC 61131-3的替代，而是对分布式智能控制需求的补充。当您的项目涉及多控制器协同、边缘计算部署、或需要高度灵活的生产调度时，IEC 61449将成为工程师的有力工具。掌握这一标准，就是掌握工业自动化的未来。</p>
-<hr>
-<p><em>作者：边缘控制技术博主 | 日期：2026年6月28日</em></p>
+<h2 id="调试与优化建议"><a href="#调试与优化建议" class="headerlink" title="调试与优化建议"></a>调试与优化建议</h2><p>若现场出现偶发异常，优先检查通信超时、电源波动与接地等共性问题，再回头审视程序逻辑——多数”灵异现象”最终都指向工程基础问题而非算法缺陷。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/06/28/edge-tech-20260628-1808/" data-id="cmr70slbg000kt8un3i8j7sva" data-title="IEC 61499分布式控制：工业自动化的下一代架构" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/06/28/edge-tech-20260628-1808/" data-id="cmtk3jddj00j2iwun8r999hfv" data-title="Modicon M580 ePAC程序优化实录：温度串级控制回路组态的工程实现（甘肃酒泉水务水厂项目）" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%8E%A7%E5%88%B6/" rel="tag">分布式控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%9F%E8%83%BD%E5%9D%97/" rel="tag">功能块</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon-EcoStruxure-%E5%B7%A5%E4%B8%9A4-0-%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="tag">Modicon, EcoStruxure, 工业4.0, 控制器</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2026/06/30/edge-tech-20260630-2008/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2026/06/28/schneider-news-20260628-2008/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德Modicon边缘控制器实战：从EcoStruxure部署到云边协同的工业案例
+          双碳进行时：施耐德电气宁夏宁东数据中心零碳实践观察
         
       </div>
     </a>
   
   
-    <a href="/2026/06/28/northwest-edge-control-automation-2026-06/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2026/06/28/schneider-news-20260628-1808/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">边缘控制赋能西北工业自动化新格局</div>
+      <div class="article-nav-title">产品观察：施耐德电气Galaxy 系列不间断电源的技术细节（甘肃酒泉应用侧记）</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -208,83 +171,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

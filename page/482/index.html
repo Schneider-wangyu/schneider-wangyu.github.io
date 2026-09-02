@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="分享工业自动化、PLC编程、安全系统等技术内容">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Schneider 技术分享">
+<meta property="og:url" content="https://schneider-wangyu.github.io/page/482/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="分享工业自动化、PLC编程、安全系统等技术内容">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="PLC, IEC 61508, 工业自动化, Schneider, 安全系统">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-edge-tech-20251106-1808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/edge-tech-20251106-1808/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T10:08:00.000Z" itemprop="datePublished">2025-11-06 18:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/edge-tech-20251106-1808/">EcoStruxure平台编程指南：机场行李系统场景</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="EcoStruxure平台编程指南：机场行李系统场景实战"><a href="#EcoStruxure平台编程指南：机场行李系统场景实战" class="headerlink" title="EcoStruxure平台编程指南：机场行李系统场景实战"></a>EcoStruxure平台编程指南：机场行李系统场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 EcoStruxure，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// EcoStruxure平台 — 机场行李系统场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 机场行李系统 实际负载下标定 PID 参数，确保动态品质。</li>
+</ul>
+<p>掌握上述方法后，可将该模式复用到其他 EcoStruxure平台 相关控制任务中，显著提升机场行李系统的编程效率与可维护性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/edge-tech-20251106-1808/" data-id="cmtk8sncq05qtfcunf07u7y73" data-title="EcoStruxure平台编程指南：机场行李系统场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure%E5%B9%B3%E5%8F%B0/" rel="tag">EcoStruxure平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20251106-1808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/schneider-news-20251106-1808/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T10:08:00.000Z" itemprop="datePublished">2025-11-06 18:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/schneider-news-20251106-1808/">施耐德电气展会论坛：ConneXium最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气展会论坛：ConneXium最新动态"><a href="#施耐德电气展会论坛：ConneXium最新动态" class="headerlink" title="施耐德电气展会论坛：ConneXium最新动态"></a>施耐德电气展会论坛：ConneXium最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在展会论坛领域持续投入，ConneXium作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：ConneXium在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个展会论坛相关项目采用 ConneXium，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 ConneXium 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，ConneXium所代表的展会论坛能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 ConneXium 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/schneider-news-20251106-1808/" data-id="cmtk8tlyu0ci5fcun6wf5amdv" data-title="施耐德电气展会论坛：ConneXium最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ConneXium/" rel="tag">ConneXium</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20251106-1608" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/edge-tech-20251106-1608/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T08:08:00.000Z" itemprop="datePublished">2025-11-06 16:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/edge-tech-20251106-1608/">EcoStruxure平台深度解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="EcoStruxure平台深度解析与工程实践"><a href="#EcoStruxure平台深度解析与工程实践" class="headerlink" title="EcoStruxure平台深度解析与工程实践"></a>EcoStruxure平台深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>EcoStruxure平台的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
+</ul>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 EcoStruxure 原生支持EcoStruxure平台，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/edge-tech-20251106-1608/" data-id="cmtk8snc205qnfcundk4n22w5" data-title="EcoStruxure平台深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure%E5%B9%B3%E5%8F%B0/" rel="tag">EcoStruxure平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20251106-1608" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/schneider-news-20251106-1608/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T08:08:00.000Z" itemprop="datePublished">2025-11-06 16:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/schneider-news-20251106-1608/">施耐德电气展会论坛：Magelis最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气展会论坛：Magelis最新动态"><a href="#施耐德电气展会论坛：Magelis最新动态" class="headerlink" title="施耐德电气展会论坛：Magelis最新动态"></a>施耐德电气展会论坛：Magelis最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在展会论坛领域持续投入，Magelis作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Magelis在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个展会论坛相关项目采用 Magelis，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Magelis 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Magelis所代表的展会论坛能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Magelis 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/schneider-news-20251106-1608/" data-id="cmtk8tlxj0chzfcunh4lv7iev" data-title="施耐德电气展会论坛：Magelis最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Magelis/" rel="tag">Magelis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20251106-1408" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/edge-tech-20251106-1408/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T06:08:00.000Z" itemprop="datePublished">2025-11-06 14:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/edge-tech-20251106-1408/">EcoStruxure平台在机场行李系统的实战应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="EcoStruxure平台在机场行李系统的实战应用"><a href="#EcoStruxure平台在机场行李系统的实战应用" class="headerlink" title="EcoStruxure平台在机场行李系统的实战应用"></a>EcoStruxure平台在机场行李系统的实战应用</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在机场行李系统的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。EcoStruxure平台作为新一代边缘控制关键技术，为机场行李系统的智能化改造提供了切实可行的落地路径。</p>
+<h2 id="施耐德电气方案"><a href="#施耐德电气方案" class="headerlink" title="施耐德电气方案"></a>施耐德电气方案</h2><p>本项目采用施耐德电气 EcoStruxure 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：</p>
+<ul>
+<li>在现场层部署 EcoStruxure 作为实时控制核心，控制周期稳定维持在毫秒级；</li>
+<li>通过 OPC UA over TSN 打通 IT 与 OT 网络，消除协议壁垒；</li>
+<li>依托 EcoStruxure 平台实现全网设备的统一监控与远程运维；</li>
+<li>引入边缘算力，在本地完成数据预处理与异常研判，降低上行带宽压力。</li>
+</ul>
+<h2 id="应用成效"><a href="#应用成效" class="headerlink" title="应用成效"></a>应用成效</h2><p>改造后，机场行李系统的整体运营指标显著改善：设备综合效率（OEE）提升明显，非计划停机次数下降，运维人员可通过统一门户掌握全域状态。该方案已在多个同类场景中复制推广，验证了EcoStruxure平台在机场行李系统的适配性与稳定性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/edge-tech-20251106-1408/" data-id="cmtk8snbs05qkfcundc7o4dcc" data-title="EcoStruxure平台在机场行李系统的实战应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure%E5%B9%B3%E5%8F%B0/" rel="tag">EcoStruxure平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20251106-1408" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/schneider-news-20251106-1408/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T06:08:00.000Z" itemprop="datePublished">2025-11-06 14:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/schneider-news-20251106-1408/">施耐德电气展会论坛：Premium最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气展会论坛：Premium最新动态"><a href="#施耐德电气展会论坛：Premium最新动态" class="headerlink" title="施耐德电气展会论坛：Premium最新动态"></a>施耐德电气展会论坛：Premium最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在展会论坛领域持续投入，Premium作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Premium在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个展会论坛相关项目采用 Premium，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Premium 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Premium所代表的展会论坛能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Premium 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/schneider-news-20251106-1408/" data-id="cmtk8tly20ci2fcun4xcq3k7y" data-title="施耐德电气展会论坛：Premium最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Premium/" rel="tag">Premium</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20251106-1208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/edge-tech-20251106-1208/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T04:08:00.000Z" itemprop="datePublished">2025-11-06 12:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/edge-tech-20251106-1208/">EcoStruxure平台编程指南：港口码头场景</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="EcoStruxure平台编程指南：港口码头场景实战"><a href="#EcoStruxure平台编程指南：港口码头场景实战" class="headerlink" title="EcoStruxure平台编程指南：港口码头场景实战"></a>EcoStruxure平台编程指南：港口码头场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 EcoStruxure，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// EcoStruxure平台 — 港口码头场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 港口码头 实际负载下标定 PID 参数，确保动态品质。</li>
+</ul>
+<p>掌握上述方法后，可将该模式复用到其他 EcoStruxure平台 相关控制任务中，显著提升港口码头的编程效率与可维护性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/edge-tech-20251106-1208/" data-id="cmtk8snce05qqfcuna6va8fgq" data-title="EcoStruxure平台编程指南：港口码头场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure%E5%B9%B3%E5%8F%B0/" rel="tag">EcoStruxure平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20251106-1208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/schneider-news-20251106-1208/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T04:08:00.000Z" itemprop="datePublished">2025-11-06 12:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/schneider-news-20251106-1208/">施耐德电气展会论坛：Quantum最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气展会论坛：Quantum最新动态"><a href="#施耐德电气展会论坛：Quantum最新动态" class="headerlink" title="施耐德电气展会论坛：Quantum最新动态"></a>施耐德电气展会论坛：Quantum最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在展会论坛领域持续投入，Quantum作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Quantum在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个展会论坛相关项目采用 Quantum，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Quantum 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Quantum所代表的展会论坛能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Quantum 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/schneider-news-20251106-1208/" data-id="cmtk8tlw20chqfcuncjcadl57" data-title="施耐德电气展会论坛：Quantum最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Quantum/" rel="tag">Quantum</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20251106-1008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/edge-tech-20251106-1008/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T02:08:00.000Z" itemprop="datePublished">2025-11-06 10:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/edge-tech-20251106-1008/">EcoStruxure平台深度解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="EcoStruxure平台深度解析与工程实践"><a href="#EcoStruxure平台深度解析与工程实践" class="headerlink" title="EcoStruxure平台深度解析与工程实践"></a>EcoStruxure平台深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>EcoStruxure平台的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
+</ul>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 EcoStruxure 原生支持EcoStruxure平台，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/edge-tech-20251106-1008/" data-id="cmtk8snb405qefcuned003sah" data-title="EcoStruxure平台深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure%E5%B9%B3%E5%8F%B0/" rel="tag">EcoStruxure平台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20251106-1008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/06/schneider-news-20251106-1008/" class="article-date">
+  <time class="dt-published" datetime="2025-11-06T02:08:00.000Z" itemprop="datePublished">2025-11-06 10:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/06/schneider-news-20251106-1008/">施耐德电气展会论坛：TeSys最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气展会论坛：TeSys最新动态"><a href="#施耐德电气展会论坛：TeSys最新动态" class="headerlink" title="施耐德电气展会论坛：TeSys最新动态"></a>施耐德电气展会论坛：TeSys最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在展会论坛领域持续投入，TeSys作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：TeSys在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个展会论坛相关项目采用 TeSys，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 TeSys 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，TeSys所代表的展会论坛能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 TeSys 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2025/11/06/schneider-news-20251106-1008/" data-id="cmtk8tlx10chwfcuneolnbwr8" data-title="施耐德电气展会论坛：TeSys最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TeSys/" rel="tag">TeSys</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/481/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/480/">480</a><a class="page-number" href="/page/481/">481</a><span class="page-number current">482</span><a class="page-number" href="/page/483/">483</a><a class="page-number" href="/page/484/">484</a><span class="space">&hellip;</span><a class="page-number" href="/page/977/">977</a><a class="extend next" rel="next" href="/page/483/">下一页 &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>

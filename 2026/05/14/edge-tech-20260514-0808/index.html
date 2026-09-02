@@ -4,25 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>边缘计算中的实时数据处理：Apache Flink在工业场景的应用 | Schneider 技术分享</title>
+  <title>工业以太网编程指南：光伏电站场景 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="边缘计算中的实时数据处理：Apache Flink在工业场景的应用在工业4.0时代，边缘计算节点不仅需要采集数据，更需要对海量时序数据进行实时计算处理。Apache Flink作为分布式流批一体计算引擎，近年来在工业边缘场景中崭露头角。本文深入探讨Flink在边缘端的部署架构、典型应用案例以及在Windows工业主机上的调优实践。 一、边缘计算为什么要用Flink传统工业SCADA系统的数据处理">
+  <meta name="description" content="工业以太网编程指南：光伏电站场景实战开发环境本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 工业以太网 — 光伏电站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_I">
 <meta property="og:type" content="article">
-<meta property="og:title" content="边缘计算中的实时数据处理：Apache Flink在工业场景的应用">
+<meta property="og:title" content="工业以太网编程指南：光伏电站场景">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/14/edge-tech-20260514-0808/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="边缘计算中的实时数据处理：Apache Flink在工业场景的应用在工业4.0时代，边缘计算节点不仅需要采集数据，更需要对海量时序数据进行实时计算处理。Apache Flink作为分布式流批一体计算引擎，近年来在工业边缘场景中崭露头角。本文深入探讨Flink在边缘端的部署架构、典型应用案例以及在Windows工业主机上的调优实践。 一、边缘计算为什么要用Flink传统工业SCADA系统的数据处理">
+<meta property="og:description" content="工业以太网编程指南：光伏电站场景实战开发环境本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 工业以太网 — 光伏电站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_I">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605140808.jpg">
 <meta property="article:published_time" content="2026-05-14T00:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-21T00:14:05.316Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.174Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="边缘计算">
-<meta property="article:tag" content="工业物联网">
-<meta property="article:tag" content="Apache Flink">
-<meta property="article:tag" content="流计算">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="工业以太网">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605140808.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
   
@@ -104,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      边缘计算中的实时数据处理：Apache Flink在工业场景的应用
+      工业以太网编程指南：光伏电站场景
     </h1>
   
 
@@ -112,90 +108,26 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605140808.jpg" alt="边缘控制技术"></p>
-<h1 id="边缘计算中的实时数据处理：Apache-Flink在工业场景的应用"><a href="#边缘计算中的实时数据处理：Apache-Flink在工业场景的应用" class="headerlink" title="边缘计算中的实时数据处理：Apache Flink在工业场景的应用"></a>边缘计算中的实时数据处理：Apache Flink在工业场景的应用</h1><p>在工业4.0时代，边缘计算节点不仅需要采集数据，更需要对海量时序数据进行实时计算处理。Apache Flink作为分布式流批一体计算引擎，近年来在工业边缘场景中崭露头角。本文深入探讨Flink在边缘端的部署架构、典型应用案例以及在Windows工业主机上的调优实践。</p>
-<h2 id="一、边缘计算为什么要用Flink"><a href="#一、边缘计算为什么要用Flink" class="headerlink" title="一、边缘计算为什么要用Flink"></a>一、边缘计算为什么要用Flink</h2><p>传统工业SCADA系统的数据处理通常采用”采集→上传云端→批量分析”的模式，存在两大痛点：</p>
-<ol>
-<li><strong>时延瓶颈</strong>：数据从现场到云端往返通常需要500ms~2s，无法满足实时控制需求</li>
-<li><strong>带宽压力</strong>：一个中型工厂每天产生数GB原始数据，全部上传成本高昂</li>
-</ol>
-<p>Flink的边缘部署可以解决这两个问题。以某汽车焊装车间为例，部署边缘Flink节点后：</p>
-<ul>
-<li>焊点质量实时监测时延从1.2s降至80ms</li>
-<li>上传云端数据量减少78%（边缘聚合后只上传异常数据）</li>
+        <h1 id="工业以太网编程指南：光伏电站场景实战"><a href="#工业以太网编程指南：光伏电站场景实战" class="headerlink" title="工业以太网编程指南：光伏电站场景实战"></a>工业以太网编程指南：光伏电站场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 ConneXium，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 工业以太网 — 光伏电站场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 光伏电站 实际负载下标定 PID 参数，确保动态品质。</li>
 </ul>
-<h2 id="二、边缘Flink架构设计"><a href="#二、边缘Flink架构设计" class="headerlink" title="二、边缘Flink架构设计"></a>二、边缘Flink架构设计</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                  工业边缘节点                        │</span><br><span class="line">│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │</span><br><span class="line">│  │ PLC/传感器│→│ MQTT Broker│→│ Apache Flink     │  │</span><br><span class="line">│  │  (OPC UA) │  │  (EMQX)   │  │ (边缘流处理引擎)  │  │</span><br><span class="line">│  └──────────┘  └──────────┘  └────────┬─────────┘  │</span><br><span class="line">│                                      │              │</span><br><span class="line">│                          ┌───────────┴────────┐    │</span><br><span class="line">│                          │  实时告警 / 本地存储 │    │</span><br><span class="line">│                          └────────────────────┘    │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br><span class="line">         │                    │</span><br><span class="line">         ↓                    ↓</span><br><span class="line">   云端Dashboard         历史数据湖(S3/MinIO)</span><br></pre></td></tr></table></figure>
-
-<h3 id="核心配置示例"><a href="#核心配置示例" class="headerlink" title="核心配置示例"></a>核心配置示例</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># flink-conf.yaml 边缘优化配置</span></span><br><span class="line"><span class="attr">taskmanager.numberOfTaskSlots:</span> <span class="number">4</span></span><br><span class="line"><span class="attr">parallelism.default:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">state.backend:</span> <span class="string">rocksdb</span></span><br><span class="line"><span class="attr">state.backend.incremental:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">state.checkpoints.dir:</span> <span class="string">file:///data/flink/checkpoints</span></span><br><span class="line"><span class="attr">execution.checkpointing.interval:</span> <span class="string">30s</span></span><br><span class="line"><span class="attr">taskmanager.memory.process.size:</span> <span class="string">2048m</span></span><br><span class="line"><span class="attr">taskmanager.memory.managed.fraction:</span> <span class="number">0.4</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="三、工业时序数据处理实战"><a href="#三、工业时序数据处理实战" class="headerlink" title="三、工业时序数据处理实战"></a>三、工业时序数据处理实战</h2><p>以下是一个基于Flink的设备预测性维护作业，实现对轴承温度异常的实时检测：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.functions.ProcessFunction;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.util.Collector;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BearingAnomalyDetector</span> <span class="keyword">extends</span> <span class="title class_">ProcessFunction</span>&lt;SensorReading, Alert&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> ValueState&lt;BearingMetrics&gt; bearingState;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> &#123;</span><br><span class="line">        bearingState = getRuntimeContext().getState(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">ValueStateDescriptor</span>&lt;&gt;(<span class="string">&quot;bearingMetrics&quot;</span>, BearingMetrics.class)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processElement</span><span class="params">(SensorReading reading, Context ctx, Collector&lt;Alert&gt; out)</span> &#123;</span><br><span class="line">        <span class="type">BearingMetrics</span> <span class="variable">metrics</span> <span class="operator">=</span> bearingState.value();</span><br><span class="line">        <span class="keyword">if</span> (metrics == <span class="literal">null</span>) &#123;</span><br><span class="line">            metrics = <span class="keyword">new</span> <span class="title class_">BearingMetrics</span>(reading.getBearingId());</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        metrics.addTemperature(reading.getTemperature());</span><br><span class="line">        metrics.updateStatistics();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 基于3-sigma规则的异常检测</span></span><br><span class="line">        <span class="keyword">if</span> (metrics.isAnomaly(reading.getTemperature())) &#123;</span><br><span class="line">            out.collect(Alert.builder()</span><br><span class="line">                .deviceId(reading.getDeviceId())</span><br><span class="line">                .alertType(<span class="string">&quot;BEARING_OVERHEAT&quot;</span>)</span><br><span class="line">                .temperature(reading.getTemperature())</span><br><span class="line">                .threshold(metrics.getUpperThreshold())</span><br><span class="line">                .timestamp(ctx.timestamp())</span><br><span class="line">                .build());</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 滚动窗口均值更新（用于长期趋势分析）</span></span><br><span class="line">        <span class="keyword">if</span> (metrics.getSampleCount() % <span class="number">100</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            ctx.output(TAG_HISTORY, metrics.toHistoryRecord());</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        bearingState.update(metrics);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对应的数据源配置（连接OPC UA PLC）：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// OPC UA数据源</span></span><br><span class="line"><span class="type">FlinkOPCUAConnector</span> <span class="variable">opcSource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FlinkOPCUAConnector</span>();</span><br><span class="line">DataStream&lt;SensorReading&gt; sensorStream = env.fromSource(</span><br><span class="line">    opcSource.withEndpoint(<span class="string">&quot;opc.tcp://192.168.1.100:4840&quot;</span>)</span><br><span class="line">            .withNodeIds(<span class="string">&quot;ns=2;s=Temperature.Sensor1&quot;</span>,</span><br><span class="line">                          <span class="string">&quot;ns=2;s=Temperature.Sensor2&quot;</span>)</span><br><span class="line">            .withSamplingInterval(Duration.ofMillis(<span class="number">100</span>))</span><br><span class="line">            .build(),</span><br><span class="line">    WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofMillis(<span class="number">200</span>)),</span><br><span class="line">    <span class="string">&quot;OPC-UA-Source&quot;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<h2 id="四、性能数据对比"><a href="#四、性能数据对比" class="headerlink" title="四、性能数据对比"></a>四、性能数据对比</h2><table>
-<thead>
-<tr>
-<th>指标</th>
-<th>云端处理</th>
-<th>边缘Flink</th>
-<th>改善幅度</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>端到端时延</td>
-<td>1200ms</td>
-<td>80ms</td>
-<td><strong>-93%</strong></td>
-</tr>
-<tr>
-<td>月度带宽成本</td>
-<td>¥3,200</td>
-<td>¥710</td>
-<td><strong>-78%</strong></td>
-</tr>
-<tr>
-<td>告警准确率</td>
-<td>82%</td>
-<td>96%</td>
-<td><strong>+14pp</strong></td>
-</tr>
-<tr>
-<td>丢包容忍度</td>
-<td>0.1%</td>
-<td>5%</td>
-<td><strong>大幅提升</strong></td>
-</tr>
-</tbody></table>
-<h2 id="五、边缘Flink的挑战与最佳实践"><a href="#五、边缘Flink的挑战与最佳实践" class="headerlink" title="五、边缘Flink的挑战与最佳实践"></a>五、边缘Flink的挑战与最佳实践</h2><p><strong>主要挑战：</strong></p>
-<ul>
-<li>边缘硬件资源受限（通常4<del>8核，8</del>16GB RAM）</li>
-<li>网络不稳定，断网时状态管理</li>
-<li>Windows环境下的JVM调优</li>
-</ul>
-<p><strong>最佳实践：</strong></p>
-<ol>
-<li><strong>状态后端选择</strong>：生产环境推荐RocksDB增量checkpoint，避免内存状态因故障丢失</li>
-<li><strong>背压处理</strong>：边缘节点网络瓶颈时，设置<code>execution.env.backpressure.timeout: 30s</code>防止任务卡死</li>
-<li><strong>资源隔离</strong>：关键作业使用独立TaskManager，防止批量报表作业影响实时告警</li>
-</ol>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Windows工业主机JVM调优脚本</span></span><br><span class="line"><span class="variable">$env:JAVA_OPTS</span> = <span class="string">&quot;-Xms1G -Xmx4G -XX:+UseG1GC `</span></span><br><span class="line"><span class="string">    -XX:MaxGCPauseMillis=100 `</span></span><br><span class="line"><span class="string">    -Djava.io.tmpdir=D:\flink\tmp `</span></span><br><span class="line"><span class="string">    -XX:+ExitOnOutOfMemoryError&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>在工业边缘场景中，Apache Flink凭借其强大的流处理能力、低延迟特性和完善的故障恢复机制，成为实时工业数据分析的首选方案。通过合理的架构设计和参数调优，可以在资源受限的边缘节点上实现企业级的实时数据处理能力，为预测性维护、质量控制和工艺优化提供强大的技术支撑。</p>
-<hr>
-<p><strong>作者：</strong> 边缘控制技术团队<br><strong>标签：</strong> #边缘计算 #工业物联网 #Flink #实时处理</p>
+<p>掌握上述方法后，可将该模式复用到其他 工业以太网 相关控制任务中，显著提升光伏电站的编程效率与可维护性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/14/edge-tech-20260514-0808/" data-id="cmr67mcvm00v0kcuncuhu7u8s" data-title="边缘计算中的实时数据处理：Apache Flink在工业场景的应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/14/edge-tech-20260514-0808/" data-id="cmtk83t8502he1oun872seudt" data-title="工业以太网编程指南：光伏电站场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Apache-Flink/" rel="tag">Apache Flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E7%89%A9%E8%81%94%E7%BD%91/" rel="tag">工业物联网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%81%E8%AE%A1%E7%AE%97/" rel="tag">流计算</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">工业以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
@@ -206,7 +138,7 @@
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气：Modicon M262控制器引领PLC边缘计算新纪元
+          施耐德电气新品发布：Industrial Copilot最新动态
         
       </div>
     </a>
@@ -214,13 +146,14 @@
   
     <a href="/2026/05/14/schneider-news-20260514-0808/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：EcoStruxure开放自动化平台2.0发布，引领工业软件未来</div>
+      <div class="article-nav-title">施耐德电气新品发布：Machine Expert最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -234,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

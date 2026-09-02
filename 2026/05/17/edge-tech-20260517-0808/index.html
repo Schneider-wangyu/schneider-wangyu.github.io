@@ -4,26 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>TSN时间敏感网络技术与工业自动化融合实战 | Schneider 技术分享</title>
+  <title>5G专网编程指南：钢铁厂轧机场景 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="TSN时间敏感网络技术与工业自动化融合实战传统的工业以太网协议如Profinet、EtherCAT等虽然在实时性方面表现出色，但各自为政的生态带来了互操作性难题。IEEE 802.1时间敏感网络（TSN）标准提供了一个统一的网络层，使得不同厂商的实时设备可以通过同一网络进行确定性通信。本文深入剖析TSN的核心技术、对接传统工业协议的方案，以及在施耐德电气的实际部署案例。 TSN核心技术体系时间同">
+  <meta name="description" content="5G专网编程指南：钢铁厂轧机场景实战开发环境本示例基于施耐德电气 Industrial Edge，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 5G专网 — 钢铁厂轧机场景示例FUNCTION_BLOCK FB_EdgeCtr">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TSN时间敏感网络技术与工业自动化融合实战">
+<meta property="og:title" content="5G专网编程指南：钢铁厂轧机场景">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/17/edge-tech-20260517-0808/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="TSN时间敏感网络技术与工业自动化融合实战传统的工业以太网协议如Profinet、EtherCAT等虽然在实时性方面表现出色，但各自为政的生态带来了互操作性难题。IEEE 802.1时间敏感网络（TSN）标准提供了一个统一的网络层，使得不同厂商的实时设备可以通过同一网络进行确定性通信。本文深入剖析TSN的核心技术、对接传统工业协议的方案，以及在施耐德电气的实际部署案例。 TSN核心技术体系时间同">
+<meta property="og:description" content="5G专网编程指南：钢铁厂轧机场景实战开发环境本示例基于施耐德电气 Industrial Edge，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 5G专网 — 钢铁厂轧机场景示例FUNCTION_BLOCK FB_EdgeCtr">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605170808.jpg">
 <meta property="article:published_time" content="2026-05-17T00:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-21T00:17:21.137Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.232Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="施耐德">
-<meta property="article:tag" content="TSN">
-<meta property="article:tag" content="时间敏感网络">
-<meta property="article:tag" content="工业以太网">
-<meta property="article:tag" content="EtherCAT">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="5G专网">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605170808.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
   
@@ -105,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      TSN时间敏感网络技术与工业自动化融合实战
+      5G专网编程指南：钢铁厂轧机场景
     </h1>
   
 
@@ -113,104 +108,37 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605170808.jpg" alt="边缘控制技术"></p>
-<h1 id="TSN时间敏感网络技术与工业自动化融合实战"><a href="#TSN时间敏感网络技术与工业自动化融合实战" class="headerlink" title="TSN时间敏感网络技术与工业自动化融合实战"></a>TSN时间敏感网络技术与工业自动化融合实战</h1><p>传统的工业以太网协议如Profinet、EtherCAT等虽然在实时性方面表现出色，但各自为政的生态带来了互操作性难题。IEEE 802.1时间敏感网络（TSN）标准提供了一个统一的网络层，使得不同厂商的实时设备可以通过同一网络进行确定性通信。本文深入剖析TSN的核心技术、对接传统工业协议的方案，以及在施耐德电气的实际部署案例。</p>
-<h2 id="TSN核心技术体系"><a href="#TSN核心技术体系" class="headerlink" title="TSN核心技术体系"></a>TSN核心技术体系</h2><h3 id="时间同步机制"><a href="#时间同步机制" class="headerlink" title="时间同步机制"></a>时间同步机制</h3><p>TSN的基础是精确的时间同步，确保网络中所有设备共享统一的时间基准。IEEE 1588精确时间协议（PTP）是TSN时间同步的核心，采用主从架构，通过多次报文交换计算链路延迟并校正时间误差。在工业环境中，通常部署专门的PTP Grandmaster作为时间源：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;ptp_config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;domain&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;priority1&quot;</span><span class="punctuation">:</span> <span class="number">128</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;priority2&quot;</span><span class="punctuation">:</span> <span class="number">128</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;clock_class&quot;</span><span class="punctuation">:</span> <span class="number">248</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;announce_timeout&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;announce_interval&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sync_interval&quot;</span><span class="punctuation">:</span> <span class="number">-3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;delay_req_interval&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+        <h1 id="5G专网编程指南：钢铁厂轧机场景实战"><a href="#5G专网编程指南：钢铁厂轧机场景实战" class="headerlink" title="5G专网编程指南：钢铁厂轧机场景实战"></a>5G专网编程指南：钢铁厂轧机场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 Industrial Edge，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 5G专网 — 钢铁厂轧机场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
 
-<p>经过优化的PTP实现可以将时钟同步精度控制在100纳秒以内，完全满足运动控制场景的严格要求。</p>
-<h3 id="流量调度策略"><a href="#流量调度策略" class="headerlink" title="流量调度策略"></a>流量调度策略</h3><p>TSN的核心创新在于流量整形和调度机制。802.1Qbv时间感知调度器（Time-Aware Scheduler）将时间划分为周期性的时间窗口，不同类型的流量分配到不同的时间片：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> ┌─────────────────────────────────────┐</span><br><span class="line">0│  TSN Cycle (512μs)                  │</span><br><span class="line"> ├─────────┬─────────┬───────────────┤</span><br><span class="line"> │ Control │ Video   │ Best Effort   │</span><br><span class="line"> │ 64μs    │ 384μs  │ 64μs          │</span><br><span class="line"> └─────────┴─────────┴───────────────┘</span><br><span class="line">  ↑           ↑           ↑</span><br><span class="line"> T0          T1          T2</span><br></pre></td></tr></table></figure>
-
-<p>关键生产控制数据获得最高优先级，确保在确定的时刻传输，不受网络拥塞影响。</p>
-<h3 id="抢占机制"><a href="#抢占机制" class="headerlink" title="抢占机制"></a>抢占机制</h3><p>802.1Qbu帧抢占允许高优先级帧中断较低优先级帧的传输，就像高速公路的应急车道可以“超车”一样。这对于运动控制等对延迟极度敏感的场景至关重要：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Linux TSN配置示例</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tsn_ext_config</span> <span class="title">ext</span> =</span> &#123;</span><br><span class="line">    .preemption_status = PREEMPTION_STATUS_ENABLE,</span><br><span class="line">    .verify_status = VERIFY_STATUS_NONE,</span><br><span class="line">    .add_partial_frag_size = <span class="number">64</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ioctl(sockfd, TSN_EXT_CONFIG_SET, &amp;ext);</span><br></pre></td></tr></table></figure>
-
-<h2 id="TSN与传统工业协议对接"><a href="#TSN与传统工业协议对接" class="headerlink" title="TSN与传统工业协议对接"></a>TSN与传统工业协议对接</h2><h3 id="OPC-UA-over-TSN架构"><a href="#OPC-UA-over-TSN架构" class="headerlink" title="OPC UA over TSN架构"></a>OPC UA over TSN架构</h3><p>OPC UA基金会定义了OPC UA over TSN规范，使得OPC UA可以充分利用TSN的确定性传输能力：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># OPC UA over TSN配置</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OpcUaTSNServer</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.tsn_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, <span class="number">0x8100</span>)</span><br><span class="line">        <span class="variable language_">self</span>.tsn_socket.setsockopt(socket.SOL_SOCKET, socket.SO_PRIORITY, <span class="number">6</span>)  <span class="comment"># 关键帧优先级</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">configure_qbv</span>(<span class="params">self, cycles_us, control_end_us</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;配置时间感知调度&quot;&quot;&quot;</span></span><br><span class="line">        cycles_per_sec = <span class="number">1000000</span> / cycles_us</span><br><span class="line">        schedule = []</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> cycle <span class="keyword">in</span> <span class="built_in">range</span>(cycles_per_sec):</span><br><span class="line">            entry = &#123;</span><br><span class="line">                <span class="string">&#x27;operation&#x27;</span>: <span class="number">0</span> <span class="keyword">if</span> cycle % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">else</span> <span class="number">2</span>,  <span class="comment"># 0=发送,2=空闲</span></span><br><span class="line">                <span class="string">&#x27;time_interval&#x27;</span>: control_end_us <span class="keyword">if</span> cycle % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">else</span> cycles_us - control_end_us</span><br><span class="line">            &#125;</span><br><span class="line">            schedule.append(entry)</span><br><span class="line">            </span><br><span class="line">        setsockopt(<span class="variable language_">self</span>.tsn_socket, SOL_TSN, TSN_SCHEDULE_SET, schedule)</span><br></pre></td></tr></table></figure>
-
-<h3 id="EtherCAT-over-TSN"><a href="#EtherCAT-over-TSN" class="headerlink" title="EtherCAT over TSN"></a>EtherCAT over TSN</h3><p>EtherCAT协会也在推进EtherCAT over TSN（EooT）技术，目标是让现有的EtherCAT设备可以在TSN网络中运行：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EtherCAT over TSN配置</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ectsn.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">ectsn_handle_t</span> handle;</span><br><span class="line">    <span class="type">ectsn_config_t</span> config = &#123;</span><br><span class="line">        .cycle_time_ns = <span class="number">125000</span>,  <span class="comment">// 125μs周期</span></span><br><span class="line">        .slot_assignment = &#123;</span><br><span class="line">            .control_slot = <span class="number">0</span>,</span><br><span class="line">            .sync_slot = <span class="number">1</span>,</span><br><span class="line">            .process_data_slot = <span class="number">2</span></span><br><span class="line">        &#125;,</span><br><span class="line">        .tsn_priority = <span class="number">6</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">ectsn_init</span>(&amp;handle, &amp;config);</span><br><span class="line">    <span class="built_in">ectsn_start</span>(handle);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (running) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> process_data[<span class="number">1486</span>];</span><br><span class="line">        <span class="type">size_t</span> len = <span class="built_in">ectsn_receive</span>(handle, process_data, <span class="built_in">sizeof</span>(process_data));</span><br><span class="line">        <span class="comment">// 处理EtherCAT数据帧</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">ectsn_stop</span>(handle);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="TSN网络设备配置"><a href="#TSN网络设备配置" class="headerlink" title="TSN网络设备配置"></a>TSN网络设备配置</h2><h3 id="时间感知交换机配置"><a href="#时间感知交换机配置" class="headerlink" title="时间感知交换机配置"></a>时间感知交换机配置</h3><p>以，思科IE-4000系列交换机为例展示TSN配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">! 启用TSN功能</span><br><span class="line">feature tsn</span><br><span class="line"></span><br><span class="line">! 配置PTP主时钟</span><br><span class="line">ptp clock-type boundary 0</span><br><span class="line">ptp mode dynamic</span><br><span class="line"></span><br><span class="line">! 配置时间感知调度器</span><br><span class="line">tsn schedule</span><br><span class="line">  cycle-time 512</span><br><span class="line">  control-traffic 64</span><br><span class="line">  traffic-scheduler 802.1Qbv</span><br><span class="line">  </span><br><span class="line">! 配置文件传输队列</span><br><span class="line">interface GigabitEthernet1/1</span><br><span class="line">  tsn qos queue 6 priority 6</span><br><span class="line">  tsn qos queue 4 priority 4</span><br><span class="line">  tsn qos queue 0 priority 0</span><br><span class="line"></span><br><span class="line">! 配置入口策略</span><br><span class="line">class-map match-any CONTROL-QUEUE</span><br><span class="line">  match access-group name CONTROL-ACL</span><br><span class="line">policy-map TSN-IN</span><br><span class="line">  class CONTROL-QUEUE</span><br><span class="line">    set priority 6</span><br></pre></td></tr></table></figure>
-
-<h3 id="端点设备配置"><a href="#端点设备配置" class="headerlink" title="端点设备配置"></a>端点设备配置</h3><p>在Linux系统中，使用iproute2配置TSN：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置VLAN标签和优先级</span></span><br><span class="line">ip <span class="built_in">link</span> add <span class="built_in">link</span> eth0 name eth0.100 <span class="built_in">type</span> vlan <span class="built_in">id</span> 100 proto 802.1Q</span><br><span class="line">tc qdisc add dev eth0.100 root taprio num_tc 3 \</span><br><span class="line">  map 0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 \</span><br><span class="line">  queues 0@0 1@1 2@2 \</span><br><span class="line">  base-time 0x0000000000000000 \</span><br><span class="line">  clockid CLOCK_TAI</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置时间窗口</span></span><br><span class="line">tc qdisc add dev eth0.100 parent root handle 100 \</span><br><span class="line">  etf offload on clockid CLOCK_TAI delta 1000000</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看配置</span></span><br><span class="line">tc -s qdisc show dev eth0.100</span><br></pre></td></tr></table></figure>
-
-<h2 id="施耐德TSN解决方案"><a href="#施耐德TSN解决方案" class="headerlink" title="施耐德TSN解决方案"></a>施耐德TSN解决方案</h2><h3 id="M580-TSN控制器"><a href="#M580-TSN控制器" class="headerlink" title="M580 TSN控制器"></a>M580 TSN控制器</h3><p>施耐德电气推出的Modicon M580 ePAC（高性能自动化控制器）支持TSN：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Modicon M580 TSN配置</span></span><br><span class="line"><span class="attr">controller:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">BMEP584040</span></span><br><span class="line">  <span class="attr">tsn_capable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">ptp_version:</span> <span class="string">IEEE1588-2008</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">network:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;Main-TSN-Network&quot;</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">&quot;1000BASE-T&quot;</span></span><br><span class="line">    <span class="attr">ptp_master:</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">endpoints:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;ATV930-TSN&quot;</span></span><br><span class="line">    <span class="attr">ip_address:</span> <span class="string">&quot;192.168.1.100&quot;</span></span><br><span class="line">    <span class="attr">tsn_enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">cycle_time:</span> <span class="string">&quot;1000us&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;Lexium-TSN-Servo&quot;</span></span><br><span class="line">    <span class="attr">ip_address:</span> <span class="string">&quot;192.168.1.101&quot;</span></span><br><span class="line">    <span class="attr">tsn_enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">cycle_time:</span> <span class="string">&quot;500us&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="ATV340-TSN变频器"><a href="#ATV340-TSN变频器" class="headerlink" title="ATV340 TSN变频器"></a>ATV340 TSN变频器</h3><p>ATV340系列变频器原生支持TSN接口：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">┌────────────────────────────────────┐</span><br><span class="line">│     ATV340 TSN变频器配置             │</span><br><span class="line">├────────────────────────────────────┤</span><br><span class="line">│ 网络接口: 2x RJ45, 100BASE-TX   │</span><br><span class="line">│ PTP支持: Master/Slave               │</span><br><span class="line">│ 时间同步精度: ±500ns              │</span><br><span class="line">│ TSN循环周期: 125μs-4ms可调       │</span><br><span class="line">│ 控制周期: 250μs                  │</span><br><span class="line">│ 支持协议: Modbus/TCP, OPC UA      │</span><br><span class="line">└────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试与验证"><a href="#测试与验证" class="headerlink" title="测试与验证"></a>测试与验证</h2><h3 id="延迟测试方法"><a href="#延迟测试方法" class="headerlink" title="延迟测试方法"></a>延迟测试方法</h3><p>使用RFC 2544标准的吞吐量测试方法评估TSN性能：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TSNLatencyTester</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dst_ip</span>):</span><br><span class="line">        <span class="variable language_">self</span>.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">        <span class="variable language_">self</span>.dst_ip = dst_ip</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">measure_latency</span>(<span class="params">self, count=<span class="number">1000</span></span>):</span><br><span class="line">        latencies = []</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(count):</span><br><span class="line">            <span class="comment"># 获取发送前的精确时间戳</span></span><br><span class="line">            tx_ts = time.time_ns()</span><br><span class="line">            </span><br><span class="line">            <span class="variable language_">self</span>.sock.sendto(<span class="string">b&#x27;test&#x27;</span>, (<span class="variable language_">self</span>.dst_ip, <span class="number">8888</span>))</span><br><span class="line">            rx_ts = time.time_ns()</span><br><span class="line">            </span><br><span class="line">            latencies.append(rx_ts - tx_ts)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&#x27;min&#x27;</span>: <span class="built_in">min</span>(latencies),</span><br><span class="line">            <span class="string">&#x27;max&#x27;</span>: <span class="built_in">max</span>(latencies),</span><br><span class="line">            <span class="string">&#x27;avg&#x27;</span>: <span class="built_in">sum</span>(latencies) / <span class="built_in">len</span>(latencies),</span><br><span class="line">            <span class="string">&#x27;stddev&#x27;</span>: <span class="variable language_">self</span>.stddev(latencies)</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">stddev</span>(<span class="params">self, values</span>):</span><br><span class="line">        avg = <span class="built_in">sum</span>(values) / <span class="built_in">len</span>(values)</span><br><span class="line">        variance = <span class="built_in">sum</span>((x - avg) ** <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> values) / <span class="built_in">len</span>(values)</span><br><span class="line">        <span class="keyword">return</span> variance ** <span class="number">0.5</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="基准测试结果"><a href="#基准测试结果" class="headerlink" title="基准测试结果"></a>基准测试结果</h3><p>以下是典型工业TSN部署的延迟测试数据：</p>
-<table>
-<thead>
-<tr>
-<th>场景</th>
-<th>控制循环</th>
-<th>平均延迟</th>
-<th>最大抖动</th>
-<th>丢包率</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单交换机</td>
-<td>1ms</td>
-<td>127μs</td>
-<td>±15μs</td>
-<td>0%</td>
-</tr>
-<tr>
-<td>3交换机级联</td>
-<td>1ms</td>
-<td>245μs</td>
-<td>±35μs</td>
-<td>0%</td>
-</tr>
-<tr>
-<td>10交换机</td>
-<td>1ms</td>
-<td>680μs</td>
-<td>±80μs</td>
-<td>0%</td>
-</tr>
-<tr>
-<td>无线桥接</td>
-<td>1ms</td>
-<td>850μs</td>
-<td>±200μs</td>
-<td>&lt;0.01%</td>
-</tr>
-</tbody></table>
-<h2 id="总结与实施建议"><a href="#总结与实施建议" class="headerlink" title="总结与实施建议"></a>总结与实施建议</h2><p>TSN为工业网络带来了革命性的变革：统一的网络基础设施可承载多种实时协议，降低了复杂度和成本；时间感知的调度保证了确定性传输，关键控制数据的延迟 jitter控制在微秒级；与现有工业协议的向后兼容性使得渐进式升级成为可能。</p>
-<p>建议的实施路径是：首先在骨干网络部署TSN交换机建立时间同步基础，然后逐步迁移关键的运动控制设备，最后在云端部署TSN控制器实现端到端协同。</p>
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 钢铁厂轧机 实际负载下标定 PID 参数，确保动态品质。</li>
+</ul>
+<p>掌握上述方法后，可将该模式复用到其他 5G专网 相关控制任务中，显著提升钢铁厂轧机的编程效率与可维护性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/17/edge-tech-20260517-0808/" data-id="cmr67mcw600xckcun7kyah3zi" data-title="TSN时间敏感网络技术与工业自动化融合实战" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/17/edge-tech-20260517-0808/" data-id="cmtk83tap02jh1oundul44cip" data-title="5G专网编程指南：钢铁厂轧机场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EtherCAT/" rel="tag">EtherCAT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TSN/" rel="tag">TSN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E4%BB%A5%E5%A4%AA%E7%BD%91/" rel="tag">工业以太网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E6%95%8F%E6%84%9F%E7%BD%91%E7%BB%9C/" rel="tag">时间敏感网络</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/5G%E4%B8%93%E7%BD%91/" rel="tag">5G专网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2026/05/17/schneider-news-20260517-0910/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2026/05/17/schneider-news-20260517-1008/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气与华为签订战略合作协议
+          施耐德电气零碳能源：StruxureWare最新动态
         
       </div>
     </a>
@@ -218,13 +146,14 @@
   
     <a href="/2026/05/17/schneider-news-20260517-0808/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：ATV变频器在节能应用中的突破</div>
+      <div class="article-nav-title">施耐德电气零碳能源：Unity Pro最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -238,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

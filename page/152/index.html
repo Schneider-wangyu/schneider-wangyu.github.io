@@ -81,530 +81,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-edge-tech-20260510-1008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-edge-tech-20260531-2208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2026/05/10/edge-tech-20260510-1008/" class="article-date">
-  <time class="dt-published" datetime="2026-05-10T02:08:00.000Z" itemprop="datePublished">2026-05-10 10:08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF/">边缘控制技术</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/10/edge-tech-20260510-1008/">Modbus TCP在边缘控制系统中的深度应用与性能优化</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Modbus TCP作为工业自动化领域应用最广泛的通信协议之一，在施耐德电气M系列PLC和EcoStruxure平台中扮演着核心角色。尽管Modbus协议诞生于1979年，但其在边缘控制系统中的工程价值依然不可替代。本文将深入探讨Modbus TCP在边缘控制场景中的技术细节、性能瓶颈与优化策略。</p>
-<h2 id="一、Modbus-TCP协议机制回顾"><a href="#一、Modbus-TCP协议机制回顾" class="headerlink" title="一、Modbus TCP协议机制回顾"></a>一、Modbus TCP协议机制回顾</h2><p>Modbus TCP将传统Modbus RTU帧封装在TCP报文中，以TCP 502端口作为默认服务端口。其帧结构简洁：MBAP头（7字节）+ PDU（功能码+数据）。与Modbus RTU相比，TCP版本省去了CRC校验（由TCP层保证完整性），增加了事务标识符用于报文匹配。</p>
-<p>核心功能码在边缘控制中的典型应用：</p>
-<ul>
-<li><strong>0x03读保持寄存器</strong>：读取PLC内部变量、模拟量输入、控制参数</li>
-<li><strong>0x06写单个寄存器</strong>：远程设定值下发、手动控制指令</li>
-<li><strong>0x10写多个寄存器</strong>：批量参数配置、配方下发</li>
-<li><strong>0x01读线圈</strong>：读取开关量状态、设备运行标志</li>
-</ul>
-<h2 id="二、边缘场景下的通信架构"><a href="#二、边缘场景下的通信架构" class="headerlink" title="二、边缘场景下的通信架构"></a>二、边缘场景下的通信架构</h2><p>在边缘控制系统中，Modbus TCP通常采用以下通信架构：</p>
-<h3 id="2-1-边缘网关作为Modbus主站"><a href="#2-1-边缘网关作为Modbus主站" class="headerlink" title="2.1 边缘网关作为Modbus主站"></a>2.1 边缘网关作为Modbus主站</h3><p>边缘网关（如施耐德Magelis HMIF）作为Modbus TCP主站，轮询多个从站设备（PLC、仪表、变频器）。这种架构适合数据汇聚场景，网关按固定周期采集各设备数据，进行边缘预处理后上传云端。</p>
-<h3 id="2-2-PLC之间的Modbus通信"><a href="#2-2-PLC之间的Modbus通信" class="headerlink" title="2.2 PLC之间的Modbus通信"></a>2.2 PLC之间的Modbus通信</h3><p>施耐德M580 PLC支持Modbus TCP从站功能，可作为IO扫描器直接读取远程IO模块的数据。在分布式控制架构中，各PLC通过Modbus TCP交换控制信号和状态数据，实现站间协调。</p>
-<h3 id="2-3-云边协同通信"><a href="#2-3-云边协同通信" class="headerlink" title="2.3 云边协同通信"></a>2.3 云边协同通信</h3><p>通过MQTT桥接Modbus TCP数据，实现云边协同。边缘侧保持Modbus TCP高速轮询，变化数据经压缩后通过MQTT推送到云端，既保证了本地控制的实时性，又实现了远程监控的可达性。</p>
-<h2 id="三、性能瓶颈分析"><a href="#三、性能瓶颈分析" class="headerlink" title="三、性能瓶颈分析"></a>三、性能瓶颈分析</h2><h3 id="3-1-轮询效率问题"><a href="#3-1-轮询效率问题" class="headerlink" title="3.1 轮询效率问题"></a>3.1 轮询效率问题</h3><p>Modbus TCP采用主从轮询机制，从站无法主动上报。当设备数量增多时，轮询周期线性增长。假设每台设备平均通信耗时20ms（含网络延迟），50台设备的完整轮询周期达到1秒，无法满足快速控制回路的要求。</p>
-<h3 id="3-2-连接管理开销"><a href="#3-2-连接管理开销" class="headerlink" title="3.2 连接管理开销"></a>3.2 连接管理开销</h3><p>每个Modbus TCP连接占用服务端一个TCP socket。施耐德M340 PLC的以太网模块最多支持64个并发Modbus TCP连接。在大型系统中，连接资源可能成为瓶颈。</p>
-<h3 id="3-3-数据打包效率"><a href="#3-3-数据打包效率" class="headerlink" title="3.3 数据打包效率"></a>3.3 数据打包效率</h3><p>单次Modbus TCP请求最多读取125个保持寄存器（功能码0x03）。如果数据地址不连续，需要多次请求，大幅降低通信效率。</p>
-<h2 id="四、优化策略"><a href="#四、优化策略" class="headerlink" title="四、优化策略"></a>四、优化策略</h2><h3 id="4-1-数据地址连续化重排"><a href="#4-1-数据地址连续化重排" class="headerlink" title="4.1 数据地址连续化重排"></a>4.1 数据地址连续化重排</h3><p>在PLC程序设计阶段，将需要远程采集的变量集中排列在连续的寄存器地址区域。例如，将所有遥测数据从%MW100开始连续存放，一条0x03请求即可读取全部数据，通信效率提升数倍。</p>
-<h3 id="4-2-多从站并行轮询"><a href="#4-2-多从站并行轮询" class="headerlink" title="4.2 多从站并行轮询"></a>4.2 多从站并行轮询</h3><p>利用Modbus TCP的TCP连接特性，网关可同时向多个从站发送请求。通过异步IO模型（如Python的asyncio或Node.js的事件循环），实现多从站并发轮询，将整体轮询周期从串行累加降低为最长单站耗时。</p>
-<h3 id="4-3-变化上报机制"><a href="#4-3-变化上报机制" class="headerlink" title="4.3 变化上报机制"></a>4.3 变化上报机制</h3><p>在边缘网关实现变化上报逻辑：仅当数据变化超过死区阈值时才转发到上层系统。对于慢变过程量（如温度、液位），上报频率可降低至1次&#x2F;分钟，而对开关量则采用COV（Change of Value）机制即时上报。</p>
-<h3 id="4-4-连接池与长连接"><a href="#4-4-连接池与长连接" class="headerlink" title="4.4 连接池与长连接"></a>4.4 连接池与长连接</h3><p>避免频繁建立和断开TCP连接。采用连接池模式，预先建立到各从站的TCP连接并保持活跃，通过心跳帧维持连接可用性。这可将首次通信延迟从TCP三次握手的数十毫秒降低到1ms以内。</p>
-<h2 id="五、工程实践总结"><a href="#五、工程实践总结" class="headerlink" title="五、工程实践总结"></a>五、工程实践总结</h2><p>在施耐德电气多个边缘控制项目中，通过地址连续化、并行轮询和变化上报三项优化，Modbus TCP的通信效率可提升5-10倍。关键在于：在项目设计阶段就充分考虑通信架构，将Modbus地址规划纳入系统设计规范，避免后期优化带来的额外成本。Modbus TCP虽古老，但工程优化到位后，依然是边缘控制系统中最经济可靠的通信方案。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/10/edge-tech-20260510-1008/" data-id="cmr67mcux00s0kcun4xbv0jpz" data-title="Modbus TCP在边缘控制系统中的深度应用与性能优化" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modbus-TCP/" rel="tag">Modbus TCP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC/" rel="tag">PLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%80%9A%E4%BF%A1%E4%BC%98%E5%8C%96/" rel="tag">通信优化</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-schneider-news-20260510-1008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/10/schneider-news-20260510-1008/" class="article-date">
-  <time class="dt-published" datetime="2026-05-10T02:08:00.000Z" itemprop="datePublished">2026-05-10 10:08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/10/schneider-news-20260510-1008/">施耐德电气：Modicon M340控制器在中型项目中的应用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/schneider-news-202605101008.jpg" alt="施耐德电气"></p>
-<h1 id="施耐德电气：Modicon-M340控制器在中型项目中的应用"><a href="#施耐德电气：Modicon-M340控制器在中型项目中的应用" class="headerlink" title="施耐德电气：Modicon M340控制器在中型项目中的应用"></a>施耐德电气：Modicon M340控制器在中型项目中的应用</h1><p>在工业自动化领域，可编程逻辑控制器（PLC）是生产线的核心大脑。施耐德电气的Modicon M340作为一款面向中型应用的控制器，凭借其强大的处理能力和灵活的扩展性，在众多行业获得了广泛应用。</p>
-<h2 id="产品定位与特点"><a href="#产品定位与特点" class="headerlink" title="产品定位与特点"></a>产品定位与特点</h2><p>Modicon M340定位于中型自动化项目，填补了小型控制器与大型冗余系统之间的空白。其核心特点包括：</p>
-<p><strong>处理性能</strong></p>
-<ul>
-<li>高达4MB的程序内存</li>
-<li>支持多达1024个离散量I&#x2F;O</li>
-<li>128个模拟量通道</li>
-<li>指令执行速度达到0.12μs&#x2F;布尔指令</li>
-</ul>
-<p><strong>通信能力</strong></p>
-<ul>
-<li>内置以太网端口（支持Modbus TCP&#x2F;IP）</li>
-<li>可选配CANopen主站模块</li>
-<li>支持串行通信（Modbus RTU）</li>
-<li>USB编程接口</li>
-</ul>
-<p><strong>扩展灵活性</strong></p>
-<ul>
-<li>支持本地I&#x2F;O扩展（最多7个模块）</li>
-<li>远程I&#x2F;O站支持（通过以太网）</li>
-<li>分布式架构设计</li>
-</ul>
-<h2 id="典型应用案例：水处理厂升级改造"><a href="#典型应用案例：水处理厂升级改造" class="headerlink" title="典型应用案例：水处理厂升级改造"></a>典型应用案例：水处理厂升级改造</h2><p>某市第三水厂日处理能力20万吨，原有控制系统已运行15年，设备老化严重，维护成本逐年攀升。经过详细评估，项目组选择了Modicon M340作为核心控制器。</p>
-<p><strong>系统架构</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">中央控制室</span><br><span class="line">    ├── 操作站 x 2 (Wonderware InTouch)</span><br><span class="line">    ├── 工程师站 x 1 (Unity Pro)</span><br><span class="line">    └── 历史数据库服务器 x 1</span><br><span class="line">    </span><br><span class="line">现场控制站</span><br><span class="line">    ├── PLC #1 (取水泵房) - M340 CPU + 32DI + 32DO + 8AI</span><br><span class="line">    ├── PLC #2 (混凝沉淀) - M340 CPU + 48DI + 32DO + 16AI + 4AO</span><br><span class="line">    ├── PLC #3 (过滤车间) - M340 CPU + 64DI + 48DO + 24AI + 8AO</span><br><span class="line">    └── PLC #4 (送水泵房) - M340 CPU + 32DI + 24DO + 12AI + 4AO</span><br></pre></td></tr></table></figure>
-
-<p><strong>实施效果</strong></p>
-<table>
-<thead>
-<tr>
-<th>项目指标</th>
-<th>数据</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>项目周期</td>
-<td>4个月</td>
-</tr>
-<tr>
-<td>控制点位总数</td>
-<td>约1200点</td>
-</tr>
-<tr>
-<td>投资回报期</td>
-<td>2.5年</td>
-</tr>
-<tr>
-<td>能耗降低</td>
-<td>18%</td>
-</tr>
-<tr>
-<td>维护成本减少</td>
-<td>45%</td>
-</tr>
-</tbody></table>
-<h2 id="开发环境优势"><a href="#开发环境优势" class="headerlink" title="开发环境优势"></a>开发环境优势</h2><p>Modicon M340配套的Unity Pro开发环境提供了一系列提升工程效率的功能：</p>
-<ol>
-<li><p><strong>IEC 61131-3标准支持</strong>：支持LD、FBD、ST、SFC、IL五种编程语言，工程师可根据应用场景选择最适合的表达方式。</p>
-</li>
-<li><p><strong>在线修改功能</strong>：支持运行中修改程序，无需停机即可完成程序优化，极大减少生产中断时间。</p>
-</li>
-<li><p><strong>诊断功能</strong>：内置的系统诊断功能块可快速定位故障，配合SoCollaborative团队协作软件实现远程诊断。</p>
-</li>
-<li><p><strong>代码复用</strong>：通过DTM（设备类型管理器）技术，实现设备驱动程序的标准化封装，不同项目间可快速复用。</p>
-</li>
-</ol>
-<h2 id="与EcoStruxure生态的整合"><a href="#与EcoStruxure生态的整合" class="headerlink" title="与EcoStruxure生态的整合"></a>与EcoStruxure生态的整合</h2><p>作为EcoStruxure架构的重要组成部分，Modicon M340可以无缝接入施耐德的数字化生态系统：</p>
-<ul>
-<li>通过以太网连接AVEVA SCADA系统</li>
-<li>数据上传至EcoStruxure资源顾问进行能效分析</li>
-<li>支持预测性维护应用的实时数据供给</li>
-<li>与配电系统协同实现能源优化</li>
-</ul>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>Modicon M340以其均衡的性能配置、开放的系统架构和完善的开发工具，为中型自动化项目提供了高性价比的解决方案。对于正在规划控制系统升级的企业，M340是一个值得重点评估的选择。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/10/schneider-news-20260510-1008/" data-id="cmr67mdia02ipkcunejpeb4wa" data-title="施耐德电气：Modicon M340控制器在中型项目中的应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon/" rel="tag">Modicon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC/" rel="tag">PLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%8E%A7%E5%88%B6/" rel="tag">自动化控制</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-schneider-news-20260510-0910" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/10/schneider-news-20260510-0910/" class="article-date">
-  <time class="dt-published" datetime="2026-05-10T01:10:00.000Z" itemprop="datePublished">2026-05-10 09:10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%96%BD%E8%80%90%E5%BE%B7%E5%8A%A8%E6%80%81/">施耐德动态</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/10/schneider-news-20260510-0910/">施耐德电气2026年全球市场战略动态：深耕绿色能源与智能制造</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>2026年上半年，施耐德电气在全球市场持续发力，围绕绿色能源转型和智能制造升级两大核心主题，在多个关键市场取得了显著进展。本文梳理施耐德电气近期的全球市场动态，分析其战略布局与行业趋势。</p>
-<h2 id="一、全球营收持续增长，可持续业务占比创新高"><a href="#一、全球营收持续增长，可持续业务占比创新高" class="headerlink" title="一、全球营收持续增长，可持续业务占比创新高"></a>一、全球营收持续增长，可持续业务占比创新高</h2><p>根据施耐德电气最新发布的2026财年第一季度业绩报告，公司全球营收同比增长7.2%，其中可持续技术相关业务营收占比首次突破75%。这一数据印证了施耐德电气”绿色创新”战略的成功——将可持续发展从企业社会责任转化为核心商业引擎。</p>
-<p>从区域表现来看，北美市场依然是施耐德电气的最大收入来源，受益于IRA（通胀削减法案）推动的电网现代化投资，能源管理业务增长强劲。亚太市场中，印度和东南亚表现突出，数据中心和工业自动化需求旺盛。中国市场在”双碳”目标驱动下，配电自动化和楼宇能效管理业务保持稳定增长。</p>
-<h2 id="二、战略并购与生态扩展"><a href="#二、战略并购与生态扩展" class="headerlink" title="二、战略并购与生态扩展"></a>二、战略并购与生态扩展</h2><p>2026年初，施耐德电气完成了对欧洲工业AI初创公司NeuralEdge的收购，进一步强化了EcoStruxure平台的边缘AI能力。NeuralEdge的核心技术——轻量级时序数据异常检测模型，将集成到施耐德的预测性维护解决方案中，使边缘侧的设备故障预测准确率提升至92%以上。</p>
-<p>同时，施耐德电气与微软深化战略合作伙伴关系，将EcoStruxure与Azure IoT Operations深度整合，为企业客户提供从边缘到云的一体化工业数据管理方案。该合作覆盖数据采集、边缘计算、云端分析和可视化全链路，显著降低了工业数字化转型的技术门槛。</p>
-<h2 id="三、重点行业市场布局"><a href="#三、重点行业市场布局" class="headerlink" title="三、重点行业市场布局"></a>三、重点行业市场布局</h2><h3 id="3-1-数据中心：液冷与能效管理双轮驱动"><a href="#3-1-数据中心：液冷与能效管理双轮驱动" class="headerlink" title="3.1 数据中心：液冷与能效管理双轮驱动"></a>3.1 数据中心：液冷与能效管理双轮驱动</h3><p>全球AI算力需求爆发带动数据中心建设热潮，施耐德电气凭借Galaxy VL系列UPS和EcoStruxure IT解决方案，在全球数据中心市场占有率稳居前列。2026年，施耐德重点推进液冷配电方案，为GPU密集型AI训练集群提供高密度供电支持，单机柜功率密度可达100kW以上。</p>
-<h3 id="3-2-新能源：光储充一体化解决方案"><a href="#3-2-新能源：光储充一体化解决方案" class="headerlink" title="3.2 新能源：光储充一体化解决方案"></a>3.2 新能源：光储充一体化解决方案</h3><p>施耐德电气推出面向工商业的”光储充”一体化能源管理方案，集成光伏逆变器、储能系统和充电桩，通过EcoStruxure微网能源管家实现智能调度。在电价峰谷差较大的市场（如德国、澳大利亚），该方案可帮助用户降低用电成本30%-50%。</p>
-<h3 id="3-3-楼宇：零碳建筑从概念走向落地"><a href="#3-3-楼宇：零碳建筑从概念走向落地" class="headerlink" title="3.3 楼宇：零碳建筑从概念走向落地"></a>3.3 楼宇：零碳建筑从概念走向落地</h3><p>施耐德电气与多家地产开发商合作推进零碳建筑项目，通过EcoStruxure Building Advisor实现建筑能耗的实时监测和智能优化。上海某超甲级写字楼项目通过部署施耐德的楼宇能效管理方案，在保证室内舒适度的前提下，综合能耗降低38%，成为国内首批获得EDGE零碳认证的商业建筑。</p>
-<h2 id="四、可持续发展承诺进展"><a href="#四、可持续发展承诺进展" class="headerlink" title="四、可持续发展承诺进展"></a>四、可持续发展承诺进展</h2><p>施耐德电气持续践行”1.5°C科学碳目标”：截至2026年，公司自身运营已实现100%绿电覆盖（目标为2025年完成），供应链碳排放强度较2017年基准降低35%。此外，施耐德电气发起的”零碳城市”计划已在全球50个城市落地，通过综合能源管理帮助城市实现碳减排目标。</p>
-<p>在循环经济方面，施耐德电气的Green Premium生态标签产品占比已达82%，这些产品均通过了生命周期评估，提供完整的环境影响数据和端到端的回收服务。</p>
-<h2 id="五、展望"><a href="#五、展望" class="headerlink" title="五、展望"></a>五、展望</h2><p>施耐德电气CEO Peter Herweck在近期投资者日活动中表示：”电气化和数字化是解决能源三重困境——安全、可负担和可持续性的唯一路径。施耐德电气将继续加大在边缘AI、新型电力系统和工业软件领域的投入，帮助客户在能源转型中把握机遇。”</p>
-<p>展望2026年下半年，随着全球电网投资加速和工业AI应用深化，施耐德电气有望在能源管理和工业自动化两大核心市场继续保持领先优势。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/10/schneider-news-20260510-0910/" data-id="cmr67mdi802ilkcun7g0x7i5v" data-title="施耐德电气2026年全球市场战略动态：深耕绿色能源与智能制造" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%A8%E7%90%83%E5%B8%82%E5%9C%BA/" rel="tag">全球市场</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%88%98%E7%95%A5%E5%B8%83%E5%B1%80/" rel="tag">战略布局</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0/" rel="tag">智能制造</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%BF%E8%89%B2%E8%83%BD%E6%BA%90/" rel="tag">绿色能源</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-edge-tech-20260510-0808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/10/edge-tech-20260510-0808/" class="article-date">
-  <time class="dt-published" datetime="2026-05-10T00:08:00.000Z" itemprop="datePublished">2026-05-10 08:08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF/">边缘控制技术</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/10/edge-tech-20260510-0808/">工业边缘网关协议深度解析：从Modbus到MQTT的全栈互联</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>工业边缘网关是连接OT（操作技术）与IT（信息技术）的关键桥梁。在施耐德电气的EcoStruxure架构中，边缘网关承担着协议转换、数据采集、边缘预处理等核心职责。本文将深入解析工业边缘网关中常见协议的技术特点、转换机制及工程实践。</p>
-<h2 id="一、工业协议生态全景"><a href="#一、工业协议生态全景" class="headerlink" title="一、工业协议生态全景"></a>一、工业协议生态全景</h2><p>工业现场总线与以太网协议种类繁多，主流协议包括：</p>
-<ul>
-<li><strong>Modbus RTU&#x2F;TCP</strong>：最经典的工业通信协议，结构简单、兼容性极强，但缺乏安全机制和对象模型</li>
-<li><strong>OPC UA</strong>：面向服务的统一架构，内置安全模型和信息模型，是工业4.0的通信基石</li>
-<li><strong>EtherNet&#x2F;IP</strong>：基于CIP协议的工业以太网，在北美市场占有率极高</li>
-<li><strong>PROFINET</strong>：西门子主导的工业以太网协议，在过程控制领域应用广泛</li>
-<li><strong>MQTT</strong>：轻量级物联网消息协议，发布&#x2F;订阅模式天然适合边缘场景</li>
-</ul>
-<p>在施耐德电气的设备生态中，Modbus TCP是PLC与上位机通信的默认协议，而OPC UA则作为跨厂商数据交换的标准接口。</p>
-<h2 id="二、协议转换的核心挑战"><a href="#二、协议转换的核心挑战" class="headerlink" title="二、协议转换的核心挑战"></a>二、协议转换的核心挑战</h2><p>边缘网关的协议转换并非简单的报文映射，需要解决以下关键技术问题：</p>
-<h3 id="2-1-数据模型映射"><a href="#2-1-数据模型映射" class="headerlink" title="2.1 数据模型映射"></a>2.1 数据模型映射</h3><p>Modbus的寄存器模型（线圈、离散输入、输入寄存器、保持寄存器）与OPC UA的节点模型之间存在语义鸿沟。网关需要建立”地址-语义”映射表，将原始寄存器地址转换为具有工程语义的节点。例如，保持寄存器40001可能映射为OPC UA节点”电机温度”，同时附带工程单位、量程、报警阈值等元数据。</p>
-<h3 id="2-2-采集周期优化"><a href="#2-2-采集周期优化" class="headerlink" title="2.2 采集周期优化"></a>2.2 采集周期优化</h3><p>不同协议的通信延迟差异显著。Modbus RTU在9600bps下轮询100个寄存器需要约200ms，而OPC UA的订阅模式可以实现10ms级的数据推送。网关需要根据数据变化率动态调整采集策略：对慢变信号（如温度）采用长周期轮询，对快变信号（如振动）采用事件触发采集。</p>
-<h3 id="2-3-时间戳对齐"><a href="#2-3-时间戳对齐" class="headerlink" title="2.3 时间戳对齐"></a>2.3 时间戳对齐</h3><p>多协议混合采集时，各数据源的时间基准不同。网关需要实现统一的时间戳管理：对支持时间戳的协议（如OPC UA）直接使用源时间戳，对不支持时间戳的协议（如Modbus）则由网关打上采集时间戳，并标注最大可能的采集延迟。</p>
-<h2 id="三、边缘网关的架构设计"><a href="#三、边缘网关的架构设计" class="headerlink" title="三、边缘网关的架构设计"></a>三、边缘网关的架构设计</h2><p>基于施耐德电气Magelis边缘网关的工程实践，推荐以下架构：</p>
-<p><strong>数据采集层</strong>：支持多协议并行采集，采用连接池管理Modbus TCP连接，避免频繁建链开销。每个协议驱动独立运行，互不干扰。</p>
-<p><strong>数据处理层</strong>：内置规则引擎，支持数据过滤、阈值判断、变化率计算等边缘预处理。例如，只在温度变化超过0.5°C时才上报，有效减少云端数据流量。</p>
-<p><strong>数据分发层</strong>：通过MQTT将处理后的数据推送到云端平台，支持QoS分级。关键报警使用QoS 2确保送达，常规遥测数据使用QoS 0降低延迟。</p>
-<h2 id="四、安全机制与最佳实践"><a href="#四、安全机制与最佳实践" class="headerlink" title="四、安全机制与最佳实践"></a>四、安全机制与最佳实践</h2><p>协议转换场景下的安全设计常被忽视。建议采取以下措施：</p>
-<ol>
-<li><strong>协议隔离</strong>：OT侧与IT侧使用独立网络接口，物理隔离或VLAN逻辑隔离</li>
-<li><strong>访问控制</strong>：对OPC UA启用证书认证和角色授权，对Modbus TCP限制白名单IP</li>
-<li><strong>数据加密</strong>：MQTT over TLS 1.3，OPC UA启用SignAndEncrypt安全模式</li>
-<li><strong>审计日志</strong>：记录所有跨域访问和数据查询操作，满足等保2.0合规要求</li>
-</ol>
-<h2 id="五、工程实践建议"><a href="#五、工程实践建议" class="headerlink" title="五、工程实践建议"></a>五、工程实践建议</h2><p>在实际部署中，建议优先完成协议设备的地址映射表编制，这是网关配置的基础。对于大型项目，可采用模板化配置方式，将同类设备的映射表封装为模板，批量应用后微调地址偏移。同时，务必在实验室环境完成协议兼容性测试，特别是多厂商设备混用场景下的异常报文处理。</p>
-<p>边缘网关作为工业互联的枢纽，其协议处理能力直接决定了系统的可扩展性和可靠性。掌握多协议转换的底层逻辑，是构建高效边缘控制系统的必备技能。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/10/edge-tech-20260510-0808/" data-id="cmr67mcuw00rxkcun2pg5684g" data-title="工业边缘网关协议深度解析：从Modbus到MQTT的全栈互联" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PLC/" rel="tag">PLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E5%8D%8F%E8%AE%AE/" rel="tag">工业协议</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9A%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">工业自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E7%BD%91%E5%85%B3/" rel="tag">边缘网关</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-schneider-news-20260510-0808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/10/schneider-news-20260510-0808/" class="article-date">
-  <time class="dt-published" datetime="2026-05-10T00:08:00.000Z" itemprop="datePublished">2026-05-10 08:08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/10/schneider-news-20260510-0808/">施耐德电气：EcoStruxure平台助力制造业数字化转型</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/schneider-news-202605100808.jpg" alt="施耐德电气"></p>
-<h1 id="施耐德电气：EcoStruxure平台助力制造业数字化转型"><a href="#施耐德电气：EcoStruxure平台助力制造业数字化转型" class="headerlink" title="施耐德电气：EcoStruxure平台助力制造业数字化转型"></a>施耐德电气：EcoStruxure平台助力制造业数字化转型</h1><p>在全球工业4.0浪潮下，数字化转型已成为制造企业提升竞争力的必由之路。施耐德电气作为全球能源管理与自动化领域的领导者，其核心平台EcoStruxure正在为众多制造企业提供全面的数字化解决方案。</p>
-<h2 id="EcoStruxure架构解析"><a href="#EcoStruxure架构解析" class="headerlink" title="EcoStruxure架构解析"></a>EcoStruxure架构解析</h2><p>EcoStruxure采用三层架构设计，为制造企业构建完整的数字化生态系统：</p>
-<p><strong>第一层：互联互通的产品层</strong></p>
-<ul>
-<li>智能断路器与配电设备</li>
-<li>支持EtherNet&#x2F;IP的变频器产品线</li>
-<li>内置传感器的PLC控制器</li>
-<li>边缘网关设备</li>
-</ul>
-<p><strong>第二层：边缘控制层</strong></p>
-<ul>
-<li>Modicon M580以太网可编程控制器</li>
-<li>PACIS工业控制系统</li>
-<li>EcoStruxure控制专家软件</li>
-<li>支持OPC UA协议的数据采集模块</li>
-</ul>
-<p><strong>第三层：应用与服务层</strong></p>
-<ul>
-<li>AVEVA统一运营中心</li>
-<li>EcoStruxure资源顾问</li>
-<li>预测性维护应用</li>
-<li>能效管理仪表盘</li>
-</ul>
-<h2 id="典型应用场景"><a href="#典型应用场景" class="headerlink" title="典型应用场景"></a>典型应用场景</h2><p>以某汽车零部件制造商为例，通过部署EcoStruxure平台，企业实现了以下关键突破：</p>
-<table>
-<thead>
-<tr>
-<th>指标</th>
-<th>改造前</th>
-<th>改造后</th>
-<th>提升幅度</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>OEE设备综合效率</td>
-<td>68%</td>
-<td>85%</td>
-<td>+25%</td>
-</tr>
-<tr>
-<td>能源成本</td>
-<td>基准值</td>
-<td>降低23%</td>
-<td>-23%</td>
-</tr>
-<tr>
-<td>非计划停机时间</td>
-<td>120小时&#x2F;年</td>
-<td>35小时&#x2F;年</td>
-<td>-71%</td>
-</tr>
-<tr>
-<td>质量合格率</td>
-<td>96.2%</td>
-<td>99.1%</td>
-<td>+3%</td>
-</tr>
-</tbody></table>
-<h2 id="核心价值主张"><a href="#核心价值主张" class="headerlink" title="核心价值主张"></a>核心价值主张</h2><p>施耐德电气EcoStruxure平台的核心优势体现在：</p>
-<ol>
-<li><p><strong>开放性与兼容性</strong>：基于行业标准协议，支持与第三方系统无缝集成，避免供应商锁定风险。</p>
-</li>
-<li><p><strong>即插即用</strong>：预配置的应用模板大幅缩短项目实施周期，典型项目从18个月缩短至6-8个月。</p>
-</li>
-<li><p><strong>可持续发展</strong>：通过精准能源管理，帮助企业实现碳减排目标，平均可降低15-30%的能耗。</p>
-</li>
-<li><p><strong>安全可靠</strong>：内置网络安全功能，符合IEC 62443工业网络安全标准，保障生产系统安全。</p>
-</li>
-</ol>
-<h2 id="未来展望"><a href="#未来展望" class="headerlink" title="未来展望"></a>未来展望</h2><p>随着AI技术与边缘计算的深度融合，EcoStruxure平台将持续演进。施耐德电气预计到2027年，平台将集成更多AI驱动的智能应用，包括自适应过程优化、智能排产决策等高级功能，进一步释放制造业数字化转型的潜能。</p>
-<p>对于正在规划数字化转型的制造企业，EcoStruxure提供了一个经过验证、可扩展的技术路径，值得深入评估与考量。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/10/schneider-news-20260510-0808/" data-id="cmr67mdi602iikcun78xw6wxu" data-title="施耐德电气：EcoStruxure平台助力制造业数字化转型" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E5%AD%97%E5%8C%96%E8%BD%AC%E5%9E%8B/" rel="tag">数字化转型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0/" rel="tag">智能制造</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-schneider-news-20260509-0117" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/09/schneider-news-20260509-0117/" class="article-date">
-  <time class="dt-published" datetime="2026-05-08T17:17:00.000Z" itemprop="datePublished">2026-05-09 01:17</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/09/schneider-news-20260509-0117/">施耐德电气亮相2026汉诺威展 工业AI从概念走向可规模化落地</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/schneider-news-202605090117.jpg" alt="工业自动化控制系统"></p>
-<h2 id="施耐德电气亮相2026汉诺威展-工业AI从概念走向可规模化落地"><a href="#施耐德电气亮相2026汉诺威展-工业AI从概念走向可规模化落地" class="headerlink" title="施耐德电气亮相2026汉诺威展 工业AI从概念走向可规模化落地"></a>施耐德电气亮相2026汉诺威展 工业AI从概念走向可规模化落地</h2><p>2026年4月20日，全球最具影响力的工业盛会——<strong>汉诺威工业博览会</strong>（Hannover Messe）在德国盛大开展。施耐德电气以”智造跃迁正当其时”为主题，携其在工业AI、软件定义自动化、电气化与数智化融合方面的最新成果重磅亮相。</p>
-<h3 id="工业AI：从”展示概念”到”可部署可复制”"><a href="#工业AI：从”展示概念”到”可部署可复制”" class="headerlink" title="工业AI：从”展示概念”到”可部署可复制”"></a>工业AI：从”展示概念”到”可部署可复制”</h3><p>与往年单纯展示概念不同，施耐德电气此次展出的重点更偏向**”可部署、可复制、可见效”**的工业AI实践。施耐德将工业AI定位为提升效率与可持续发展的”放大器”，强调AI不应停留在演示层面，而应深度嵌入电气化、自动化与数智化系统之中，服务工程、运维、能源管理等核心环节。</p>
-<p>施耐德电气此番展示回应了制造业正面临的几个现实挑战：</p>
-<ul>
-<li><strong>能效压力</strong>：如何在保持生产效率的同时降低能耗</li>
-<li><strong>运营复杂性</strong>：如何简化日益复杂的工业系统管理</li>
-<li><strong>安全风险</strong>：如何在智能化转型中保障生产安全</li>
-<li><strong>人才短缺</strong>：如何用技术弥补专业人员的缺口</li>
-</ul>
-<h3 id="EcoStruxure™-平台：AI赋能的端到端解决方案"><a href="#EcoStruxure™-平台：AI赋能的端到端解决方案" class="headerlink" title="EcoStruxure™ 平台：AI赋能的端到端解决方案"></a>EcoStruxure™ 平台：AI赋能的端到端解决方案</h3><p>施耐德电气通过其旗舰平台 <strong>EcoStruxure™</strong> 提供AI赋能的端到端全生命周期工业物联网解决方案。该平台涵盖互联互通的产品、自动化、软件和服务，并采用跨平台的产业数据基座和”数字孪生”技术，助力客户实现盈利性增长。</p>
-<h3 id="践行”在中国，为中国，惠世界”"><a href="#践行”在中国，为中国，惠世界”" class="headerlink" title="践行”在中国，为中国，惠世界”"></a>践行”在中国，为中国，惠世界”</h3><p>施耐德电气自1987年进入中国以来，已在中国市场深耕近40年。目前，施耐德在华拥有28,000名员工、53个办事处、28家工厂、7个物流中心、3个全球研发中心和1,000多名研发工程师。</p>
-<p>近年来，施耐德电气(中国)有限公司获得了：</p>
-<ul>
-<li>2025年国家级高新技术企业</li>
-<li>2023年国家级”一带一路”绿色供应链企业</li>
-<li>2022年国家级绿色设计产品企业</li>
-</ul>
-<p>在中低压配电领域，施耐德实施”在中国，为中国，惠世界”的研发平台矩阵战略，将中国作为全球研发和制造中心。</p>
-<h3 id="技术要点总结"><a href="#技术要点总结" class="headerlink" title="技术要点总结"></a>技术要点总结</h3><table>
-<thead>
-<tr>
-<th>关键技术</th>
-<th>应用价值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>工业AI</td>
-<td>提升生产效率，降低运营成本</td>
-</tr>
-<tr>
-<td>数字孪生</td>
-<td>实现虚拟调试，减少停机时间</td>
-</tr>
-<tr>
-<td>软件定义自动化</td>
-<td>提高系统灵活性，快速响应市场需求</td>
-</tr>
-<tr>
-<td>能效管理</td>
-<td>助力实现可持续发展目标</td>
-</tr>
-</tbody></table>
-<hr>
-<p><em>本文基于中国工控网、企查查等公开信息整理，欢迎评论区讨论交流。</em></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/09/schneider-news-20260509-0117/" data-id="cmr67mdi402iekcun8phuhx3m" data-title="施耐德电气亮相2026汉诺威展 工业AI从概念走向可规模化落地" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-edge-tech-20260509-0108" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/09/edge-tech-20260509-0108/" class="article-date">
-  <time class="dt-published" datetime="2026-05-08T17:08:00.000Z" itemprop="datePublished">2026-05-09 01:08</time>
+    <a href="/2026/05/31/edge-tech-20260531-2208/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T14:08:00.000Z" itemprop="datePublished">2026-05-31 22:08</time>
 </a>
     
   <div class="article-category">
@@ -619,7 +99,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/09/edge-tech-20260509-0108/">从 IEC 61499 到软件定义自动化：边缘控制的技术演进与实践</a>
+      <a class="p-name article-title" href="/2026/05/31/edge-tech-20260531-2208/">边云协同深度解析</a>
     </h1>
   
 
@@ -627,71 +107,26 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605090108.jpg" alt="边缘控制技术架构"></p>
-<p>在工业自动化的历史长河中，分布式控制架构的演进始终围绕着三个核心命题：如何让控制逻辑更灵活、如何让数据处理更实时、如何让系统具备真正的互操作性。IEC 61499 标准的出现，标志着工业控制从”硬件绑定”走向”软件定义”的关键一步，也为边缘控制技术的落地提供了标准化的实施路径。</p>
-<h2 id="IEC-61499：分布式控制的核心标准"><a href="#IEC-61499：分布式控制的核心标准" class="headerlink" title="IEC 61499：分布式控制的核心标准"></a>IEC 61499：分布式控制的核心标准</h2><p>IEC 61499 是国际电工委员会（IEC）制定的分布式工业过程测量与控制系统功能块标准。与传统的 IEC 61131-3 相比，IEC 61499 最大的突破在于将控制逻辑从单一设备中解耦出来，允许应用在多个资源（RESOURCE）上分布运行。</p>
-<p><strong>函数块（Function Block）</strong>是 IEC 61499 的核心概念。每个函数块包含输入&#x2F;输出变量、输入&#x2F;输出事件以及内部算法，通过事件触发机制实现异步执行。以下是一个简化的数据处理函数块结构示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FUNCTION_BLOCK FB_EdgeDataFilter</span><br><span class="line">VAR_INPUT</span><br><span class="line">  rawValue  : REAL;   // 传感器原始数据</span><br><span class="line">  threshold : REAL;   // 滤波阈值</span><br><span class="line">  eventIn   : BOOL;   // 触发事件</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">  filtered  : REAL;   // 滤波后数据</span><br><span class="line">  eventOut  : BOOL;   // 输出完成事件</span><br><span class="line">END_VAR</span><br></pre></td></tr></table></figure>
-
-<p>在边缘控制场景中，IEC 61499 的资源（RESOURCE）模型与边缘网关的硬件抽象层完美对应：边缘设备作为资源载体，函数块网络作为控制逻辑载体，实现了”一次开发、多处部署”的目标。</p>
-<h2 id="EcoStruxure-开放自动化平台（EAE）的三层架构"><a href="#EcoStruxure-开放自动化平台（EAE）的三层架构" class="headerlink" title="EcoStruxure 开放自动化平台（EAE）的三层架构"></a>EcoStruxure 开放自动化平台（EAE）的三层架构</h2><p>施耐德电气的 EcoStruxure 开放自动化平台（EcoStruxure Automation Expert，简称 EAE）是 IEC 61499 标准在工业实践中的标杆实现。EAE 采用软件定义的架构，将控制逻辑与硬件彻底解耦，其三层架构设计为边缘控制提供了清晰的技术路径：</p>
-<p><strong>底层</strong>：连接 PLC、变频器、传感器等工业硬件；<br><strong>中层（边缘控制层）</strong>：通过 Soft dPAC（软件分布式过程自动化控制器）实现边缘计算与实时控制；<br><strong>顶层</strong>：对接 MES、WMS&#x2F;WCS 等企业信息系统。</p>
-<p>值得注意的是，EAE 的 Soft dPAC 不仅支持 Windows 环境，还提供 Linux 容器化版本（Docker，基于 Alpine OS），支持 x86 和 ARM 两种处理器架构。这意味着边缘控制器可以是低成本的嵌入式设备，也可以是高可靠性的工业服务器——硬件选型不再受制于控制平台本身。</p>
-<h2 id="数字孪生赋能边缘控制：从仿真到实时优化"><a href="#数字孪生赋能边缘控制：从仿真到实时优化" class="headerlink" title="数字孪生赋能边缘控制：从仿真到实时优化"></a>数字孪生赋能边缘控制：从仿真到实时优化</h2><p>数字孪生与边缘计算的结合，正在重新定义工业控制的调试与运维方式。以施耐德北京物流中心为例，该中心在部署 EAE 平台的同时，搭配使用 EMET L&amp;W 数字孪生软件构建全厂级数字孪生模型：</p>
-<ul>
-<li><strong>虚拟调试</strong>：在生产线实际建设和安装之前，通过数字孪生技术进行虚拟调试，模拟设备运行、物料传输和生产流程衔接，将调试周期缩短约 40%；</li>
-<li><strong>实时监控</strong>：物理工厂与数字模型保持数据同步，运行人员可在数字空间中实时观察生产状态；</li>
-<li><strong>预测性维护</strong>：结合边缘节点采集的设备振动、温度等数据，数字孪生模型可提前识别潜在故障，降低非计划停机时间。</li>
+        <h1 id="边云协同深度解析与工程实践"><a href="#边云协同深度解析与工程实践" class="headerlink" title="边云协同深度解析与工程实践"></a>边云协同深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>边云协同的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
 </ul>
-<p>这种”物理+数字”的双向映射，使边缘控制不再只是数据采集的边缘节点，更成为智能决策的前端触角。</p>
-<h2 id="IEC-61499-与-IEC-61131-3-的选择逻辑"><a href="#IEC-61499-与-IEC-61131-3-的选择逻辑" class="headerlink" title="IEC 61499 与 IEC 61131-3 的选择逻辑"></a>IEC 61499 与 IEC 61131-3 的选择逻辑</h2><p>对于工控工程师而言，在实际项目中选择 IEC 61499 还是 IEC 61131-3，需要综合考虑以下因素：</p>
-<table>
-<thead>
-<tr>
-<th>维度</th>
-<th>IEC 61131-3</th>
-<th>IEC 61499</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>适用场景</td>
-<td>单设备控制、经典 PLC 编程</td>
-<td>分布式系统、跨设备协同</td>
-</tr>
-<tr>
-<td>实时性</td>
-<td>高（硬件级循环扫描）</td>
-<td>中高（事件驱动，非确定性略低）</td>
-</tr>
-<tr>
-<td>工程工具成熟度</td>
-<td>非常成熟（Codesys、Studio 5000 等）</td>
-<td>逐步成熟（EAE、open61499）</td>
-</tr>
-<tr>
-<td>互操作性</td>
-<td>受限于特定厂商</td>
-<td>跨厂商标准兼容</td>
-</tr>
-<tr>
-<td>学习曲线</td>
-<td>较低（有大量工程师基础）</td>
-<td>较高（需要理解分布式架构）</td>
-</tr>
-</tbody></table>
-<p><strong>实践建议</strong>：在边缘网关层面使用 IEC 61499 构建分布式控制应用，同时在本地 PLC 层保留 IEC 61131-3 代码以保障确定性控制——两种标准的协同使用，正在成为大型边缘控制项目的标准架构范式。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>从 IEC 61499 到 EcoStruxure 开放自动化平台，边缘控制技术正在经历从”硬件定义”到”软件定义”的深刻变革。数字孪生、边缘计算与 IEC 61499 的融合，为工业自动化系统带来了前所未有的灵活性与智能水平。对于工控工程师而言，理解这些技术的底层逻辑与适用边界，是在智能化浪潮中保持竞争力的关键。</p>
-<hr>
-<p><em>参考资料：CSDN 技术社区、知乎、百度百科、施耐德电气官方资料</em></p>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 EcoStruxure 原生支持边云协同，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/09/edge-tech-20260509-0108/" data-id="cmr67mcuv00rtkcunf11eatpe" data-title="从 IEC 61499 到软件定义自动化：边缘控制的技术演进与实践" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/edge-tech-20260531-2208/" data-id="cmtk83tms02th1oun5sai59yd" data-title="边云协同深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E4%BA%91%E5%8D%8F%E5%90%8C/" rel="tag">边云协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
@@ -699,11 +134,12 @@
 
 
 
+
   
-    <article id="post-schneider-news-20260508-2317" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-schneider-news-20260531-2208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2026/05/08/schneider-news-20260508-2317/" class="article-date">
-  <time class="dt-published" datetime="2026-05-08T15:17:00.000Z" itemprop="datePublished">2026-05-08 23:17</time>
+    <a href="/2026/05/31/schneider-news-20260531-2208/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T14:08:00.000Z" itemprop="datePublished">2026-05-31 22:08</time>
 </a>
     
   <div class="article-category">
@@ -718,7 +154,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/08/schneider-news-20260508-2317/">施耐德电气2026汉诺威工业展：工业AI从概念走向规模化落地</a>
+      <a class="p-name article-title" href="/2026/05/31/schneider-news-20260531-2208/">施耐德电气软件更新：AVEVA最新动态</a>
     </h1>
   
 
@@ -726,46 +162,24 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/schneider-news-202605082317.jpg" alt="施耐德电气工业自动化"></p>
-<h2 id="智造跃迁，正当其时：施耐德电气亮相2026汉诺威工业展"><a href="#智造跃迁，正当其时：施耐德电气亮相2026汉诺威工业展" class="headerlink" title="智造跃迁，正当其时：施耐德电气亮相2026汉诺威工业展"></a>智造跃迁，正当其时：施耐德电气亮相2026汉诺威工业展</h2><p>2026年4月，全球能源管理与自动化领域巨头施耐德电气（Schneider Electric）以”智造跃迁，正当其时”为主题，重磅亮相2026年汉诺威工业博览会。此次展会上，施耐德电气联合旗下AVEVA剑维软件、ETAP及ProLeiT，通过五大实景展区，全面展示了其在工业AI、软件定义自动化、电气化与数智化融合方面的最新突破。</p>
-<h2 id="五大实景展区，直击行业痛点"><a href="#五大实景展区，直击行业痛点" class="headerlink" title="五大实景展区，直击行业痛点"></a>五大实景展区，直击行业痛点</h2><p>施耐德电气在本次展会上精心打造了<strong>软件定义、能效优化、高效生产、人才赋能、安全运营</strong>五大实景展区，每一块都聚焦制造业最迫切的现实挑战：</p>
-<ul>
-<li><strong>软件定义自动化</strong>：基于EcoStruxure开放自动化平台（EAE），实现从硬件依赖到软件驱动的范式转变</li>
-<li><strong>能效优化</strong>：通过电气化与AI深度融合，帮助企业在”双碳”目标下实现绿色转型</li>
-<li><strong>高效生产</strong>：工业AI深度嵌入生产环节，推动产线调整周期从数周缩短至数小时</li>
-<li><strong>人才赋能</strong>：借助AI助手降低自动化工程门槛，缓解行业人才短缺困境</li>
-<li><strong>安全运营</strong>：AI结合数字孪生技术，实现物理设备映射与风险预警</li>
+        <h1 id="施耐德电气软件更新：AVEVA最新动态"><a href="#施耐德电气软件更新：AVEVA最新动态" class="headerlink" title="施耐德电气软件更新：AVEVA最新动态"></a>施耐德电气软件更新：AVEVA最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在软件更新领域持续投入，AVEVA作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：AVEVA在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个软件更新相关项目采用 AVEVA，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 AVEVA 构建端到端交付能力。</li>
 </ul>
-<h2 id="工业AI：从演示到可规模化的跨越"><a href="#工业AI：从演示到可规模化的跨越" class="headerlink" title="工业AI：从演示到可规模化的跨越"></a>工业AI：从演示到可规模化的跨越</h2><p>本次展会的最大亮点，是施耐德电气将<strong>工业AI定位为效率与可持续发展的”放大器”<strong>，而非停留在概念演示层面。其中最受关注的创新成果是</strong>AI智能体（Agentic AI）在自动化工程中的应用</strong>。</p>
-<p>依托EcoStruxure开放自动化平台与微软Azure AI的深度集成，施耐德电气展示了<strong>Industrial Copilot</strong>——一款面向工程人员的工业助手。该助手支持自然语言交互，能够：</p>
-<ol>
-<li>辅助生成基础控制代码</li>
-<li>优化控制逻辑</li>
-<li>回答与项目背景匹配的技术问题</li>
-<li>在AI调度器协同下实现端到端流程追溯和实时自适应调整</li>
-</ol>
-<p>据施耐德电气透露，部分产线调整周期可由**数周缩短至数小时，工程周期最高可缩短50%**。在安全运营方面，AI结合数字孪生技术可对物理设备进行映射和风险预警，模拟运行状态、识别潜在隐患，并减少高风险作业中的人工干预。</p>
-<h2 id="中国市场：重要增长驱动力"><a href="#中国市场：重要增长驱动力" class="headerlink" title="中国市场：重要增长驱动力"></a>中国市场：重要增长驱动力</h2><p>施耐德电气高级副总裁、工业自动化行业业务负责人马克·弗罗马热（Marc Fromager）在汉诺威接受专访时明确表示：<strong>中国市场是施耐德电气的重要增长驱动力</strong>。在中国”双碳”目标背景下，施耐德电气正通过推进人工智能应用与电气化转型，助力企业低碳发展。</p>
-<p>此前，施耐德电气在无锡投资1.5亿美元建设的绿色智慧产业园已奠基，该项目位于无锡中欧产业创新区内，是中法产业合作园核心区的”压舱石”项目，充分体现了施耐德电气对中国市场的长期承诺。</p>
-<h2 id="技术启示与展望"><a href="#技术启示与展望" class="headerlink" title="技术启示与展望"></a>技术启示与展望</h2><p>施耐德电气在2026汉诺威工业展传递的核心信息十分清晰：工业AI的价值不在于概念本身，而在于<strong>可部署、可复制、可见效</strong>的实践落地。对于国内工控从业者而言，以下几点值得关注：</p>
-<ul>
-<li><strong>软件定义自动化</strong>正在重塑传统PLC+HMI的工程范式，EcoStruxure EAE平台值得深入研究</li>
-<li><strong>AI Copilot</strong>的工程辅助能力已经开始产生实际效益，工程效率提升50%是令人振奋的数据</li>
-<li><strong>数字孪生+AI</strong>在安全运营场景的应用，为高风险行业提供了新的技术保障路径</li>
-<li>施耐德电气在中国持续加码投资，其本土化方案和生态合作值得关注</li>
-</ul>
-<p>从汉诺威到无锡，施耐德电气正在用技术创新+生态协同的双引擎，驱动工业自动化迈向新阶段。对于每一位关注智能制造趋势的工程师而言，这无疑是一个值得深入跟踪的方向。</p>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，AVEVA所代表的软件更新能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 AVEVA 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/08/schneider-news-20260508-2317/" data-id="cmr67mdi002i7kcun0xy9bdlq" data-title="施耐德电气2026汉诺威工业展：工业AI从概念走向规模化落地" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/schneider-news-20260531-2208/" data-id="cmtk83ykv05mr1ounf6xaaeym" data-title="施耐德电气软件更新：AVEVA最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E4%B8%9AAI/" rel="tag">工业AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0/" rel="tag">智能制造</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B1%89%E8%AF%BA%E5%A8%81%E5%B7%A5%E4%B8%9A%E5%B1%95/" rel="tag">汉诺威工业展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AVEVA/" rel="tag">AVEVA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
@@ -773,82 +187,12 @@
 
 
 
+
   
-    <article id="post-schneider-news-20260508-2209" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-edge-tech-20260531-2008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2026/05/08/schneider-news-20260508-2209/" class="article-date">
-  <time class="dt-published" datetime="2026-05-08T14:09:00.000Z" itemprop="datePublished">2026-05-08 22:09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/08/schneider-news-20260508-2209/">驭速同行：施耐德电气携手迈凯伦驶入能源科技新赛道</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/schneider-news-202605082209.jpg" alt="施耐德电气与迈凯伦合作，共探能源科技前沿"></p>
-<p>2026年2月6日，全球能源管理与自动化领域的领军企业<strong>施耐德电气（Schneider Electric）</strong>正式宣布，成为迈凯伦车队（McLaren Racing）的<strong>能源科技官方合作伙伴</strong>，这一消息在工业界与赛车界同时引发广泛关注。从赛道到工厂，从电池管理系统到智能制造，施耐德电气正以其深厚的技术积淀，悄然重塑未来能源的应用格局。</p>
-<h2 id="赛道背后的能源博弈"><a href="#赛道背后的能源博弈" class="headerlink" title="赛道背后的能源博弈"></a>赛道背后的能源博弈</h2><p>Formula 1（世界一级方程式锦标赛）从来不只是速度的竞争，更是<strong>能源效率与技术创新的终极战场</strong>。从2022年起，F1已全面进入混合动力时代——赛车搭载的1.6升涡轮增压V6引擎配合MGU-K（动能回收系统）与MGU-H（热能回收系统），实现了性能与可持续性的深度融合。施耐德电气的加入，正是为迈凯伦车队在能源管理的”看不见的战线”上提供技术支撑。</p>
-<p>施耐德电气在能源管理领域拥有超过180年的经验积累，其EcoStruxure平台已为全球超过50万家企业提供从设备层到企业层的全栈式数字化解决方案。将这一能力延伸至顶级赛车运动，既是技术的检验场，也是品牌影响力的放大器。</p>
-<h2 id="技术核心：Power-Conversion与电池管理系统"><a href="#技术核心：Power-Conversion与电池管理系统" class="headerlink" title="技术核心：Power Conversion与电池管理系统"></a>技术核心：Power Conversion与电池管理系统</h2><p>从公开信息来看，施耐德电气为迈凯伦提供的技术方案重点聚焦于<strong>电力转换（Power Conversion）</strong>与<strong>电池管理系统（BMS）</strong>两大方向：</p>
-<ul>
-<li><p><strong>高精度功率转换</strong>：施耐德电气的功率电子技术可实现对电池组充放电过程的精细化控制，提升能量利用率，同时兼顾极端工况下的可靠性要求。F1赛车的能量回收系统需要在毫秒级时间内完成充放电切换，对功率器件的开关频率和热管理提出极高要求。</p>
-</li>
-<li><p><strong>热管理与安全监控</strong>：施耐德电气的能源管理方案融入了先进的热仿真与预测性维护算法，能够在赛车高温、高振动的恶劣环境中实时监测电池健康状态，降低热失控风险。</p>
-</li>
-</ul>
-<h2 id="对工业领域的启示：从赛道到车间"><a href="#对工业领域的启示：从赛道到车间" class="headerlink" title="对工业领域的启示：从赛道到车间"></a>对工业领域的启示：从赛道到车间</h2><p>施耐德电气与迈凯伦的合作，对工业用户同样具有深远的参考价值。赛车运动向来是技术创新的”急先锋”，许多如今广泛应用的技术——碳纤维车身、动能回收、实时数据分析——都源于赛道。</p>
-<p>这一合作传递出几个关键信号：</p>
-<ol>
-<li><p><strong>能源管理是核心竞争力</strong>：无论是赛车还是工厂，能源效率的提升直接关系到成本控制和可持续经营。施耐德电气正在将赛道验证的技术，逐步下沉至半导体、新能源、流程工业等领域。</p>
-</li>
-<li><p><strong>软件定义能源</strong>：施耐德电气的数字化平台（EcoStruxure）表明，能源管理正在从硬件驱动转向软件定义。通过数字孪生、AI预测和云边协同，企业可以实现能源系统的自我优化。</p>
-</li>
-<li><p><strong>跨界生态协同</strong>：施耐德电气近年来持续强化”朋友圈”战略，与微软、AWS、阿里云等平台深度集成，此次携手迈凯伦更凸显了其构建开放生态的意图。</p>
-</li>
-</ol>
-<h2 id="展望：能源科技的下一步"><a href="#展望：能源科技的下一步" class="headerlink" title="展望：能源科技的下一步"></a>展望：能源科技的下一步</h2><p>随着全球碳中和进程的加速推进，能源管理赛道正在迎来前所未有的发展机遇。施耐德电气此次与迈凯伦的合作，不仅是品牌营销的成功案例，更是其技术实力的实证。可以预见，类似的”高精尖跨界”将成为能源科技企业展示能力、引领行业趋势的重要路径。</p>
-<p>对于广大工业自动化从业者而言，关注施耐德电气在赛道上的技术落地，有助于提前把握能源管理领域的前沿方向——功率电子、BMS、数字孪生、预测性维护，这些技术正在从F1赛道走向千行百业的工厂车间。</p>
-<blockquote>
-<p><strong>相关阅读</strong>：<a target="_blank" rel="noopener" href="https://www.schneider-electric.cn/zh/about-us/newsroom/">施耐德电气新闻中心</a> | <a target="_blank" rel="noopener" href="https://www.schneider-electric.cn/zh/solutions/eecostruxure/">EcoStruxure平台介绍</a></p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/08/schneider-news-20260508-2209/" data-id="cmr67mdhx02i4kcun02ja0sng" data-title="驭速同行：施耐德电气携手迈凯伦驶入能源科技新赛道" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Schneider-Electric/" rel="tag">Schneider Electric</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%88%E4%BD%9C%E4%BC%99%E4%BC%B4/" rel="tag">合作伙伴</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E5%AD%97%E5%8C%96%E8%BD%AC%E5%9E%8B/" rel="tag">数字化转型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%8A%A8%E6%B1%BD%E8%BD%A6/" rel="tag">电动汽车</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%83%BD%E6%BA%90%E7%AE%A1%E7%90%86/" rel="tag">能源管理</a></li></ul>
-
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-edge-tech-20260508-2119" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/05/08/edge-tech-20260508-2119/" class="article-date">
-  <time class="dt-published" datetime="2026-05-08T13:19:00.000Z" itemprop="datePublished">2026-05-08 21:19</time>
+    <a href="/2026/05/31/edge-tech-20260531-2008/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T12:08:00.000Z" itemprop="datePublished">2026-05-31 20:08</time>
 </a>
     
   <div class="article-category">
@@ -863,7 +207,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/05/08/edge-tech-20260508-2119/">EcoStruxure开放自动化平台V24.1：边缘控制的新里程碑</a>
+      <a class="p-name article-title" href="/2026/05/31/edge-tech-20260531-2008/">边云协同在制药车间的实战应用</a>
     </h1>
   
 
@@ -871,107 +215,408 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605082117.jpg" alt="工业自动化边缘控制架构"></p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>2024年12月，施耐德电气正式发布EcoStruxure开放自动化平台V24.1版本，标志着工业边缘控制技术迈入新阶段。作为基于IEC 61499标准的开放自动化平台，EAE（EcoStruxure Automation Expert）正在重新定义工业控制系统的架构范式。</p>
-<h2 id="EcoStruxure三层架构解析"><a href="#EcoStruxure三层架构解析" class="headerlink" title="EcoStruxure三层架构解析"></a>EcoStruxure三层架构解析</h2><p>EcoStruxure平台采用经典的三层物联网架构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────┐</span><br><span class="line">│   应用、分析与服务层（云端）          │</span><br><span class="line">│   - 数据分析  - AI引擎  - 数字孪生    │</span><br><span class="line">├─────────────────────────────────────┤</span><br><span class="line">│   边缘控制层（Edge Control）         │</span><br><span class="line">│   - Modicon控制器  - Edge I/O NTS    │</span><br><span class="line">│   - 开放自动化平台 EAE               │</span><br><span class="line">├─────────────────────────────────────┤</span><br><span class="line">│   互联互通产品层（现场设备）          │</span><br><span class="line">│   - 传感器  - 执行器  - 智能设备      │</span><br><span class="line">└─────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<p><strong>边缘控制层</strong>是整个架构的核心枢纽，承担着：</p>
+        <h1 id="边云协同在制药车间的实战应用"><a href="#边云协同在制药车间的实战应用" class="headerlink" title="边云协同在制药车间的实战应用"></a>边云协同在制药车间的实战应用</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在制药车间的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。边云协同作为新一代边缘控制关键技术，为制药车间的智能化改造提供了切实可行的落地路径。</p>
+<h2 id="施耐德电气方案"><a href="#施耐德电气方案" class="headerlink" title="施耐德电气方案"></a>施耐德电气方案</h2><p>本项目采用施耐德电气 EcoStruxure 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：</p>
 <ul>
-<li>实时控制逻辑执行</li>
-<li>现场数据预处理与过滤</li>
-<li>云端通信的智能网关功能</li>
-<li>断网情况下的自治运行能力</li>
+<li>在现场层部署 EcoStruxure 作为实时控制核心，控制周期稳定维持在毫秒级；</li>
+<li>通过 OPC UA over TSN 打通 IT 与 OT 网络，消除协议壁垒；</li>
+<li>依托 EcoStruxure 平台实现全网设备的统一监控与远程运维；</li>
+<li>引入边缘算力，在本地完成数据预处理与异常研判，降低上行带宽压力。</li>
 </ul>
-<h2 id="V24-1版本核心亮点"><a href="#V24-1版本核心亮点" class="headerlink" title="V24.1版本核心亮点"></a>V24.1版本核心亮点</h2><h3 id="1-多用户协作编程调试"><a href="#1-多用户协作编程调试" class="headerlink" title="1. 多用户协作编程调试"></a>1. 多用户协作编程调试</h3><p>支持多人同时在线编辑同一项目，通过版本控制机制避免冲突：</p>
-<figure class="highlight st"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 示例：功能块版本管理</span><br><span class="line"><span class="type">FUNCTION_BLOCK</span> <span class="type">FB_MotorControl</span></span><br><span class="line"><span class="type">VERSION</span> : <span class="string">&#x27;2.1.0&#x27;</span></span><br><span class="line"><span class="type">AUTHOR</span>  : <span class="string">&#x27;Team_Automation&#x27;</span></span><br><span class="line"><span class="type">VAR_INPUT</span></span><br><span class="line">    nSpeedRef : <span class="type">INT</span>;</span><br><span class="line">    bEnable   : <span class="type">BOOL</span>;</span><br><span class="line"><span class="type">END_VAR</span></span><br><span class="line">// ... 控制逻辑</span><br><span class="line"><span class="type">END_FUNCTION_BLOCK</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-Modicon-Edge-I-O-NTS集成"><a href="#2-Modicon-Edge-I-O-NTS集成" class="headerlink" title="2. Modicon Edge I&#x2F;O NTS集成"></a>2. Modicon Edge I&#x2F;O NTS集成</h3><p>新一代分布式I&#x2F;O系统，特点包括：</p>
-<ul>
-<li><strong>高鲁棒性</strong>：工业级设计，-40°C至70°C工作温度</li>
-<li><strong>高性能</strong>：µs级响应，支持TSN时间敏感网络</li>
-<li><strong>高灵活性</strong>：模块化设计，支持热插拔配置</li>
-</ul>
-<h3 id="3-IEC-62443-3-3-SL2信息安全认证"><a href="#3-IEC-62443-3-3-SL2信息安全认证" class="headerlink" title="3. IEC 62443-3-3 SL2信息安全认证"></a>3. IEC 62443-3-3 SL2信息安全认证</h3><p>首次在边缘控制器层面实现安全等级认证，满足：</p>
-<ul>
-<li>身份认证与访问控制</li>
-<li>安全审计日志</li>
-<li>通信完整性保护</li>
-</ul>
-<h2 id="IEC-61499：开放自动化的基石"><a href="#IEC-61499：开放自动化的基石" class="headerlink" title="IEC 61499：开放自动化的基石"></a>IEC 61499：开放自动化的基石</h2><p>IEC 61499标准是EAE平台的技术基础，相比传统IEC 61131-3，核心优势在于：</p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>IEC 61131-3</th>
-<th>IEC 61499</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>架构模式</td>
-<td>集中式控制</td>
-<td>分布式控制</td>
-</tr>
-<tr>
-<td>功能块</td>
-<td>顺序执行</td>
-<td>事件驱动</td>
-</tr>
-<tr>
-<td>硬件耦合</td>
-<td>强耦合</td>
-<td>软件定义，可移植</td>
-</tr>
-<tr>
-<td>互操作性</td>
-<td>厂商锁定</td>
-<td>跨平台兼容</td>
-</tr>
-</tbody></table>
-<h3 id="功能块网络示例"><a href="#功能块网络示例" class="headerlink" title="功能块网络示例"></a>功能块网络示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">         ┌──────────────┐</span><br><span class="line">SENSOR ──►│   FB_Filter  │──┐</span><br><span class="line">         └──────────────┘  │</span><br><span class="line">                           ▼</span><br><span class="line">         ┌──────────────┐  ┌──────────────┐</span><br><span class="line">         │  FB_Process  │──►│   FB_Actuator│──► 执行器</span><br><span class="line">         └──────────────┘  └──────────────┘</span><br><span class="line">                ▲</span><br><span class="line">                │</span><br><span class="line">         ┌──────────────┐</span><br><span class="line">         │   FB_Safety  │</span><br><span class="line">         └──────────────┘</span><br></pre></td></tr></table></figure>
-
-<h2 id="实战应用场景"><a href="#实战应用场景" class="headerlink" title="实战应用场景"></a>实战应用场景</h2><h3 id="智能水务项目"><a href="#智能水务项目" class="headerlink" title="智能水务项目"></a>智能水务项目</h3><p>某自来水厂采用EcoStruxure开放自动化平台，实现：</p>
-<ul>
-<li>加药过程自动优化（AI边缘推理）</li>
-<li>泵站远程监控与预测维护</li>
-<li>能耗降低15%，运维效率提升30%</li>
-</ul>
-<h3 id="数据中心电力管理"><a href="#数据中心电力管理" class="headerlink" title="数据中心电力管理"></a>数据中心电力管理</h3><p>结合EcoStruxure Energy Operation系统：</p>
-<ul>
-<li>中低压配电实时监控</li>
-<li>微网新能源接入管理</li>
-<li>PUE值优化控制</li>
-</ul>
-<h2 id="开发者实践建议"><a href="#开发者实践建议" class="headerlink" title="开发者实践建议"></a>开发者实践建议</h2><ol>
-<li><strong>从仿真开始</strong>：EAE提供完整仿真环境，无需硬件即可验证逻辑</li>
-<li><strong>模块化设计</strong>：善用功能块封装，提升代码复用性</li>
-<li><strong>版本管理</strong>：利用Git集成，做好项目版本控制</li>
-<li><strong>安全优先</strong>：从设计阶段就考虑IEC 62443安全要求</li>
-</ol>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>EcoStruxure开放自动化平台V24.1的发布，不仅是版本迭代，更是工业控制范式转变的缩影。边缘控制正在从”设备控制器”演进为”智能边缘节点”，软件定义自动化的时代已经到来。</p>
-<p>对于工控工程师而言，掌握IEC 61499、理解边缘计算架构，将成为未来核心竞争力。开放自动化的大门已经打开，你准备好了吗？</p>
-<hr>
-<p><strong>参考资料</strong></p>
-<ul>
-<li>施耐德电气EcoStruxure官方文档</li>
-<li>IEC 61499 Function Blocks for Embedded Systems</li>
-<li>《开放自动化：从概念到实践》施耐德白皮书</li>
-</ul>
+<h2 id="应用成效"><a href="#应用成效" class="headerlink" title="应用成效"></a>应用成效</h2><p>改造后，制药车间的整体运营指标显著改善：设备综合效率（OEE）提升明显，非计划停机次数下降，运维人员可通过统一门户掌握全域状态。该方案已在多个同类场景中复制推广，验证了边云协同在制药车间的适配性与稳定性。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/08/edge-tech-20260508-2119/" data-id="cmr67mcuu00rmkcun70wkdb1p" data-title="EcoStruxure开放自动化平台V24.1：边缘控制的新里程碑" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/edge-tech-20260531-2008/" data-id="cmtk83tml02tb1ounawt52126" data-title="边云协同在制药车间的实战应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EcoStruxure/" rel="tag">EcoStruxure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC61499/" rel="tag">IEC61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%80%E6%94%BE%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">开放自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E4%BA%91%E5%8D%8F%E5%90%8C/" rel="tag">边云协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
 </article>
+
+
+
+
+  
+    <article id="post-schneider-news-20260531-2008" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/schneider-news-20260531-2008/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T12:08:00.000Z" itemprop="datePublished">2026-05-31 20:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/schneider-news-20260531-2008/">施耐德电气软件更新：Foxboro SDA最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气软件更新：Foxboro-SDA最新动态"><a href="#施耐德电气软件更新：Foxboro-SDA最新动态" class="headerlink" title="施耐德电气软件更新：Foxboro SDA最新动态"></a>施耐德电气软件更新：Foxboro SDA最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在软件更新领域持续投入，Foxboro SDA作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Foxboro SDA在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个软件更新相关项目采用 Foxboro SDA，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Foxboro SDA 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Foxboro SDA所代表的软件更新能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Foxboro SDA 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/schneider-news-20260531-2008/" data-id="cmtk83ykq05mo1oun1pmuhozu" data-title="施耐德电气软件更新：Foxboro SDA最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Foxboro-SDA/" rel="tag">Foxboro SDA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20260531-1808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/edge-tech-20260531-1808/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T10:08:00.000Z" itemprop="datePublished">2026-05-31 18:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/edge-tech-20260531-1808/">边云协同编程指南：水泥厂场景</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="边云协同编程指南：水泥厂场景实战"><a href="#边云协同编程指南：水泥厂场景实战" class="headerlink" title="边云协同编程指南：水泥厂场景实战"></a>边云协同编程指南：水泥厂场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 EcoStruxure，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 边云协同 — 水泥厂场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
+<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
+<li>通过强制（Force）与赋值快速验证边界条件；</li>
+<li>在 水泥厂 实际负载下标定 PID 参数，确保动态品质。</li>
+</ul>
+<p>掌握上述方法后，可将该模式复用到其他 边云协同 相关控制任务中，显著提升水泥厂的编程效率与可维护性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/edge-tech-20260531-1808/" data-id="cmtk83tmo02te1oune5l19eul" data-title="边云协同编程指南：水泥厂场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E4%BA%91%E5%8D%8F%E5%90%8C/" rel="tag">边云协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20260531-1808" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/schneider-news-20260531-1808/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T10:08:00.000Z" itemprop="datePublished">2026-05-31 18:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/schneider-news-20260531-1808/">施耐德电气软件更新：Industrial Copilot最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气软件更新：Industrial-Copilot最新动态"><a href="#施耐德电气软件更新：Industrial-Copilot最新动态" class="headerlink" title="施耐德电气软件更新：Industrial Copilot最新动态"></a>施耐德电气软件更新：Industrial Copilot最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在软件更新领域持续投入，Industrial Copilot作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Industrial Copilot在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个软件更新相关项目采用 Industrial Copilot，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Industrial Copilot 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Industrial Copilot所代表的软件更新能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Industrial Copilot 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/schneider-news-20260531-1808/" data-id="cmtk83ykl05ml1oun8bb29uwk" data-title="施耐德电气软件更新：Industrial Copilot最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Industrial-Copilot/" rel="tag">Industrial Copilot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20260531-1608" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/edge-tech-20260531-1608/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T08:08:00.000Z" itemprop="datePublished">2026-05-31 16:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/edge-tech-20260531-1608/">边云协同深度解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="边云协同深度解析与工程实践"><a href="#边云协同深度解析与工程实践" class="headerlink" title="边云协同深度解析与工程实践"></a>边云协同深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>边云协同的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
+</ul>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 EcoStruxure 原生支持边云协同，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/edge-tech-20260531-1608/" data-id="cmtk83tme02t51oun7w9c7dr9" data-title="边云协同深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E4%BA%91%E5%8D%8F%E5%90%8C/" rel="tag">边云协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20260531-1608" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/schneider-news-20260531-1608/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T08:08:00.000Z" itemprop="datePublished">2026-05-31 16:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/schneider-news-20260531-1608/">施耐德电气软件更新：Machine Expert最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气软件更新：Machine-Expert最新动态"><a href="#施耐德电气软件更新：Machine-Expert最新动态" class="headerlink" title="施耐德电气软件更新：Machine Expert最新动态"></a>施耐德电气软件更新：Machine Expert最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在软件更新领域持续投入，Machine Expert作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Machine Expert在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个软件更新相关项目采用 Machine Expert，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Machine Expert 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Machine Expert所代表的软件更新能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Machine Expert 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/schneider-news-20260531-1608/" data-id="cmtk83ykb05mi1oundll0433h" data-title="施耐德电气软件更新：Machine Expert最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Machine-Expert/" rel="tag">Machine Expert</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-edge-tech-20260531-1408" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/edge-tech-20260531-1408/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T06:08:00.000Z" itemprop="datePublished">2026-05-31 14:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/edge-tech-20260531-1408/">边云协同在水泥厂的实战应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="边云协同在水泥厂的实战应用"><a href="#边云协同在水泥厂的实战应用" class="headerlink" title="边云协同在水泥厂的实战应用"></a>边云协同在水泥厂的实战应用</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在水泥厂的自动化升级过程中，传统集中式控制架构逐渐暴露出响应延迟高、运维分散、数据孤岛等痛点。边云协同作为新一代边缘控制关键技术，为水泥厂的智能化改造提供了切实可行的落地路径。</p>
+<h2 id="施耐德电气方案"><a href="#施耐德电气方案" class="headerlink" title="施耐德电气方案"></a>施耐德电气方案</h2><p>本项目采用施耐德电气 EcoStruxure 构建边缘控制节点，结合 EcoStruxure 开放自动化平台，实现了以下能力：</p>
+<ul>
+<li>在现场层部署 EcoStruxure 作为实时控制核心，控制周期稳定维持在毫秒级；</li>
+<li>通过 OPC UA over TSN 打通 IT 与 OT 网络，消除协议壁垒；</li>
+<li>依托 EcoStruxure 平台实现全网设备的统一监控与远程运维；</li>
+<li>引入边缘算力，在本地完成数据预处理与异常研判，降低上行带宽压力。</li>
+</ul>
+<h2 id="应用成效"><a href="#应用成效" class="headerlink" title="应用成效"></a>应用成效</h2><p>改造后，水泥厂的整体运营指标显著改善：设备综合效率（OEE）提升明显，非计划停机次数下降，运维人员可通过统一门户掌握全域状态。该方案已在多个同类场景中复制推广，验证了边云协同在水泥厂的适配性与稳定性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/edge-tech-20260531-1408/" data-id="cmtk83tmh02t81oun9n45f06m" data-title="边云协同在水泥厂的实战应用" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E4%BA%91%E5%8D%8F%E5%90%8C/" rel="tag">边云协同</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
+
+
+
+  
+    <article id="post-schneider-news-20260531-1408" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/31/schneider-news-20260531-1408/" class="article-date">
+  <time class="dt-published" datetime="2026-05-31T06:08:00.000Z" itemprop="datePublished">2026-05-31 14:08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%A1%8C%E4%B8%9A%E5%8A%A8%E6%80%81/">行业动态</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/31/schneider-news-20260531-1408/">施耐德电气软件更新：Modicon最新动态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="施耐德电气软件更新：Modicon最新动态"><a href="#施耐德电气软件更新：Modicon最新动态" class="headerlink" title="施耐德电气软件更新：Modicon最新动态"></a>施耐德电气软件更新：Modicon最新动态</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>施耐德电气在软件更新领域持续投入，Modicon作为其面向工业自动化与能源管理的核心产品之一，近期在技术研发与项目落地两端均有新进展。</p>
+<h2 id="关键进展"><a href="#关键进展" class="headerlink" title="关键进展"></a>关键进展</h2><ul>
+<li><strong>产品迭代</strong>：Modicon在性能、集成度与开放性方面进一步升级，更好地适配边缘控制架构；</li>
+<li><strong>项目落地</strong>：西北及华北地区多个软件更新相关项目采用 Modicon，覆盖矿山、水务、化工与新能源等场景；</li>
+<li><strong>生态合作</strong>：施耐德电气携手系统集成商与行业伙伴，围绕 Modicon 构建端到端交付能力。</li>
+</ul>
+<h2 id="行业影响"><a href="#行业影响" class="headerlink" title="行业影响"></a>行业影响</h2><p>在双碳目标与新型工业体系建设背景下，Modicon所代表的软件更新能力，正成为企业数字化转型的重要支撑。施耐德电气通过 EcoStruxure 开放平台，将 Modicon 与上层分析与运维服务打通，为客户创造可量化的运营价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/05/31/schneider-news-20260531-1408/" data-id="cmtk83yk205mf1oun6j1kegci" data-title="施耐德电气软件更新：Modicon最新动态" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Modicon/" rel="tag">Modicon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7%E7%94%B5%E6%B0%94/" rel="tag">施耐德电气</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+</article>
+
 
 
 
@@ -980,7 +625,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/151/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/150/">150</a><a class="page-number" href="/page/151/">151</a><span class="page-number current">152</span><a class="page-number" href="/page/153/">153</a><a class="page-number" href="/page/154/">154</a><span class="space">&hellip;</span><a class="page-number" href="/page/169/">169</a><a class="extend next" rel="next" href="/page/153/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/151/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/150/">150</a><a class="page-number" href="/page/151/">151</a><span class="page-number current">152</span><a class="page-number" href="/page/153/">153</a><a class="page-number" href="/page/154/">154</a><span class="space">&hellip;</span><a class="page-number" href="/page/977/">977</a><a class="extend next" rel="next" href="/page/153/">下一页 &raquo;</a>
   </nav>
 
 </section>
@@ -994,83 +639,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>

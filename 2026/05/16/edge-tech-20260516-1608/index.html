@@ -4,26 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>边缘设备上的AI推理优化实战指南 | Schneider 技术分享</title>
+  <title>5G专网深度解析 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="边缘设备上的AI推理优化实战指南随着深度学习模型在各行业的广泛应用，将AI推理能力下沉到边缘设备已成为重要趋势。本文深入探讨在资源受限的边缘硬件上高效部署和运行神经网络模型的核心技术，包括模型量化、知识蒸馏、架构优化等关键方法，并提供实际代码示例帮助工程师实现边缘AI落地。 边缘AI推理的挑战与机遇边缘设备通常具有有限的计算能力、内存和功耗预算，这在部署大型深度学习模型时构成严峻挑战。以典型的工">
+  <meta name="description" content="5G专网深度解析与工程实践技术原理5G专网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。 关键特性 确定性与实时性：通过时间敏感网络保障关键数据的传输时效； 互操作性：基于开放标准，兼容多厂商设备； 可重构性：控制功能以软件形式封装，支持按需编排； 信息融合：原生打通控制层与信息层数据。  施耐德电气的实现施耐德电">
 <meta property="og:type" content="article">
-<meta property="og:title" content="边缘设备上的AI推理优化实战指南">
+<meta property="og:title" content="5G专网深度解析">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2026/05/16/edge-tech-20260516-1608/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="边缘设备上的AI推理优化实战指南随着深度学习模型在各行业的广泛应用，将AI推理能力下沉到边缘设备已成为重要趋势。本文深入探讨在资源受限的边缘硬件上高效部署和运行神经网络模型的核心技术，包括模型量化、知识蒸馏、架构优化等关键方法，并提供实际代码示例帮助工程师实现边缘AI落地。 边缘AI推理的挑战与机遇边缘设备通常具有有限的计算能力、内存和功耗预算，这在部署大型深度学习模型时构成严峻挑战。以典型的工">
+<meta property="og:description" content="5G专网深度解析与工程实践技术原理5G专网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。 关键特性 确定性与实时性：通过时间敏感网络保障关键数据的传输时效； 互操作性：基于开放标准，兼容多厂商设备； 可重构性：控制功能以软件形式封装，支持按需编排； 信息融合：原生打通控制层与信息层数据。  施耐德电气的实现施耐德电">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605161608.jpg">
 <meta property="article:published_time" content="2026-05-16T08:08:00.000Z">
-<meta property="article:modified_time" content="2026-05-21T00:15:35.959Z">
+<meta property="article:modified_time" content="2026-09-02T15:00:15.221Z">
 <meta property="article:author" content="Schneider Wang">
-<meta property="article:tag" content="边缘计算">
-<meta property="article:tag" content="施耐德">
-<meta property="article:tag" content="AI推理">
-<meta property="article:tag" content="TensorFlow Lite">
-<meta property="article:tag" content="神经网络">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="5G专网">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202605161608.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
   
@@ -105,7 +100,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      边缘设备上的AI推理优化实战指南
+      5G专网深度解析
     </h1>
   
 
@@ -113,81 +108,37 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><img src="/images/edge-tech-202605161608.jpg" alt="边缘控制技术"></p>
-<h1 id="边缘设备上的AI推理优化实战指南"><a href="#边缘设备上的AI推理优化实战指南" class="headerlink" title="边缘设备上的AI推理优化实战指南"></a>边缘设备上的AI推理优化实战指南</h1><p>随着深度学习模型在各行业的广泛应用，将AI推理能力下沉到边缘设备已成为重要趋势。本文深入探讨在资源受限的边缘硬件上高效部署和运行神经网络模型的核心技术，包括模型量化、知识蒸馏、架构优化等关键方法，并提供实际代码示例帮助工程师实现边缘AI落地。</p>
-<h2 id="边缘AI推理的挑战与机遇"><a href="#边缘AI推理的挑战与机遇" class="headerlink" title="边缘AI推理的挑战与机遇"></a>边缘AI推理的挑战与机遇</h2><p>边缘设备通常具有有限的计算能力、内存和功耗预算，这在部署大型深度学习模型时构成严峻挑战。以典型的工业边缘网关为例，其CPU多为ARM Cortex-A系列，主频1-2GHz，内存1-4GB，存储空间有限。在此硬件基础上运行复杂的图像分类或目标检测模型，如果不进行优化，几乎是不可能的。</p>
-<p>然而，边缘AI推理也带来独特优势。首先是隐私保护，数据无需离开设备，解决了敏感数据传输的合规问题；其次是低延迟，边缘推理延迟通常在毫秒级，满足实时控制需求；第三是可靠性，即使网络中断，本地AI能力仍能维持关键功能。</p>
-<h2 id="模型量化技术深度解析"><a href="#模型量化技术深度解析" class="headerlink" title="模型量化技术深度解析"></a>模型量化技术深度解析</h2><h3 id="INT8量化原理与实现"><a href="#INT8量化原理与实现" class="headerlink" title="INT8量化原理与实现"></a>INT8量化原理与实现</h3><p>模型量化是将浮点参数转换为低精度整数表示的过程，最常见的是将FP32转换为INT8。量化后的模型体积缩小75%，推理速度提升2-4倍，同时推理精度损失通常控制在1%以内。以下是基于TensorFlow Lite的INT8量化示例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">representative_dataset_gen</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;生成代表性数据集用于校准&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        <span class="comment"># 假设输入形状为(1, 224, 224, 3)</span></span><br><span class="line">        sample = tf.random.normal([<span class="number">1</span>, <span class="number">224</span>, <span class="number">224</span>, <span class="number">3</span>])</span><br><span class="line">        <span class="keyword">yield</span> [sample.numpy()]</span><br><span class="line"></span><br><span class="line">converter = tf.lite.TFLiteConverter.from_keras_model(model)</span><br><span class="line">converter.optimizations = [tf.lite.Optimize.DEFAULT]</span><br><span class="line">converter.representative_dataset = representative_dataset_gen</span><br><span class="line">converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]</span><br><span class="line">converter.inference_input_type = tf.int8</span><br><span class="line">converter.inference_output_type = tf.int8</span><br><span class="line"></span><br><span class="line">quantized_model = converter.convert()</span><br><span class="line"><span class="built_in">open</span>(<span class="string">&quot;quantized_model.tflite&quot;</span>, <span class="string">&quot;wb&quot;</span>).write(quantized_model)</span><br></pre></td></tr></table></figure>
-
-<h3 id="动态范围量化"><a href="#动态范围量化" class="headerlink" title="动态范围量化"></a>动态范围量化</h3><p>对于无法获取校准数据的场景，动态范围量化是更简单的选择。它自动确定量化参数，但精度略低于全整数量化：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">converter = tf.lite.TFLiteConverter.from_keras_model(model)</span><br><span class="line">converter.optimizations = [tf.lite.Optimize.DEFAULT]</span><br><span class="line">quantized_model = converter.convert()</span><br></pre></td></tr></table></figure>
-
-<h2 id="模型剪枝方法论"><a href="#模型剪枝方法论" class="headerlink" title="模型剪枝方法论"></a>模型剪枝方法论</h2><h3 id="结构化剪枝vs非结构化剪枝"><a href="#结构化剪枝vs非结构化剪枝" class="headerlink" title="结构化剪枝vs非结构化剪枝"></a>结构化剪枝vs非结构化剪枝</h3><p>非结构化剪枝将单个参数置零，创建稀疏矩阵，需要特殊的稀疏计算库支持。结构化剪枝则移除整个神经元、通道或滤波器，可以直接在标准推理框架上加速。以下是使用TensorFlow Model Optimization Toolkit进行结构化通道剪枝的实现：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow_model_optimization <span class="keyword">as</span> tfmot</span><br><span class="line"></span><br><span class="line">pruning_params = &#123;</span><br><span class="line">    <span class="string">&#x27;pruning_schedule&#x27;</span>: tfmot.schedules.PolynomialDecay(</span><br><span class="line">        initial_sparsity=<span class="number">0.0</span>,</span><br><span class="line">        end_sparsity=<span class="number">0.5</span>,</span><br><span class="line">        begin_step=<span class="number">0</span>,</span><br><span class="line">        end_step=<span class="number">1000</span></span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">model_for_pruning = tfmot.sparsity.keras.prune_low_magnitude(</span><br><span class="line">    model, **pruning_params</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">model_for_pruning.<span class="built_in">compile</span>(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[<span class="string">&#x27;accuracy&#x27;</span>]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">model_for_pruning.fit(</span><br><span class="line">    train_dataset,</span><br><span class="line">    epochs=<span class="number">10</span>,</span><br><span class="line">    callbacks=[tfmot.sparsity.keras.UpdatePruningStep()]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">final_model = tfmot.sparsity.keras.strip_pruning(model_for_pruning)</span><br></pre></td></tr></table></figure>
-
-<h2 id="知识蒸馏在边缘部署中的应用"><a href="#知识蒸馏在边缘部署中的应用" class="headerlink" title="知识蒸馏在边缘部署中的应用"></a>知识蒸馏在边缘部署中的应用</h2><p>知识蒸馏让小模型学习大模型的“暗知识”，显著提升小模型的表达能力。教师模型通常是云端的高精度模型，学生模型则是边缘部署的小型网络。关键的蒸馏损失函数设计如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DistillationLoss</span>(tf.keras.Model):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, alpha=<span class="number">0.1</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.alpha = alpha</span><br><span class="line">        <span class="variable language_">self</span>.kd_loss = tf.keras.losses.KLDivergence()</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">self, student_logits, teacher_logits, labels</span>):</span><br><span class="line">        hard_loss = tf.keras.losses.categorical_crossentropy(</span><br><span class="line">            y_true=labels, </span><br><span class="line">            y_pred=student_logits</span><br><span class="line">        )</span><br><span class="line">        soft_loss = <span class="variable language_">self</span>.kd_loss(</span><br><span class="line">            y_true=tf.nn.softmax(teacher_logits / <span class="number">3.0</span>),</span><br><span class="line">            y_pred=tf.nn.softmax(student_logits / <span class="number">3.0</span>)</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.alpha * hard_loss + (<span class="number">1</span> - <span class="variable language_">self</span>.alpha) * soft_loss</span><br></pre></td></tr></table></figure>
-
-<h2 id="工业场景应用案例"><a href="#工业场景应用案例" class="headerlink" title="工业场景应用案例"></a>工业场景应用案例</h2><h3 id="施耐德电气边缘AI解决方案"><a href="#施耐德电气边缘AI解决方案" class="headerlink" title="施耐德电气边缘AI解决方案"></a>施耐德电气边缘AI解决方案</h3><p>施耐德电气在其EcoStruxure边缘控制解决方案中，提供了完整的边缘AI推理框架。该平台支持主流AI框架导出的模型，支持INT8量化、剪枝等优化技术，并与Modicon PLC无缝集成。在某智慧工厂的实际部署中，通过模型优化将 inference 时间从120ms降低到15ms，成功实现了生产线上的实时缺陷检测。</p>
-<h3 id="边缘AI性能基准测试"><a href="#边缘AI性能基准测试" class="headerlink" title="边缘AI性能基准测试"></a>边缘AI性能基准测试</h3><p>以下是不同优化策略在树莓派4B上的性能对比数据：</p>
-<table>
-<thead>
-<tr>
-<th>优化策略</th>
-<th>模型大小</th>
-<th>推理延迟</th>
-<th>Top-1精度</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>原始FP32</td>
-<td>25MB</td>
-<td>450ms</td>
-<td>92.1%</td>
-</tr>
-<tr>
-<td>INT8量化</td>
-<td>6.2MB</td>
-<td>85ms</td>
-<td>91.5%</td>
-</tr>
-<tr>
-<td>量化+剪枝</td>
-<td>4.8MB</td>
-<td>65ms</td>
-<td>90.8%</td>
-</tr>
-<tr>
-<td>量化+剪枝+蒸馏</td>
-<td>4.8MB</td>
-<td>65ms</td>
-<td>91.2%</td>
-</tr>
-</tbody></table>
-<h2 id="总结与建议"><a href="#总结与建议" class="headerlink" title="总结与建议"></a>总结与建议</h2><p>边缘AI推理优化是一个系统工程，需要根据具体硬件选择合适的优化组合。建议首先进行INT8量化，这是投入产出比最高的优化手段；对于更严格的资源限制场景，可叠加剪枝；最后考虑知识蒸馏提升精度。未来，随着专用AI加速器的普及，边缘AI的性能和易用性将进一步提升。</p>
+        <h1 id="5G专网深度解析与工程实践"><a href="#5G专网深度解析与工程实践" class="headerlink" title="5G专网深度解析与工程实践"></a>5G专网深度解析与工程实践</h1><h2 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h2><p>5G专网的核心价值在于打破传统自动化的刚性边界。它采用事件驱动与分布式架构，使控制逻辑能够跨越物理控制器边界灵活部署，从而更贴近现场设备。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><ul>
+<li>确定性与实时性：通过时间敏感网络保障关键数据的传输时效；</li>
+<li>互操作性：基于开放标准，兼容多厂商设备；</li>
+<li>可重构性：控制功能以软件形式封装，支持按需编排；</li>
+<li>信息融合：原生打通控制层与信息层数据。</li>
+</ul>
+<h2 id="施耐德电气的实现"><a href="#施耐德电气的实现" class="headerlink" title="施耐德电气的实现"></a>施耐德电气的实现</h2><p>施耐德电气 Industrial Edge 原生支持5G专网，配合 EcoStruxure 架构，可在同一工程环境中完成从设备建模、逻辑编排到部署调试的全流程。工程实践表明，该技术特别适合多产线、多工艺段的复杂场景。</p>
+<h2 id="部署建议"><a href="#部署建议" class="headerlink" title="部署建议"></a>部署建议</h2><p>建议采用”试点—推广”的分步策略，先在单条产线验证价值，再逐步扩展到全厂级边缘控制体系。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2026/05/16/edge-tech-20260516-1608/" data-id="cmr67mcw200wykcunc87n1hxn" data-title="边缘设备上的AI推理优化实战指南" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2026/05/16/edge-tech-20260516-1608/" data-id="cmtk83tac02j71ounc3fy0tte" data-title="5G专网深度解析" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI%E6%8E%A8%E7%90%86/" rel="tag">AI推理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TensorFlow-Lite/" rel="tag">TensorFlow Lite</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%BD%E8%80%90%E5%BE%B7/" rel="tag">施耐德</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/" rel="tag">边缘计算</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/5G%E4%B8%93%E7%BD%91/" rel="tag">5G专网</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
-      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">阅读量:<span id="busuanzi_value_page_pv">-</span></span>
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2026/05/16/schneider-news-20260516-1710/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2026/05/16/schneider-news-20260516-1808/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          施耐德电气公布2026年中国市场增长战略
+          施耐德电气零碳能源：Industrial Copilot最新动态
         
       </div>
     </a>
@@ -195,13 +146,14 @@
   
     <a href="/2026/05/16/schneider-news-20260516-1608/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">施耐德电气：Modicon M262控制器全新升级发布</div>
+      <div class="article-nav-title">施耐德电气零碳能源：Machine Expert最新动态</div>
     </a>
   
 </nav>
 
   
 </article>
+
 
 
 </section>
@@ -215,83 +167,83 @@
       <ul>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2324/">施耐德电气 SNEC 2026 重磅发布：全域保护体系引领储能安全新标准</a>
+            <a href="/2026/09/02/2026-09-02-northwest-edge-control-technology/">边缘控制技术如何重塑西北工业自动化格局</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2324/">从IEC 61131-3到IEC 61499：软件定义自动化如何重塑边缘控制</a>
+            <a href="/2026/09/02/schneider-news-20260902-2238/">施耐德电气2026技术前沿：软件定义自动化与AI驱动工业新未来</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-control-20260711/">边缘控制技术在西北工业自动化中的应用与前景</a>
+            <a href="/2026/09/02/edge-tech-202609022237/">从OPC UA over TSN到IEC 61499：工业边缘控制迎来确定性互联新时代</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2232/">从概念到规模化落地：施耐德电气工业AI加速驶入深水区</a>
+            <a href="/2026/09/02/edge-tech-20260902-2208/">解读边缘 AI 与预测性维护：新疆准东矿山选厂工业场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2230/">IEC 61499 + EAE：开放自动化时代的边缘控制编程范式革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2208/">对话未来：新疆准东矿山选厂的自动化人才与生态建设</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2208/">边缘控制守护算力底座：2026年7月11日数据中心基础设施的智能运维</a>
+            <a href="/2026/09/02/schneider-news-20260902-2112/">施耐德电气重磅发布：全球首款开放软件定义DCS系统，引领工业自动化新纪元</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2208/">洞察发布：2026年7月11日施耐德电气解读工业数字化新趋势</a>
+            <a href="/2026/09/02/edge-tech-20260902-2108/">OPC UA + TSN：工业边缘通信的&#34;黄金搭档&#34;如何重塑未来工厂</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/2026-07-11-northwest-edge-control-technology/">西北工业自动化新浪潮：边缘控制技术如何重塑能源与制造</a>
+            <a href="/2026/09/02/edge-tech-20260902-2008/">解构青海格尔木数据中心项目：Modicon M262边缘控制的关键配置</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2159/">从IEC 61131-3到IEC 61499：边缘控制时代的分布式架构革命</a>
+            <a href="/2026/09/02/schneider-news-20260902-2008/">减碳路线图：施耐德电气青海格尔木数据中心场景的绿色升级</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/northwest-shanxi-datacenter-opportunities-2026/">西北与山西数据中心业务机会观察：算力西移加速，绿电直供成新风口</a>
+            <a href="/2026/09/02/edge-tech-20260902-1808/">编程技巧：在Harmony iPC 边缘工控机上实现报警管理：防抖与延迟确认（青海海西水务水厂项目）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2158/">施耐德电气亮剑2026汉诺威：软件定义+AI，工业自动化进入&#34;可规模化落地&#34;时代</a>
+            <a href="/2026/09/02/schneider-news-20260902-1808/">Blokset 低压成套开关设备在青海海西水务水厂的项目实践：可靠性是关键</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-2008/">5G+边缘控制：2026年7月11日破解西北矿山与油田的无线化难题</a>
+            <a href="/2026/09/02/edge-tech-20260902-1608/">从概念到落地：数字孪生与虚拟调试的技术解析（甘肃张掖煤化工装置场景）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-2008/">深耕西北：2026年7月11日施耐德电气加码能源与工控市场</a>
+            <a href="/2026/09/02/schneider-news-20260902-1608/">资产绩效管理的工程化落地：甘肃张掖区域软件实践观察</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1808/">数字孪生落地关键：2026年7月11日边缘控制打通虚实闭环</a>
+            <a href="/2026/09/02/edge-tech-20260902-1408/">内蒙古鄂尔多斯天然气处理厂智能化改造：Modicon M262边缘控制实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1808/">能源即服务：2026年7月11日施耐德电气的能源管理全景方案</a>
+            <a href="/2026/09/02/schneider-news-20260902-1408/">中国国际进口博览会现场侧记：从设备到系统的安全防护的内蒙古鄂尔多斯客户关注度</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1608/">智能配电遇见边缘控制：2026年7月11日能源与自动化的深度融合</a>
+            <a href="/2026/09/02/edge-tech-20260902-1208/">报警管理：防抖与延迟确认的调试复盘：Harmony iPC 边缘工控机与油田站场场景的碰撞（新疆准东）</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1608/">软件与AI双轮驱动：2026年7月11日施耐德电气重塑工业智能</a>
+            <a href="/2026/09/02/schneider-news-20260902-1208/">天然气处理厂的数字化之路：施耐德电气的新疆准东实践</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1408/">算力下沉：2026年7月11日边缘计算如何重塑PLC与DCS控制架构</a>
+            <a href="/2026/09/02/edge-tech-20260902-1008/">OPC UA over TSN 实时确定性通信的落地观察：青海格尔木光伏电站场景的适配与演进</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/schneider-news-20260711-1408/">生态共赢：2026年7月11日施耐德电气携手伙伴加速行业落地</a>
+            <a href="/2026/09/02/schneider-news-20260902-1008/">ATV930 重载变频器应用解析：青海格尔木光伏电站的节能改造路径</a>
           </li>
         
           <li>
-            <a href="/2026/07/11/edge-tech-20260711-1208/">IEC 61499与开放自动化：2026年7月11日施耐德引领控制软件解耦</a>
+            <a href="/2026/09/02/edge-tech-20260902-0808/">Modicon M262在青海海西风电场的控制应用与实施解析</a>
           </li>
         
       </ul>
