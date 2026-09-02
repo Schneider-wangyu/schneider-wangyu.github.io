@@ -4,20 +4,22 @@
   <meta charset="utf-8">
   
   
-  <title>边缘AI编程指南：光伏电站场景 | Schneider 技术分享</title>
+  <title>IEC 61499功能块在边缘控制器中的分布式部署 | Schneider 技术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="边缘AI编程指南：光伏电站场景实战开发环境本示例基于施耐德电气 Modicon M580，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 边缘AI — 光伏电站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_">
+  <meta name="description" content="IEC 61499标准定义了基于事件驱动的功能块分布式架构，相比传统的IEC 61131-3周期扫描模式，在边缘计算场景下具有明显优势。施耐德EcoStruxure Automation Expert平台支持IEC 61499编程，使得控制逻辑可以灵活部署在边缘控制器、云端或混合架构中。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="边缘AI编程指南：光伏电站场景">
+<meta property="og:title" content="IEC 61499功能块在边缘控制器中的分布式部署">
 <meta property="og:url" content="https://schneider-wangyu.github.io/2025/10/07/edge-tech-20251007-1208/index.html">
 <meta property="og:site_name" content="Schneider 技术分享">
-<meta property="og:description" content="边缘AI编程指南：光伏电站场景实战开发环境本示例基于施耐德电气 Modicon M580，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。 核心代码12345678910111213141516171819202122&#x2F;&#x2F; 边缘AI — 光伏电站场景示例FUNCTION_BLOCK FB_EdgeCtrlVAR_">
+<meta property="og:description" content="IEC 61499标准定义了基于事件驱动的功能块分布式架构，相比传统的IEC 61131-3周期扫描模式，在边缘计算场景下具有明显优势。施耐德EcoStruxure Automation Expert平台支持IEC 61499编程，使得控制逻辑可以灵活部署在边缘控制器、云端或混合架构中。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-10-07T04:08:00.000Z">
-<meta property="article:modified_time" content="2026-09-02T15:14:18.782Z">
+<meta property="article:published_time" content="2025-10-07T00:08:08.000Z">
+<meta property="article:modified_time" content="2026-09-02T16:53:36.585Z">
 <meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="IEC 61499">
+<meta property="article:tag" content="功能块">
 <meta property="article:tag" content="边缘控制">
-<meta property="article:tag" content="边缘AI">
+<meta property="article:tag" content="分布式">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
@@ -85,7 +87,7 @@
         <section id="main"><article id="post-edge-tech-20251007-1208" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/10/07/edge-tech-20251007-1208/" class="article-date">
-  <time class="dt-published" datetime="2025-10-07T04:08:00.000Z" itemprop="datePublished">2025-10-07 12:08</time>
+  <time class="dt-published" datetime="2025-10-07T00:08:08.000Z" itemprop="datePublished">2025-10-07 08:08</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +102,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      边缘AI编程指南：光伏电站场景
+      IEC 61499功能块在边缘控制器中的分布式部署
     </h1>
   
 
@@ -108,24 +110,16 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="边缘AI编程指南：光伏电站场景实战"><a href="#边缘AI编程指南：光伏电站场景实战" class="headerlink" title="边缘AI编程指南：光伏电站场景实战"></a>边缘AI编程指南：光伏电站场景实战</h1><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>本示例基于施耐德电气 Modicon M580，使用 EcoStruxure Machine Expert（原 Unity Pro）进行应用开发，遵循 IEC 61131-3 标准。</p>
-<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 边缘AI — 光伏电站场景示例</span><br><span class="line">FUNCTION_BLOCK FB_EdgeCtrl</span><br><span class="line">VAR_INPUT</span><br><span class="line">    bEnable   : BOOL;   // 使能信号</span><br><span class="line">    rSetpoint : REAL;   // 设定值</span><br><span class="line">END_VAR</span><br><span class="line">VAR_OUTPUT</span><br><span class="line">    bBusy  : BOOL;      // 运行中</span><br><span class="line">    bDone  : BOOL;      // 完成</span><br><span class="line">    rOutput: REAL;      // 输出</span><br><span class="line">END_VAR</span><br><span class="line">VAR</span><br><span class="line">    fbPid : PID;        // PID 功能块实例</span><br><span class="line">END_VAR</span><br><span class="line"></span><br><span class="line">IF bEnable THEN</span><br><span class="line">    fbPid(SET := rSetpoint);</span><br><span class="line">    rOutput := fbPid.OUT;</span><br><span class="line">    bBusy := TRUE;</span><br><span class="line">ELSE</span><br><span class="line">    bBusy := FALSE;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
-
-<h2 id="调试要点"><a href="#调试要点" class="headerlink" title="调试要点"></a>调试要点</h2><ul>
-<li>利用在线监视功能实时观察 <code>rOutput</code> 与 <code>rSetpoint</code> 的跟踪曲线；</li>
-<li>通过强制（Force）与赋值快速验证边界条件；</li>
-<li>在 光伏电站 实际负载下标定 PID 参数，确保动态品质。</li>
-</ul>
-<p>掌握上述方法后，可将该模式复用到其他 边缘AI 相关控制任务中，显著提升光伏电站的编程效率与可维护性。</p>
+        <p>IEC 61499标准定义了基于事件驱动的功能块分布式架构，相比传统的IEC 61131-3周期扫描模式，在边缘计算场景下具有明显优势。施耐德EcoStruxure Automation Expert平台支持IEC 61499编程，使得控制逻辑可以灵活部署在边缘控制器、云端或混合架构中。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://schneider-wangyu.github.io/2025/10/07/edge-tech-20251007-1208/" data-id="cmtkbxcct02yz4kun0snn64md" data-title="边缘AI编程指南：光伏电站场景" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://schneider-wangyu.github.io/2025/10/07/edge-tech-20251007-1208/" data-id="cmtkc5qjw006mi4un3lsd2e80" data-title="IEC 61499功能块在边缘控制器中的分布式部署" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98AI/" rel="tag">边缘AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%9F%E8%83%BD%E5%9D%97/" rel="tag">功能块</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
 
       <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
     </footer>
@@ -134,19 +128,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2025/10/07/edge-tech-20251007-1408/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2025/10/08/schneider-news-20251008-1208/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">前一篇</strong>
       <div class="article-nav-title">
         
-          边缘AI在电池产线的实战应用
+          施耐德电气与华为签署工业数字化战略合作协议
         
       </div>
     </a>
   
   
-    <a href="/2025/10/07/edge-tech-20251007-1008/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2025/10/05/schneider-news-20251005-1008/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">边缘AI深度解析</div>
+      <div class="article-nav-title">施耐德ATV1200C-S系列变频器在西北风电场投运</div>
     </a>
   
 </nav>
@@ -167,83 +161,83 @@
       <ul>
         
           <li>
-            <a href="/2026/05/10/edge-tech-20260510-1608/">工业以太网深度解析</a>
+            <a href="/2026/09/26/schneider-news-20260926-2208/">施耐德中压变频器ATV1200C-S获红点产品设计奖</a>
           </li>
         
           <li>
-            <a href="/2026/05/10/edge-tech-20260510-1408/">工业以太网在机场行李系统的实战应用</a>
+            <a href="/2026/09/25/edge-tech-20260925-2208/">Modicon Edge I/O NTS分布式I/O扩展实战</a>
           </li>
         
           <li>
-            <a href="/2026/05/10/edge-tech-20260510-1208/">工业以太网编程指南：港口码头场景</a>
+            <a href="/2026/09/23/schneider-news-20260923-2008/">施耐德电气协办2026中国国际工业博览会</a>
           </li>
         
           <li>
-            <a href="/2026/05/10/edge-tech-20260510-1008/">工业以太网深度解析</a>
+            <a href="/2026/09/22/edge-tech-20260922-2008/">PID控制算法在边缘控制器中的参数自整定</a>
           </li>
         
           <li>
-            <a href="/2026/05/10/edge-tech-20260510-0808/">工业以太网在港口码头的实战应用</a>
+            <a href="/2026/09/19/schneider-news-20260919-1808/">EcoStruxure Machine Expert新增AI辅助编程功能</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-2208/">工业以太网编程指南：汽车焊装线场景</a>
+            <a href="/2026/09/18/edge-tech-20260918-1808/">边缘AI与预测性维护在旋转设备中的落地</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-2008/">工业以太网深度解析</a>
+            <a href="/2026/09/15/schneider-news-20260915-1608/">施耐德电气发布2026年度可持续经营报告</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-1808/">工业以太网在汽车焊装线的实战应用</a>
+            <a href="/2026/09/14/edge-tech-20260914-1608/">EcoStruxure边缘平台云边协同架构设计</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-1608/">工业以太网编程指南：制药车间场景</a>
+            <a href="/2026/09/11/schneider-news-20260911-1408/">Modicon M580新一代固件带来性能提升</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-1408/">工业以太网深度解析</a>
+            <a href="/2026/09/10/edge-tech-20260910-1408/">Modicon M580边缘控制器在智慧水务SCADA中的应用</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-1208/">工业以太网在制药车间的实战应用</a>
+            <a href="/2026/09/08/schneider-news-20260908-1208/">施耐德电气与华为签署工业数字化战略合作协议</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-1008/">工业以太网编程指南：水泥厂场景</a>
+            <a href="/2026/09/07/edge-tech-20260907-1208/">IEC 61499功能块在边缘控制器中的分布式部署</a>
           </li>
         
           <li>
-            <a href="/2026/05/09/edge-tech-20260509-0808/">工业以太网深度解析</a>
+            <a href="/2026/09/05/schneider-news-20260905-1008/">施耐德ATV1200C-S系列变频器在西北风电场投运</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-2208/">工业以太网在水泥厂的实战应用</a>
+            <a href="/2026/09/04/edge-tech-20260904-1008/">OPC UA over TSN实时通信架构与配置实战</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-2008/">工业以太网编程指南：热电厂场景</a>
+            <a href="/2026/09/02/schneider-news-20260902-0808/">施耐德电气EcoStruxure平台新版本发布</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-1808/">工业以太网深度解析</a>
+            <a href="/2026/09/01/edge-tech-20260901-0808/">TSN时间敏感网络在工业边缘控制中的应用实践</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-1608/">工业以太网在热电厂的实战应用</a>
+            <a href="/2026/08/26/schneider-news-20260826-2208/">施耐德中压变频器ATV1200C-S获红点产品设计奖</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-1408/">工业以太网编程指南：污水处理厂场景</a>
+            <a href="/2026/08/25/edge-tech-20260825-2208/">Modicon Edge I/O NTS分布式I/O扩展实战</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-1208/">工业以太网深度解析</a>
+            <a href="/2026/08/23/schneider-news-20260823-2008/">施耐德电气协办2026中国国际工业博览会</a>
           </li>
         
           <li>
-            <a href="/2026/05/08/edge-tech-20260508-1008/">工业以太网在污水处理厂的实战应用</a>
+            <a href="/2026/08/22/edge-tech-20260822-2008/">PID控制算法在边缘控制器中的参数自整定</a>
           </li>
         
       </ul>
