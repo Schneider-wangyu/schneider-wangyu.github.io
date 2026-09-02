@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>EAE开放自动化平台CAT建模实战：从IEC 61131-3到61499的迁移路径 | Schneider 技术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="传统PLC工程师第一次打开EcoStruxure Automation Expert（EAE）时，最常见的困惑是：梯形图去哪了？扫描周期在哪配置？其实这不是工具换皮，而是编程范式的切换——从IEC 61131-3的循环扫描模型，转向IEC 61499的事件驱动、资产化模型。本文聚焦迁移中最实际的几个编程技巧。 一、CAT：把设备而不是逻辑当作组织单元EAE的核心构件是CAT（Composite">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EAE开放自动化平台CAT建模实战：从IEC 61131-3到61499的迁移路径">
+<meta property="og:url" content="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0145/index.html">
+<meta property="og:site_name" content="Schneider 技术分享">
+<meta property="og:description" content="传统PLC工程师第一次打开EcoStruxure Automation Expert（EAE）时，最常见的困惑是：梯形图去哪了？扫描周期在哪配置？其实这不是工具换皮，而是编程范式的切换——从IEC 61131-3的循环扫描模型，转向IEC 61499的事件驱动、资产化模型。本文聚焦迁移中最实际的几个编程技巧。 一、CAT：把设备而不是逻辑当作组织单元EAE的核心构件是CAT（Composite">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202609030145.jpg">
+<meta property="article:published_time" content="2026-09-02T17:45:00.000Z">
+<meta property="article:modified_time" content="2026-09-02T17:49:18.735Z">
+<meta property="article:author" content="Schneider Wang">
+<meta property="article:tag" content="边缘控制">
+<meta property="article:tag" content="Structured Text">
+<meta property="article:tag" content="IEC 61131-3">
+<meta property="article:tag" content="IEC 61499">
+<meta property="article:tag" content="软件定义自动化">
+<meta property="article:tag" content="EAE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://schneider-wangyu.github.io/images/edge-tech-202609030145.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Schneider 技术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Schneider 技术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">工业自动化 &amp; PLC 技术记录</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/guestbook/">留言板</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://schneider-wangyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-edge-tech-20260903-0145" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/09/03/edge-tech-20260903-0145/" class="article-date">
+  <time class="dt-published" datetime="2026-09-02T17:45:00.000Z" itemprop="datePublished">2026-09-03 01:45</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/">边缘控制</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      EAE开放自动化平台CAT建模实战：从IEC 61131-3到61499的迁移路径
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/edge-tech-202609030145.jpg" alt="EAE开放自动化平台与边缘控制器建模"></p>
+<p>传统PLC工程师第一次打开EcoStruxure Automation Expert（EAE）时，最常见的困惑是：梯形图去哪了？扫描周期在哪配置？其实这不是工具换皮，而是<strong>编程范式的切换</strong>——从IEC 61131-3的循环扫描模型，转向IEC 61499的事件驱动、资产化模型。本文聚焦迁移中最实际的几个编程技巧。</p>
+<h2 id="一、CAT：把设备而不是逻辑当作组织单元"><a href="#一、CAT：把设备而不是逻辑当作组织单元" class="headerlink" title="一、CAT：把设备而不是逻辑当作组织单元"></a>一、CAT：把设备而不是逻辑当作组织单元</h2><p>EAE的核心构件是CAT（Composite Automation Type，复合自动化类型）。一台电机、一个阀门、一段输送线，都被封装成独立对象，内部包含实时控制逻辑、HMI画面元素、报警定义和OPC UA变量声明。</p>
+<p>对比传统做法的差异非常直接：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>IEC 61131-3 工程</th>
+<th>EAE &#x2F; IEC 61499</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>组织单元</td>
+<td>程序段（POU）按工艺分段</td>
+<td>CAT按物理资产封装</td>
+</tr>
+<tr>
+<td>数据交互</td>
+<td>全局变量表共享</td>
+<td>适配器（Adapter）+ 事件端口</td>
+</tr>
+<tr>
+<td>执行模型</td>
+<td>周期扫描，全量刷新</td>
+<td>事件触发，按需执行</td>
+</tr>
+<tr>
+<td>硬件绑定</td>
+<td>直接映射物理I&#x2F;O地址</td>
+<td>符号链接 + 硬件抽象层</td>
+</tr>
+<tr>
+<td>复用粒度</td>
+<td>复制粘贴 + 改地址</td>
+<td>实例化，模板改一处全同步</td>
+</tr>
+</tbody></table>
+<p><strong>技巧1：先建”设备清单”再写逻辑。</strong> 迁移老项目时，不要按原程序段顺序搬。先从P&amp;ID或I&#x2F;O表中抽出资产类型（泵、阀、搅拌器、加热段），每类做一个CAT，再实例化。50台泵只维护1个模板，改一次同步全部实例——这是EAE声称20%~70%工程效率提升的主要来源。</p>
+<h2 id="二、五种语言在EAE里怎么落地"><a href="#二、五种语言在EAE里怎么落地" class="headerlink" title="二、五种语言在EAE里怎么落地"></a>二、五种语言在EAE里怎么落地</h2><p>IEC 61131-3的五种语言不是被废弃，而是被”降格”为CAT内部算法。迁移时的处置策略很关键：</p>
+<ul>
+<li><strong>ST（结构化文本）</strong>：最平滑。原有算法可整段搬进基础功能块的算法体，几乎零改动，推荐作为迁移主力语言。</li>
+<li><strong>LD（梯形图）</strong>：直接封装为基础功能块内部逻辑，保留互锁语义即可。</li>
+<li><strong>FBD（功能块图）</strong>：<strong>切勿机械复刻</strong>。把长链FBD一对一转成61499功能块网络，会生成海量事件连线，导致运行时事件队列过载。正确做法是把一段功能链聚合成单个功能块的一段算法。</li>
+<li><strong>SFC（顺序功能图）</strong>：重构为功能块内置的ECC状态机（Execution Control Chart），把”被动扫描转换条件”改为”主动触发事件”，工艺时序完整保留。</li>
+</ul>
+<p>一个典型的CAT内部ST算法（泵启动带条件互锁与故障闩锁）：</p>
+<figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* ALG: Pump_Start —— 由 REQ 事件触发执行 *)</span></span><br><span class="line"><span class="keyword">IF</span> <span class="keyword">NOT</span> FaultLatch <span class="keyword">AND</span> Permissive <span class="keyword">AND</span> (SuctionPress &gt; MinPress) <span class="keyword">THEN</span></span><br><span class="line">    RunCmd  := TRUE;</span><br><span class="line">    StartTS := NOW();            <span class="comment">(* 记录启动时刻，用于确认超时判断 *)</span></span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">    RunCmd  := FALSE;</span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 启动确认超时：3s 内未见运行反馈则闩锁故障 *)</span></span><br><span class="line"><span class="keyword">IF</span> RunCmd <span class="keyword">AND</span> <span class="keyword">NOT</span> RunFbk <span class="keyword">AND</span> (NOW() - StartTS &gt; T<span class="string">#3</span>S) <span class="keyword">THEN</span></span><br><span class="line">    FaultLatch := TRUE;</span><br><span class="line">    FaultCode  := <span class="number">16</span><span class="string">#0</span>A;          <span class="comment">(* 0x0A = 启动无反馈 *)</span></span><br><span class="line">END_IF;</span><br><span class="line"></span><br><span class="line"><span class="comment">(* 复位仅允许在停机状态下生效 *)</span></span><br><span class="line"><span class="keyword">IF</span> ResetReq <span class="keyword">AND</span> <span class="keyword">NOT</span> RunFbk <span class="keyword">THEN</span></span><br><span class="line">    FaultLatch := FALSE;</span><br><span class="line">    FaultCode  := <span class="number">0</span>;</span><br><span class="line">END_IF;</span><br></pre></td></tr></table></figure>
+
+<p><strong>技巧2：事件命名分层。</strong> 原生IEC 61499对事件规范约束较松，工程规模一大就难以溯源。建议统一为三段式 <code>域_设备_信号</code>，并按来源分层：</p>
+<ul>
+<li><code>HW_*</code>：硬件类事件（I&#x2F;O变化、模块故障）</li>
+<li><code>COM_*</code>：通讯类事件（OPC UA订阅、MQTT Sparkplug回调）</li>
+<li><code>PRC_*</code>：工艺类事件（配方切换、批次开始）</li>
+</ul>
+<p>例如 <code>HW_P101_RunFbk</code>、<code>PRC_Line1_BatchStart</code>。EcoRT运行时以优先级队列调度并发事件，分层命名同时也是排障时过滤事件轨迹的抓手。</p>
+<h2 id="三、边缘部署：Soft-dPAC与逻辑漂移"><a href="#三、边缘部署：Soft-dPAC与逻辑漂移" class="headerlink" title="三、边缘部署：Soft dPAC与逻辑漂移"></a>三、边缘部署：Soft dPAC与逻辑漂移</h2><p>EAE的Soft dPAC是容器化运行时，可跑在任意满足性能基线的Linux边缘设备上，用Docker&#x2F;Portainer&#x2F;K8s管理。这带来一个传统PLC没有的能力：<strong>控制逻辑可在设备间迁移</strong>。</p>
+<p><strong>技巧3：先分布、再绑定。</strong> 在Topology Manager里做资产到执行设备的映射时，把”逻辑分组”与”硬件分配”分两步做。检修时把某个CAT组从A设备漂移到B设备，业务逻辑一行不用改。这也是Soft dPAC边缘控制器能把控制、HMI、历史数据、边缘分析压进同一台盒子、显著缩减柜内空间的前提。</p>
+<p><strong>技巧4：I&#x2F;O隔离自查。</strong> 迁移完成前逐项核对：业务逻辑中是否还有直接读写物理地址的残留？RETAIN持久化是否已收敛到统一的持久化服务功能块？全局变量是否已清零？这三项不彻底，硬件替换时逻辑仍会被拖住。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>从61131到61499的迁移，难点从来不是语法，而是思维：把”写程序”变成”建模型”。ST用来承载算法、CAT用来承载资产、事件用来承载时序、符号链接用来隔离硬件——四层职责分清，边缘控制器才真正成为可移植、可复用、可漂移的软件资产。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://schneider-wangyu.github.io/2026/09/03/edge-tech-20260903-0145/" data-id="cmtke51ae0000gkun99c74kya" data-title="EAE开放自动化平台CAT建模实战：从IEC 61131-3到61499的迁移路径" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EAE/" rel="tag">EAE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61131-3/" rel="tag">IEC 61131-3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IEC-61499/" rel="tag">IEC 61499</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Structured-Text/" rel="tag">Structured Text</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BD%AF%E4%BB%B6%E5%AE%9A%E4%B9%89%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">软件定义自动化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BE%B9%E7%BC%98%E6%8E%A7%E5%88%B6/" rel="tag">边缘控制</a></li></ul>
+
+      <span id="busuanzi_container_page_pv" style="font-size:12px;color:#999;">闃呰閲?<span id="busuanzi_value_page_pv">-</span></span>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/09/03/schneider-news-20260903-0111/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">246kW 一个机架：施耐德电气正在为 AI 工厂重铺电力与冷却底座</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260903-0145/">EAE开放自动化平台CAT建模实战：从IEC 61131-3到61499的迁移路径</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260903-0111/">246kW 一个机架：施耐德电气正在为 AI 工厂重铺电力与冷却底座</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260903-0104/">从西北中标潮看边缘控制在工业现场的落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260923-2208/">施耐德中压变频器ATV1200C-S获红点产品设计奖</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260917-1808/">EcoStruxure Machine Expert新增AI辅助编程功能</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260920-2008/">施耐德电气协办2026中国国际工业博览会</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260914-1608/">施耐德电气发布2026年度可持续经营报告</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260922-2208/">Modicon Edge I/O NTS分布式I/O扩展实战</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260916-1808/">边缘AI与预测性维护在旋转设备中的落地</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260919-2008/">PID控制算法在边缘控制器中的参数自整定</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260913-1608/">EcoStruxure边缘平台云边协同架构设计</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260908-1208/">施耐德电气与华为签署工业数字化战略合作协议</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260911-1408/">Modicon M580新一代固件带来性能提升</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20260905-1008/">施耐德ATV1200C-S系列变频器在西北风电场投运</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260910-1408/">Modicon M580边缘控制器在智慧水务SCADA中的应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260907-1208/">IEC 61499功能块在边缘控制器中的分布式部署</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/edge-tech-20260904-1008/">OPC UA over TSN实时通信架构与配置实战</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20250111-1408/">Modicon M580新一代固件带来性能提升</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20250105-1008/">施耐德ATV1200C-S系列变频器在西北风电场投运</a>
+          </li>
+        
+          <li>
+            <a href="/2026/09/03/schneider-news-20250108-1208/">施耐德电气与华为签署工业数字化战略合作协议</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Schneider Wang<br>
+      联系方式: <a href="mailto:yu.wang3@se.com">yu.wang3@se.com</a><br>
+      访客: <span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span> | 
+      浏览: <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span><br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/guestbook/" class="mobile-nav-link">留言板</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+<script src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+
+
+<div id="giscus-container" style="margin-top: 2rem; padding: 1rem 0;"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="Schneider-wangyu/schneider-wangyu.github.io"
+        data-repo-id="R_kgDOSRsmHQ"
+        data-category="General"
+        data-category-id="DIC_kwDOSRsmHc4C8KAR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<noscript>评论功能需要启用 JavaScript。</noscript>
+
+
+  </div>
+</body>
+</html>
