@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://schneider-wangyu.github.io/images/edge-tech-202609022337.jpg">
 <meta property="article:published_time" content="2026-09-02T15:37:00.000Z">
-<meta property="article:modified_time" content="2026-09-02T15:40:36.634Z">
+<meta property="article:modified_time" content="2026-09-02T16:00:00.234Z">
 <meta property="article:author" content="Schneider Wang">
 <meta property="article:tag" content="边缘控制">
 <meta property="article:tag" content="Modicon">
@@ -130,7 +130,8 @@
 <h2 id="调试技巧：盯住-CPU-负载"><a href="#调试技巧：盯住-CPU-负载" class="headerlink" title="调试技巧：盯住 CPU 负载"></a>调试技巧：盯住 CPU 负载</h2><p>边缘控制器常同时跑控制、OPC UA 发布和轻量边缘服务，负载需留余量。Machine Expert 的 <code>CmpSchedule</code> 库提供 <code>SchedGetProcessorLoad</code>，建议长期负载低于 70%，否则应拉长扫描周期或把非实时任务下沉：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VAR</span><br><span class="line">    pResult    : RTS_IEC_RESULT;</span><br><span class="line">    udiCpuLoad : UDINT;</span><br><span class="line">END_VAR</span><br><span class="line">udiCpuLoad := SchedGetProcessorLoad(pResult := ADR(pResult)); // 百分比</span><br></pre></td></tr></table></figure>
 
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在 Modicon 边缘控制器上写 ST，请养成三个习惯：<strong>状态机用 <code>CASE</code> 而非散落线圈、边沿检测把 <code>R_TRIG</code> 提到周期顶层、数据先在本地处理再上云</strong>。这三点能显著降低现场调试时的”偶发不触发”与”数据抖动”类故障。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在 Modicon 边缘控制器上写 ST，请养成三个习惯：<strong>状态机用 <code>CASE</code> 而非散落线圈、边沿检测把 <code>R_TRIG</code> 提到周期顶层、数据先在本地处理再上云</strong>。这三点能显著降低现场调试时的”偶发不触发”与”数据抖动”类故障。
+ </p>
 
       
     </div>
